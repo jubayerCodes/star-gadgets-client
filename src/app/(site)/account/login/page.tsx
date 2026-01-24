@@ -5,6 +5,7 @@ import PasswordField from "@/components/form/site/password-field";
 import SeparatorText from "@/components/shared/separator-text";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
+import { useCurrentUser, useLoginUser } from "@/features/account/hooks/useAccount";
 import { LoginFormValues, loginSchema } from "@/features/account/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -19,9 +20,16 @@ const Login = () => {
     },
   });
 
+  const { mutateAsync: loginUser } = useLoginUser();
+
+  const { data: currentUser } = useCurrentUser();
+  console.log(currentUser);
   const handleSubmit = async (values: LoginFormValues) => {
-    // eslint-disable-next-line no-console
-    console.log(values);
+    const res = await loginUser(values);
+
+    if (res.success) {
+      form.reset();
+    }
   };
 
   return (

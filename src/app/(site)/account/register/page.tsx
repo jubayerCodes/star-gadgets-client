@@ -25,8 +25,11 @@ function Register() {
   });
 
   const handleSubmit = async (values: RegisterFormValues) => {
-    const user = await createUser(values);
-    console.log(user);
+    const res = await createUser(values);
+
+    if (res.success) {
+      form.reset();
+    }
   };
 
   return (
