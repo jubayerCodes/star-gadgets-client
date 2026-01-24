@@ -1,0 +1,55 @@
+"use client";
+
+import InputField from "@/components/form/site/input-field";
+import PasswordField from "@/components/form/site/password-field";
+import SeparatorText from "@/components/shared/separator-text";
+import { Button } from "@/components/ui/button";
+import { FieldGroup } from "@/components/ui/field";
+import { LoginFormValues, loginSchema } from "@/features/account/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+
+const Login = () => {
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleSubmit = async (values: LoginFormValues) => {
+    // eslint-disable-next-line no-console
+    console.log(values);
+  };
+
+  return (
+    <section className="py-10">
+      <div className="container max-w-6xl!">
+        <div className="flex flex-col gap-5 max-w-lg mx-auto">
+          <div className="flex flex-col gap-8">
+            <h2>Login</h2>
+
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+              <FieldGroup className="gap-4">
+                <InputField form={form} name="email" label="Email" placeholder="Enter your email" required />
+                <PasswordField form={form} name="password" label="Password" placeholder="Enter your password" />
+              </FieldGroup>
+
+              <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+                LOGIN
+              </Button>
+            </form>
+          </div>
+          <SeparatorText text="Don't have an account?" />
+          <Button type="submit" disabled={form.formState.isSubmitting} className="w-full" variant="outline" asChild>
+            <Link href="/account/register">REGISTER</Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Login;
