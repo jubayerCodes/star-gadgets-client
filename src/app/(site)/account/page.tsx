@@ -1,26 +1,21 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import Login from "@/features/account/components/login";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const LoginPage = () => {
+const Account = () => {
   const router = useRouter();
   const { user, isLoading } = useAuthStore();
 
   useEffect(() => {
-    if (user && !isLoading) {
-      router.push("/account");
+    if (!user && !isLoading) {
+      router.push("/account/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isLoading]);
 
-  if (!user && !isLoading) {
-    return <Login />;
-  }
-
-  return null;
+  return <div>Account</div>;
 };
 
-export default LoginPage;
+export default Account;

@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/layout/header";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -23,7 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1 flex flex-col justify-center">{children}</main>
+          </div>
+        </Providers>
         <Toaster position="bottom-right" />
       </body>
     </html>

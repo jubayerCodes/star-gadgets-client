@@ -10,7 +10,7 @@ interface IAuthStore {
   setError: (error: string | null) => void;
 }
 
-export const authStore = create<IAuthStore>()((set) => ({
+export const useAuthStore = create<IAuthStore>()((set) => ({
   user: null,
   isLoading: false,
   error: null,
