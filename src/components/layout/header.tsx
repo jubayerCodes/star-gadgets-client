@@ -10,6 +10,14 @@ import { useAuthStore } from "@/store/authStore";
 import { Heart, ShoppingCart } from "lucide-react";
 import IconWithCount from "../shared/icon-with-count";
 import { Button } from "../ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
 
 const Header = () => {
   const { user } = useAuthStore();
@@ -42,6 +50,25 @@ const Header = () => {
       name: "Linkedin",
       icon: FaLinkedin,
       link: "#",
+    },
+  ];
+
+  const accountLinks = [
+    {
+      label: "My Account",
+      href: "/account",
+    },
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      label: "Order History",
+      href: "/account/orders",
+    },
+    {
+      label: "Wishlist",
+      href: "/account/wishlist",
     },
   ];
 
@@ -96,16 +123,41 @@ const Header = () => {
         <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
             <Link href="/">
-              <Image src={logo} alt="Star Gadgets" width={200} height={100} />
+              <Image src={logo} alt="Star Gadgets" loading="eager" width={200} height={100} />
             </Link>
             <SearchInput />
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               {user ? (
-                <Link href={"/account"} className="font-semibold text-sm hover:text-foreground/80 transition">
-                  My Account
-                </Link>
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger className="text-sm font-semibold hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! cursor-pointer">
+                        My Account
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent className="w-[150px]! rounded-none! p-4 flex flex-col gap-2">
+                        {accountLinks.map((link, index) => (
+                          <NavigationMenuLink
+                            key={index}
+                            className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline"
+                            href={link.href}
+                          >
+                            {link.label}
+                          </NavigationMenuLink>
+                        ))}
+                        <NavigationMenuLink
+                          className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm cursor-pointer hover:underline"
+                          onClick={() => {
+                            console.log("Logout");
+                          }}
+                        >
+                          Logout
+                        </NavigationMenuLink>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
               ) : (
                 <>
                   <Link href={"/account/login"} className="font-semibold text-sm hover:text-foreground/80 transition">
@@ -130,7 +182,9 @@ const Header = () => {
               </Link>
             </div>
             <Link href="/pc-builder">
-              <Button variant={"outline"} className="ml-2">PC Builder</Button>
+              <Button variant={"outline"} className="ml-2">
+                PC Builder
+              </Button>
             </Link>
           </div>
         </div>
