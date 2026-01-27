@@ -63,7 +63,7 @@ const ComingSoon = ({
           </div>
         </div>
 
-        <h1 className="mb-4 bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-5xl font-bold text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700 md:text-7xl">
+        <h1 className="mb-4 bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-5xl font-bold text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700 md:text-7xl leading-relaxed">
           {title}
         </h1>
 

@@ -3,6 +3,9 @@ import { createUserApi, getCurrentUserApi, loginUserApi } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
+import { QUERY_KEYS } from "@/constants";
+import { ApiResponse } from "@/types";
+import { IUser } from "../types";
 
 export const useCreateUser = () => {
   const { setUser, setIsLoading, setError } = useAuthStore();
@@ -39,8 +42,8 @@ export const useLoginUser = () => {
 };
 
 export const useCurrentUser = () => {
-  return useQuery({
-    queryKey: ["profile"],
+  return useQuery<ApiResponse<IUser>>({
+    queryKey: [QUERY_KEYS.PROFILE],
     queryFn: getCurrentUserApi,
   });
 };

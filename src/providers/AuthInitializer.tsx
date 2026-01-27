@@ -2,6 +2,7 @@
 
 import Loading from "@/components/layout/loading";
 import { useCurrentUser } from "@/features/account/hooks/useAccount";
+import { useGetHeaderConfig } from "@/features/config/hooks/useHeaderConfig";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
 
@@ -9,6 +10,7 @@ export default function AuthInitializer({ children }: { children: React.ReactNod
   const { data, isLoading, isError } = useCurrentUser();
 
   const { setError, setIsLoading, setUser } = useAuthStore();
+  const { isLoading: headerConfigLoading } = useGetHeaderConfig();
 
   useEffect(() => {
     if (isLoading) {
@@ -28,7 +30,7 @@ export default function AuthInitializer({ children }: { children: React.ReactNod
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isLoading, isError]);
 
-  if (isLoading) {
+  if (isLoading || headerConfigLoading) {
     return <Loading />;
   }
 

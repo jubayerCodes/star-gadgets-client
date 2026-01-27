@@ -18,9 +18,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
+import { useGetHeaderConfig } from "@/features/config/hooks/useHeaderConfig";
 
 const Header = () => {
   const { user } = useAuthStore();
+  const { data: response } = useGetHeaderConfig();
+
+  const categories = response?.data?.navLinks || [];
 
   const contactInfo = [
     {
@@ -125,18 +129,18 @@ const Header = () => {
             <Link href="/">
               <Image src={logo} alt="Star Gadgets" loading="eager" width={200} height={100} />
             </Link>
-            <SearchInput />
+            <SearchInput className="max-w-2xl" />
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               {user ? (
-                <NavigationMenu>
+                <NavigationMenu align="end">
                   <NavigationMenuList>
                     <NavigationMenuItem>
-                      <NavigationMenuTrigger className="text-sm font-semibold hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! cursor-pointer">
+                      <NavigationMenuTrigger className="text-sm font-semibold hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! cursor-pointer aria-expanded:text-accent-hover!">
                         My Account
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent className="w-[150px]! rounded-none! p-4 flex flex-col gap-2">
+                      <NavigationMenuContent className="w-[150px]! p-4 flex flex-col gap-2 border-t-4 border-t-accent">
                         {accountLinks.map((link, index) => (
                           <NavigationMenuLink
                             key={index}
@@ -187,6 +191,32 @@ const Header = () => {
               </Button>
             </Link>
           </div>
+        </div>
+      </div>
+      <div className="border-b">
+        <div className="container">
+          <NavigationMenu align="start" className="max-w-full!">
+            <NavigationMenuList className="gap-4 justify-center">
+              {categories?.map((category) => (
+                <NavigationMenuItem key={category?._id}>
+                  <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! py-6! *:hidden!">
+                    {category?.title}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
+                    {category?.subCategories?.map((subCategory) => (
+                      <NavigationMenuLink
+                        key={subCategory?._id}
+                        className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline "
+                        href={`/sub-categories/${subCategory?.slug}`}
+                      >
+                        {subCategory?.title}
+                      </NavigationMenuLink>
+                    ))}
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
       </div>
     </header>

@@ -47,6 +47,7 @@
 
 
   --color-tartiary: var(--tartiary);
+  --color-accent-hover: var(--accent-hover);
 }
 
 :root {
@@ -85,6 +86,7 @@
 
   --link: oklch(0.5581 0.2154 30.31);
   --tartiary: oklch(0.5581 0.2154 30.31);
+  --accent-hover: oklch(24.079% 0.01973 271.822 / 0.651);
 }
 
 .dark {
