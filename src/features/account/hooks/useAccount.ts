@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createUserApi, getCurrentUserApi, loginUserApi } from "../api";
+import { createUserApi, getCurrentUserApi, loginUserApi, logoutUserApi } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
@@ -45,5 +45,22 @@ export const useCurrentUser = () => {
   return useQuery<ApiResponse<IUser>>({
     queryKey: [QUERY_KEYS.PROFILE],
     queryFn: getCurrentUserApi,
+  });
+};
+
+export const useLogoutUser = () => {
+  const { setUser, setIsLoading, setError } = useAuthStore();
+  return useMutation({
+    mutationFn: logoutUserApi,
+    onSuccess: () => {
+      setUser(null);
+      setIsLoading(false);
+      setError(null);
+    },
+
+    onError: (err) => {
+      setError(err?.message);
+      toast.error(extractErrorMessage(err));
+    },
   });
 };

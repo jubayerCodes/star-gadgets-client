@@ -1,8 +1,8 @@
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types";
-import { IHeaderConfigResponse } from "../types";
+import { IConfigResponse } from "../types";
 
-export const getHeaderConfig = async (): Promise<ApiResponse<IHeaderConfigResponse>> => {
-  const res = await axiosInstance.get("/config/header");
+export const getConfigApi = async (): Promise<ApiResponse<IConfigResponse>> => {
+  const res = await axiosInstance.get("/config");
   return res.data;
 };

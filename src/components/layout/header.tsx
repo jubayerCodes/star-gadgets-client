@@ -7,7 +7,7 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import SearchInput from "../form/site/search-input";
 import { useAuthStore } from "@/store/authStore";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, LogOutIcon, ShoppingCart } from "lucide-react";
 import IconWithCount from "../shared/icon-with-count";
 import { Button } from "../ui/button";
 import {
@@ -18,13 +18,18 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
-import { useGetHeaderConfig } from "@/features/config/hooks/useHeaderConfig";
+import { useConfigStore } from "@/store/configStore";
+import { useLogoutUser } from "@/features/account/hooks/useAccount";
+import DeleteConfirmModal from "../modals/DeleteConfirmModal";
+import { useDeleteModalStore } from "@/store/deleteModalStore";
 
 const Header = () => {
   const { user } = useAuthStore();
-  const { data: response } = useGetHeaderConfig();
+  const { config } = useConfigStore();
+  const { mutateAsync: logoutUser } = useLogoutUser();
+  const { openModal } = useDeleteModalStore();
 
-  const categories = response?.data?.navLinks || [];
+  const categories = config?.header.navLinks || [];
 
   const contactInfo = [
     {
@@ -127,7 +132,14 @@ const Header = () => {
         <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
             <Link href="/">
-              <Image src={logo} alt="Star Gadgets" loading="eager" width={200} height={100} />
+              <Image
+                src={logo}
+                alt="Star Gadgets"
+                loading="eager"
+                width={500}
+                height={100}
+                className="w-auto! h-10! aspect-auto"
+              />
             </Link>
             <SearchInput className="max-w-2xl" />
           </div>
@@ -153,7 +165,15 @@ const Header = () => {
                         <NavigationMenuLink
                           className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm cursor-pointer hover:underline"
                           onClick={() => {
-                            console.log("Logout");
+                            openModal({
+                              icon: LogOutIcon,
+                              title: "Logout",
+                              description: "Are you sure you want to logout?",
+                              confirmText: "Logout",
+                              onConfirm: async () => {
+                                await logoutUser();
+                              },
+                            });
                           }}
                         >
                           Logout
@@ -190,6 +210,7 @@ const Header = () => {
                 PC Builder
               </Button>
             </Link>
+            <DeleteConfirmModal />
           </div>
         </div>
       </div>
@@ -199,9 +220,11 @@ const Header = () => {
             <NavigationMenuList className="gap-4 justify-center">
               {categories?.map((category) => (
                 <NavigationMenuItem key={category?._id}>
-                  <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! py-6! *:hidden!">
-                    {category?.title}
-                  </NavigationMenuTrigger>
+                  <Link href={`/categories/${category?.slug}`}>
+                    <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! py-6! *:hidden!">
+                      {category?.title}
+                    </NavigationMenuTrigger>
+                  </Link>
                   <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
                     {category?.subCategories?.map((subCategory) => (
                       <NavigationMenuLink

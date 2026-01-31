@@ -20,3 +20,9 @@ export const getCurrentUserApi = async (): Promise<ApiResponse<IUser>> => {
 
   return res.data;
 };
+
+export const logoutUserApi = async (): Promise<ApiResponse<null>> => {
+  const res = await axiosInstance.post("/auth/logout");
+
+  return res.data;
+};
