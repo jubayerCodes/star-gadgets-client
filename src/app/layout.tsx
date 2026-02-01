@@ -3,11 +3,6 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/layout/header";
-import { QUERY_KEYS } from "@/constants";
-import { getConfigApi } from "@/features/config/api";
-import { makeQueryClient } from "@/lib/queryClient";
-import { getCurrentUserApi } from "@/features/account/api";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -25,27 +20,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const queryClient = makeQueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: [QUERY_KEYS.CONFIG],
-    queryFn: getConfigApi,
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: [QUERY_KEYS.PROFILE],
-    queryFn: getCurrentUserApi,
-  });
 
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <Providers>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1 flex flex-col justify-center">{children}</main>
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
         <Toaster position="bottom-right" />
       </body>
     </html>

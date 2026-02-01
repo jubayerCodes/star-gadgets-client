@@ -1,21 +1,13 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import ProtectedRoute from "@/components/shared/protected-route";
 
 const Account = () => {
-  const router = useRouter();
-  const { user, isLoading } = useAuthStore();
-
-  useEffect(() => {
-    if (!user && !isLoading) {
-      router.push("/account/login");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isLoading]);
-
-  return <div>Account</div>;
+  return (
+    <ProtectedRoute>
+      <div>Account</div>
+    </ProtectedRoute>
+  );
 };
 
 export default Account;

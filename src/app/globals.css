@@ -45,7 +45,6 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-
   --color-tartiary: var(--tartiary);
   --color-accent-hover: var(--accent-hover);
 }
@@ -144,5 +143,14 @@
 @layer utilities {
   .container {
     @apply mx-auto max-w-7xl px-5 lg:px-0;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
