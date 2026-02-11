@@ -2,8 +2,10 @@
 
 import * as React from "react";
 import {
+  Icon,
   IconChartBar,
   IconDashboard,
+  IconDeviceLaptop,
   IconFolder,
   IconHelp,
   IconListDetails,
@@ -31,39 +33,22 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import logoSm from "@/assets/logo-sm.png";
 
+export interface INavItem {
+  title: string;
+  url?: string;
+  icon?: Icon;
+  children?: {
+    title: string;
+    url: string;
+  }[];
+}
+
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
   navSecondary: [
     {
       title: "Settings",
@@ -82,6 +67,57 @@ const data = {
     },
   ],
 };
+
+const navMain: INavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: IconDashboard,
+  },
+  {
+    title: "Products",
+    icon: IconListDetails,
+    children: [
+      {
+        title: "All Products",
+        url: "/dashboard/products",
+      },
+      {
+        title: "Add Product",
+        url: "/dashboard/products/add",
+      },
+    ],
+  },
+  {
+    title: "Categories",
+    icon: IconDeviceLaptop,
+    children: [
+      {
+        title: "All Categories",
+        url: "/dashboard/categories",
+      },
+      {
+        title: "Add Category",
+        url: "/dashboard/products/add",
+      },
+    ],
+  },
+  {
+    title: "Analytics",
+    url: "#",
+    icon: IconChartBar,
+  },
+  {
+    title: "Projects",
+    url: "#",
+    icon: IconFolder,
+  },
+  {
+    title: "Team",
+    url: "#",
+    icon: IconUsers,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -103,7 +139,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

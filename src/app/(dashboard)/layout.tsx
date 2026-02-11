@@ -1,6 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import ProtectedRoute from "@/components/shared/protected-route";
-import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 
@@ -17,8 +16,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       >
         <AppSidebar variant="sidebar" />
         <SidebarInset>
-          <SiteHeader />
-          {children}
+          <div className="flex-1 overflow-y-auto p-6">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </ProtectedRoute>

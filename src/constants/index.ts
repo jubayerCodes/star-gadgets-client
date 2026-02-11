@@ -1,6 +1,6 @@
 export const QUERY_KEYS = {
   CATEGORIES: "categories",
-  CATEGORIES_POPULATED: "categories-populated",
+  CATEGORIES_ADMIN: "categories-admin",
   PRODUCTS: "products",
   CART: "cart",
   WISHLIST: "wishlist",
