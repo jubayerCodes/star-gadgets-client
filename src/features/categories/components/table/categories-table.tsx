@@ -4,7 +4,8 @@ import { FC } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import placeholder from "@/assets/img/placeholder.png";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconPencil, IconTrash } from "@tabler/icons-react";
+import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 
 export interface CategoriesTableProps {
   data: ICategoryWithSubCategories[];
@@ -50,12 +51,31 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
       },
       cell: ({ row }) => {
         const featured = row.original.featured;
-        return <span>{featured ? <IconCircleCheckFilled /> : ""}</span>;
+        return <span>{featured ? <IconCircleCheckFilled className="text-green-700" /> : ""}</span>;
       },
     },
     {
       accessorKey: "actions",
       header: "Actions",
+      cell: ({ row }) => {
+
+        const actions: DataTableOption[] = [
+          {
+            label: "Edit",
+            icon: IconPencil,
+            href: `/dashboard/categories/${row.original._id}`,
+          },
+          {
+            label: "Delete",
+            icon: IconTrash,
+            onClick: () => {
+              // Handle delete action
+            },
+          },
+        ];
+
+        return <DataTableAction options={actions} />;
+      },
     },
   ];
 

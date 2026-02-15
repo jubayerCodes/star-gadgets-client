@@ -1,7 +1,7 @@
 "use client";
 
-import DashboardButton from "@/components/dashboard/dashboard-button";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
 import CategoriesTable from "@/features/categories/components/table/categories-table";
 import { categoriesAdminQueryOptions } from "@/features/categories/hooks/useCategories";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ const Categories = () => {
   return (
     <div>
       <DashboardHeader title="All Categories" description="Manage your categories">
-        <DashboardButton>Add Category</DashboardButton>
+        <CreateCategoryModal />
       </DashboardHeader>
       <CategoriesTable data={categories} />
     </div>

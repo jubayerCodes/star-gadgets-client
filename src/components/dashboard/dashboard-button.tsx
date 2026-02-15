@@ -1,24 +1,34 @@
+import React from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
-import React from "react";
+import { ClassValue } from "clsx";
 
-const DashboardButton = ({
-  children,
-  className,
-  size,
-  variant,
-}: {
+type Props = {
   children: React.ReactNode;
-  className?: string;
+  className?: ClassValue;
   size?: VariantProps<typeof buttonVariants>["size"];
   variant?: VariantProps<typeof buttonVariants>["variant"];
-}) => {
-  return (
-    <Button variant={variant} size={size} className={cn("rounded-md!", className)}>
-      {children}
-    </Button>
-  );
-};
+  asChild?: boolean;
+} & React.ComponentPropsWithoutRef<typeof Button>;
+
+const DashboardButton = React.forwardRef<HTMLButtonElement, Props>(
+  ({ children, className, size, variant, asChild, ...props }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        asChild={asChild}
+        variant={variant}
+        size={size}
+        className={cn("rounded-md!", className)}
+        {...props}
+      >
+        {children}
+      </Button>
+    );
+  },
+);
+
+DashboardButton.displayName = "DashboardButton";
 
 export default DashboardButton;
