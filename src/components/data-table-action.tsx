@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import DashboardButton from "./dashboard/dashboard-button";
 
 export interface DataTableOption {
   label: string;
@@ -36,10 +36,10 @@ export const DataTableAction: React.FC<DataTableActionProps> = ({ options, align
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="dashboardGhost" className="h-8 w-8 p-0 rounded-sm">
+        <DashboardButton variant="dashboardGhost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="min-w-52">
         {visibleOptions.map((option, index) => {
