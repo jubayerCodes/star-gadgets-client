@@ -3,6 +3,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
 import { ClassValue } from "clsx";
+import { Loader } from "lucide-react";
 
 type Props = {
   children: React.ReactNode;
@@ -10,10 +11,12 @@ type Props = {
   size?: VariantProps<typeof buttonVariants>["size"];
   variant?: VariantProps<typeof buttonVariants>["variant"];
   asChild?: boolean;
+  isLoading?: boolean;
+  disabled?: boolean;
 } & React.ComponentPropsWithoutRef<typeof Button>;
 
 const DashboardButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ children, className, size, variant, asChild, ...props }, ref) => {
+  ({ children, className, size, variant, asChild, isLoading, disabled, ...props }, ref) => {
     return (
       <Button
         ref={ref}
@@ -21,9 +24,10 @@ const DashboardButton = React.forwardRef<HTMLButtonElement, Props>(
         variant={variant}
         size={size}
         className={cn("rounded-md!", className)}
+        disabled={disabled || isLoading}
         {...props}
       >
-        {children}
+        {children} {isLoading && <Loader className="size-4 animate-spin" />}
       </Button>
     );
   },

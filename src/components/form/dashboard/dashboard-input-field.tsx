@@ -26,7 +26,7 @@ const DashboardInputField = ({ form, name, label, placeholder, required }: Input
             placeholder={placeholder}
             {...field}
             required={required}
-            className="text-sm focus-visible:ring-0 border-2 border-input h-10"
+            className="text-sm focus-visible:ring-0 border border-input h-10"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

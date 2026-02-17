@@ -20,10 +20,11 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
       cell: ({ row }) => {
         return (
           <Image
-            src={placeholder}
+            src={row.original.image}
             alt={row.original.title}
             width={50}
             height={50}
+            className="object-cover"
             onError={(e) => (e.currentTarget.src = placeholder.src)}
           />
         );
@@ -58,7 +59,6 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-
         const actions: DataTableOption[] = [
           {
             label: "Edit",

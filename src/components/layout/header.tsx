@@ -20,7 +20,6 @@ import {
 } from "../ui/navigation-menu";
 import { useConfigStore } from "@/store/configStore";
 import { useLogoutUser } from "@/features/account/hooks/useAccount";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
 
 const Header = () => {
@@ -210,7 +209,6 @@ const Header = () => {
                 PC Builder
               </Button>
             </Link>
-            <DeleteConfirmModal />
           </div>
         </div>
       </div>
