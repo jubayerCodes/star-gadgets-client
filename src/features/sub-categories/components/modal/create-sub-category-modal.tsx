@@ -1,55 +1,70 @@
 "use client";
 
-import DashboardButton from "@/components/dashboard/dashboard-button";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogPortal,
-  DialogOverlay,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { IFile } from "@/types/file";
+import { useState } from "react";
+import { useCreateSubCategoryMutation } from "../../hooks/useSubCategory";
+import { CreateSubCategoryFormData, createSubCategoryZodSchema } from "../../schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateCategoryFormData, createCategoryZodSchema } from "../../schema";
+import { createFormDataAction } from "@/hooks/createFormDataAction";
+import { ISubCategory } from "../../types";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import DashboardButton from "@/components/dashboard/dashboard-button";
 import { FieldGroup } from "@/components/ui/field";
+import SingleImageUploader from "@/components/SingleImageUploader";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
-import { useState } from "react";
-import SingleImageUploader from "@/components/SingleImageUploader";
-import { IFile } from "@/types/file";
-import { useCreateCategoryMutation } from "../../hooks/useCategories";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
-import { ICategory } from "../../types";
+import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useCategories";
 
-const CreateCategoryModal = () => {
+function CreateSubCategoryModal() {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<IFile>({
     file: null,
     error: null,
   });
 
-  const { mutateAsync: createCategory, isPending } = useCreateCategoryMutation();
+  const {
+    data,
+    hasNextPage,
+    hasPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetching,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+  } = useCategoriesListInfinityQuery();
 
-  const defaultValues: CreateCategoryFormData = {
+  console.log(data);
+
+  const { mutateAsync: createSubCategory, isPending } = useCreateSubCategoryMutation();
+
+  const defaultValues: CreateSubCategoryFormData = {
     title: "",
     slug: "",
+    categoryId: "",
     featured: false,
   };
 
-  const form = useForm<CreateCategoryFormData>({
-    resolver: zodResolver(createCategoryZodSchema),
+  const form = useForm<CreateSubCategoryFormData>({
+    resolver: zodResolver(createSubCategoryZodSchema),
     defaultValues,
   });
 
-  const handleSubmit = async (data: CreateCategoryFormData) => {
-    const res = await createFormDataAction<CreateCategoryFormData, ICategory>({
+  const handleSubmit = async (data: CreateSubCategoryFormData) => {
+    const res = await createFormDataAction<CreateSubCategoryFormData, ISubCategory>({
       data,
       file,
       setFile,
-      action: createCategory,
+      action: createSubCategory,
     });
 
     if (res && res.success) {
@@ -69,12 +84,12 @@ const CreateCategoryModal = () => {
         });
       }}
     >
-      <DialogTrigger render={<DashboardButton>Add Category</DashboardButton>} />
+      <DialogTrigger render={<DashboardButton>Add Sub Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className={"text-xl"}>Add Category</DialogTitle>
+            <DialogTitle className={"text-xl"}>Add Sub Category</DialogTitle>
           </DialogHeader>
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -97,7 +112,7 @@ const CreateCategoryModal = () => {
                   className={"w-full!"}
                   isLoading={isPending}
                 >
-                  Add Category
+                  Add Sub Category
                 </DashboardButton>
               </DialogFooter>
             </form>
@@ -106,6 +121,6 @@ const CreateCategoryModal = () => {
       </DialogPortal>
     </Dialog>
   );
-};
+}
 
-export default CreateCategoryModal;
+export default CreateSubCategoryModal;

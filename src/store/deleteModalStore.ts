@@ -11,7 +11,7 @@ export interface DeleteModalStore {
     onConfirm,
     confirmText,
   }: {
-    icon: LucideIcon;
+    icon?: LucideIcon;
     title: string;
     description?: string;
     onConfirm: () => Promise<void>;
@@ -44,6 +44,7 @@ export const useDeleteModalStore = create<DeleteModalStore>()((set) => ({
       icon: Trash2Icon,
       title: "",
       description: "",
+      isLoading: false,
       onConfirm: () => Promise.resolve(),
       confirmText: "Delete",
     }),

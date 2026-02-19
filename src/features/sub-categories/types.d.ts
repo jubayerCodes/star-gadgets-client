@@ -8,3 +8,7 @@ export interface ISubCategory {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ISubCategoryAdmin extends ISubCategory {
+  category: ICategory;
+}

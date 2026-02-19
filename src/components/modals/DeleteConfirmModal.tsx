@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Trash2Icon } from "lucide-react";
 
 function DeleteConfirmModal() {
   const {
@@ -40,7 +40,7 @@ function DeleteConfirmModal() {
         <AlertDialogContent size="sm" className="max-w-sm!">
           <AlertDialogHeader>
             <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
-              <Icon />
+              {Icon ? <Icon /> : <Trash2Icon />}
             </AlertDialogMedia>
             <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -59,7 +59,7 @@ function DeleteConfirmModal() {
               onClick={handleConfirm}
               disabled={isLoading}
             >
-              {!isLoading && confirmText}
+              {!isLoading && confirmText ? confirmText : "Delete"}
               {isLoading && <Loader2Icon className="animate-spin" />}
             </AlertDialogAction>
           </AlertDialogFooter>

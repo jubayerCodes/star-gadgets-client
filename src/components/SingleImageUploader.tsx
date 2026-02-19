@@ -43,9 +43,7 @@ export default function SingleImageUploader({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
-
-  const previewUrl = files[0]?.preview || null;
-
+  const previewUrl = files[0]?.preview || file.preview || null;
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">

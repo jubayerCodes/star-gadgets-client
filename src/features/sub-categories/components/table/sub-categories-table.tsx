@@ -1,23 +1,19 @@
 import { DataTable } from "@/components/data-table";
-import { ICategory } from "../../types";
 import { FC } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import placeholder from "@/assets/img/placeholder.png";
 import { IconCircleCheckFilled, IconPencil, IconTrash } from "@tabler/icons-react";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
-import { useUpdateCategoryStore } from "../../store/updateCategoryStore";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { useDeleteCategoryMutation } from "../../hooks/useCategories";
+import { ISubCategoryAdmin } from "../../types";
 
-export interface CategoriesTableProps {
-  data: ICategory[];
+export interface SubCategoriesTableProps {
+  data: ISubCategoryAdmin[];
 }
 
-const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
-  const { mutateAsync: deleteCategory } = useDeleteCategoryMutation();
-
-  const columns: ColumnDef<ICategory>[] = [
+const SubCategoriesTable: FC<SubCategoriesTableProps> = ({ data }) => {
+  const columns: ColumnDef<ISubCategoryAdmin>[] = [
     {
       accessorKey: "image",
       header: "",
@@ -63,15 +59,12 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: ({ row }) => {
+      cell: ({}) => {
         const actions: DataTableOption[] = [
           {
             label: "Edit",
             icon: IconPencil,
-            onClick() {
-              const { openModal } = useUpdateCategoryStore.getState();
-              openModal({ category: row.original });
-            },
+            onClick() {},
           },
           {
             label: "Delete",
@@ -82,9 +75,7 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
               openModal({
                 title: "Delete Category",
                 description: "Are you sure you want to delete this category?",
-                onConfirm: async () => {
-                  await deleteCategory(row.original._id);
-                },
+                onConfirm: async () => {},
               });
             },
           },
@@ -98,4 +89,4 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
   return <DataTable columns={columns} data={data} />;
 };
 
-export default CategoriesTable;
+export default SubCategoriesTable;

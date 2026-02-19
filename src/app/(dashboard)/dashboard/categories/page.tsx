@@ -2,6 +2,7 @@
 
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+import UpdateCategoryModal from "@/features/categories/components/modals/update-category-modal";
 import CategoriesTable from "@/features/categories/components/table/categories-table";
 import { categoriesAdminQueryOptions } from "@/features/categories/hooks/useCategories";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ const Categories = () => {
     <div>
       <DashboardHeader title="All Categories" description="Manage your categories">
         <CreateCategoryModal />
+        <UpdateCategoryModal />
       </DashboardHeader>
       <CategoriesTable data={categories} />
     </div>

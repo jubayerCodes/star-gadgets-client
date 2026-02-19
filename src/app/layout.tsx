@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
 import { Toaster } from "@/components/ui/sonner";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -20,12 +21,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
         <Providers>{children}</Providers>
         <Toaster position="bottom-right" />
+        <DeleteConfirmModal />
       </body>
     </html>
   );

@@ -1,9 +1,7 @@
 "use client";
 
-import DashboardButton from "@/components/dashboard/dashboard-button";
 import {
   Dialog,
-  DialogTrigger,
   DialogPortal,
   DialogOverlay,
   DialogContent,
@@ -13,43 +11,54 @@ import {
 } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateCategoryFormData, createCategoryZodSchema } from "../../schema";
+import { UpdateCategoryFormData, updateCategoryZodSchema } from "../../schema";
 import { FieldGroup } from "@/components/ui/field";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SingleImageUploader from "@/components/SingleImageUploader";
 import { IFile } from "@/types/file";
-import { useCreateCategoryMutation } from "../../hooks/useCategories";
+import { useUpdateCategoryMutation } from "../../hooks/useCategories";
 import { createFormDataAction } from "@/hooks/createFormDataAction";
 import { ICategory } from "../../types";
+import { useUpdateCategoryStore } from "../../store/updateCategoryStore";
+import DashboardButton from "@/components/dashboard/dashboard-button";
 
-const CreateCategoryModal = () => {
-  const [open, setOpen] = useState(false);
+const UpdateCategoryModal = () => {
+  const { open, setOpen, category } = useUpdateCategoryStore();
+
   const [file, setFile] = useState<IFile>({
     file: null,
     error: null,
   });
 
-  const { mutateAsync: createCategory, isPending } = useCreateCategoryMutation();
+  const { mutateAsync: updateCategory, isPending } = useUpdateCategoryMutation();
 
-  const defaultValues: CreateCategoryFormData = {
-    title: "",
-    slug: "",
-    featured: false,
+  const defaultValues: UpdateCategoryFormData = {
+    title: category?.title || "",
+    slug: category?.slug || "",
+    featured: category?.featured || false,
   };
 
-  const form = useForm<CreateCategoryFormData>({
-    resolver: zodResolver(createCategoryZodSchema),
+  useEffect(() => {
+    if (category) {
+      form.reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
+  const form = useForm<UpdateCategoryFormData>({
+    resolver: zodResolver(updateCategoryZodSchema),
     defaultValues,
   });
 
-  const handleSubmit = async (data: CreateCategoryFormData) => {
-    const res = await createFormDataAction<CreateCategoryFormData, ICategory>({
+  const handleSubmit = async (data: UpdateCategoryFormData) => {
+    const res = await createFormDataAction<UpdateCategoryFormData, ICategory>({
       data,
       file,
       setFile,
-      action: createCategory,
+      action: updateCategory,
+      id: category?._id,
     });
 
     if (res && res.success) {
@@ -66,10 +75,10 @@ const CreateCategoryModal = () => {
         setFile({
           file: null,
           error: null,
+          preview: category?.image,
         });
       }}
     >
-      <DialogTrigger render={<DashboardButton>Add Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>
@@ -108,4 +117,4 @@ const CreateCategoryModal = () => {
   );
 };
 
-export default CreateCategoryModal;
+export default UpdateCategoryModal;

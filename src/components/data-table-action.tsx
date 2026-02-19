@@ -21,6 +21,7 @@ export interface DataTableOption {
   disabled?: boolean;
   hide?: boolean;
   className?: string;
+  variant?: "default" | "destructive";
   children?: DataTableOption[];
   target?: "_blank" | "_self" | "_parent" | "_top";
 }
@@ -96,6 +97,7 @@ export const DataTableAction: React.FC<DataTableActionProps> = ({ options, align
               onClick={option.onClick}
               disabled={option.disabled}
               className={cn("flex items-center gap-2 cursor-pointer", option.className)}
+              variant={option.variant}
             >
               <Icon className="h-4 w-4 text-inherit" />
               {option.label}

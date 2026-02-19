@@ -93,12 +93,12 @@ const navMain: INavItem[] = [
     icon: IconDeviceLaptop,
     children: [
       {
-        title: "All Categories",
+        title: "Categories",
         url: "/dashboard/categories",
       },
       {
-        title: "Add Category",
-        url: "/dashboard/products/add",
+        title: "Sub Categories",
+        url: "/dashboard/sub-categories",
       },
     ],
   },
