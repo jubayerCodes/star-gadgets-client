@@ -22,7 +22,7 @@ const DashboardImageField = ({ form, name, label, required }: ImageFieldProps) =
       control={form.control}
       render={({ field: { onChange, onBlur, ref }, fieldState }) => (
         <Field className="gap-2">
-          <FieldLabel className="text-sm font-normal">
+          <FieldLabel className="text-sm font-normal gap-0.5!">
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>
 

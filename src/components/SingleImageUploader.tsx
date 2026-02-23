@@ -22,7 +22,15 @@ export default function SingleImageUploader({
 
   const [
     { files, isDragging, errors },
-    { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, removeFile, getInputProps },
+    {
+      handleDragEnter,
+      handleDragLeave,
+      handleDragOver,
+      handleDrop,
+      openFileDialog,
+      removeFile,
+      getInputProps,
+    },
   ] = useFileUpload({
     accept: "image/*",
     maxSize,
@@ -58,10 +66,20 @@ export default function SingleImageUploader({
           role="button"
           tabIndex={-1}
         >
-          <Input required={required} {...getInputProps()} aria-label="Upload file" className="sr-only" />
+          <Input
+            required={required}
+            {...getInputProps()}
+            aria-label="Upload file"
+            className="sr-only"
+          />
           {previewUrl ? (
             <div className="absolute inset-0">
-              <Image alt={files[0]?.file?.name || "Uploaded image"} fill className="object-cover" src={previewUrl} />
+              <Image
+                alt={files[0]?.file?.name || "Uploaded image"}
+                fill
+                className="object-cover"
+                src={previewUrl}
+              />
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
@@ -71,8 +89,12 @@ export default function SingleImageUploader({
               >
                 <ImageUpIcon className="size-4 opacity-60" />
               </div>
-              <p className="mb-1.5 font-medium text-sm">Drop your image here or click to browse</p>
-              <p className="text-muted-foreground text-xs">Max size: {maxSizeMB}MB</p>
+              <p className="mb-1.5 font-medium text-sm">
+                Drop your image here or click to browse
+              </p>
+              <p className="text-muted-foreground text-xs">
+                Max size: {maxSizeMB}MB
+              </p>
             </div>
           )}
         </div>
@@ -91,7 +113,10 @@ export default function SingleImageUploader({
       </div>
 
       {(errors.length > 0 || file.error) && (
-        <div className="flex items-center gap-1 text-destructive text-xs" role="alert">
+        <div
+          className="flex items-center gap-1 text-destructive text-xs"
+          role="alert"
+        >
           <AlertCircleIcon className="size-3 shrink-0" />
           <span>{errors[0] || file.error}</span>
         </div>

@@ -11,7 +11,13 @@ export interface IFileFormData<T, U> {
   id?: string;
 }
 
-export const createFormDataAction = async <T, U>({ file, data, setFile, action, id }: IFileFormData<T, U>) => {
+export const createFormDataAction = async <T, U>({
+  file,
+  data,
+  setFile,
+  action,
+  id,
+}: IFileFormData<T, U>) => {
   if (!file.file && !file.preview) {
     setFile({
       file: null,
