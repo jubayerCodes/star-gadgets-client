@@ -3,10 +3,7 @@
 import { IFile } from "@/types/file";
 import { useState } from "react";
 import { useCreateSubCategoryMutation } from "../../hooks/useSubCategory";
-import {
-  CreateSubCategoryFormData,
-  createSubCategoryZodSchema,
-} from "../../schema";
+import { CreateSubCategoryFormData, createSubCategoryZodSchema } from "../../schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFormDataAction } from "@/hooks/createFormDataAction";
@@ -36,12 +33,7 @@ function CreateSubCategoryModal() {
     error: null,
   });
 
-  const { data } = useCategoriesListInfinityQuery();
-
-  const categories = data?.pages.flatMap((page) => page.data) || [];
-
-  const { mutateAsync: createSubCategory, isPending } =
-    useCreateSubCategoryMutation();
+  const { mutateAsync: createSubCategory, isPending } = useCreateSubCategoryMutation();
 
   const defaultValues: CreateSubCategoryFormData = {
     title: "",
@@ -56,10 +48,7 @@ function CreateSubCategoryModal() {
   });
 
   const handleSubmit = async (data: CreateSubCategoryFormData) => {
-    const res = await createFormDataAction<
-      CreateSubCategoryFormData,
-      ISubCategory
-    >({
+    const res = await createFormDataAction<CreateSubCategoryFormData, ISubCategory>({
       data,
       file,
       setFile,
@@ -83,9 +72,7 @@ function CreateSubCategoryModal() {
         });
       }}
     >
-      <DialogTrigger
-        render={<DashboardButton>Add Sub Category</DashboardButton>}
-      />
+      <DialogTrigger render={<DashboardButton>Add Sub Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>
@@ -93,10 +80,7 @@ function CreateSubCategoryModal() {
             <DialogTitle className={"text-xl"}>Add Sub Category</DialogTitle>
           </DialogHeader>
           <div>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
                 <SingleImageUploader file={file} onChange={setFile} required />
                 <DashboardInputField
@@ -106,23 +90,14 @@ function CreateSubCategoryModal() {
                   placeholder="Enter category title"
                   required
                 />
-                <DashboardInputField
-                  form={form}
-                  name="slug"
-                  label="Slug"
-                  placeholder="Enter category slug"
-                  required
-                />
+                <DashboardInputField form={form} name="slug" label="Slug" placeholder="Enter category slug" required />
                 <InfinityComboboxField
                   form={form}
                   name="categoryId"
                   label="Category"
                   placeholder="Select category"
                   required
-                  items={categories.map((category) => ({
-                    value: category._id,
-                    label: category.title,
-                  }))}
+                  infinityFunction={useCategoriesListInfinityQuery}
                 />
                 <CheckboxField form={form} name="featured" label="Featured" />
               </FieldGroup>

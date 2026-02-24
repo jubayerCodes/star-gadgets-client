@@ -29,9 +29,12 @@ function DeleteConfirmModal() {
 
   const handleConfirm = async () => {
     setIsLoading(true);
-    await onConfirm();
-    setIsLoading(false);
-    setOpen(false);
+    try {
+      await onConfirm();
+    } finally {
+      setIsLoading(false);
+      setOpen(false);
+    }
   };
 
   return (

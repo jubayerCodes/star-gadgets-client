@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/data-table";
-import { ICategory } from "../../types";
+import { ICategoryAdmin } from "../../types";
 import { FC } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
@@ -11,13 +11,13 @@ import { useDeleteModalStore } from "@/store/deleteModalStore";
 import { useDeleteCategoryMutation } from "../../hooks/useCategories";
 
 export interface CategoriesTableProps {
-  data: ICategory[];
+  data: ICategoryAdmin[];
 }
 
 const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
   const { mutateAsync: deleteCategory } = useDeleteCategoryMutation();
 
-  const columns: ColumnDef<ICategory>[] = [
+  const columns: ColumnDef<ICategoryAdmin>[] = [
     {
       accessorKey: "image",
       header: "",
@@ -25,12 +25,11 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
       cell: ({ row }) => {
         return (
           <Image
-            src={row.original.image}
+            src={row.original.image || placeholder.src}
             alt={row.original.title}
             width={40}
             height={40}
             className="object-contain size-10"
-            onError={(e) => (e.currentTarget.src = placeholder.src)}
           />
         );
       },
@@ -47,6 +46,17 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
       accessorKey: "description",
       header: "Description",
       minSize: 200,
+    },
+    {
+      accessorKey: "subCategories",
+      header: "Sub Categories",
+      meta: {
+        align: "center",
+        headerAlign: "center",
+      },
+      cell: ({ row }) => {
+        return <span>{row.original.subCategoriesCount}</span>;
+      },
     },
     {
       accessorKey: "featured",

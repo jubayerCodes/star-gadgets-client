@@ -15,3 +15,11 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export type QueryType<T = Record<string, unknown>> = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  filterBy?: string;
+  sortBy?: string;
+  sortOrder?: string;
+} & T;

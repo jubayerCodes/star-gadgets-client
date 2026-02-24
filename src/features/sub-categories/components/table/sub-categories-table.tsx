@@ -21,12 +21,11 @@ const SubCategoriesTable: FC<SubCategoriesTableProps> = ({ data }) => {
       cell: ({ row }) => {
         return (
           <Image
-            src={row.original.image}
+            src={row.original.image || placeholder.src}
             alt={row.original.title}
             width={40}
             height={40}
             className="object-contain size-10"
-            onError={(e) => (e.currentTarget.src = placeholder.src)}
           />
         );
       },
@@ -38,6 +37,13 @@ const SubCategoriesTable: FC<SubCategoriesTableProps> = ({ data }) => {
     {
       accessorKey: "slug",
       header: "Slug",
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => {
+        return <span>{row.original.categoryId?.title}</span>;
+      },
     },
     {
       accessorKey: "description",

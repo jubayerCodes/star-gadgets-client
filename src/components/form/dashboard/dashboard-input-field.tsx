@@ -18,7 +18,7 @@ const DashboardInputField = ({ form, name, label, placeholder, required }: Input
       control={form.control}
       name={name}
       render={({ field, fieldState }) => (
-        <Field className="gap-2">
+        <Field className="gap-1">
           <FieldLabel className="text-sm font-normal gap-0.5">
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>

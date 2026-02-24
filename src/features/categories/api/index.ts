@@ -1,9 +1,13 @@
 import { axiosInstance } from "@/lib/axios";
-import { ApiResponse } from "@/types";
-import { ICategory } from "../types";
+import { ApiResponse, QueryType } from "@/types";
+import { ICategory, ICategoryAdmin } from "../types";
+import { parseSearchQuery } from "@/lib/parseSearchQuery";
 
-export const getCategoriesAdminApi = async (): Promise<ApiResponse<ICategory[]>> => {
-  const res = await axiosInstance.get("/categories/admin");
+export const getCategoriesAdminApi = async (query: QueryType): Promise<ApiResponse<ICategoryAdmin[]>> => {
+  const { page } = parseSearchQuery(query);
+  const res = await axiosInstance.get("/categories/admin", {
+    params: { page },
+  });
   return res.data;
 };
 
@@ -28,11 +32,12 @@ export const deleteCategoryApi = async (id: string): Promise<ApiResponse<null>> 
   return res.data;
 };
 
-export const getCategoriesListApi = async ({
-  pageParam = 1,
-}: {
-  pageParam: number;
-}): Promise<ApiResponse<Pick<ICategory, "_id" | "title" | "slug">[]>> => {
-  const res = await axiosInstance.get("/categories/list", { params: { page: pageParam } });
+export const getCategoriesListApi = async (
+  query: QueryType,
+): Promise<ApiResponse<Pick<ICategory, "_id" | "title" | "slug">[]>> => {
+  const { page, limit, search } = parseSearchQuery(query);
+  const res = await axiosInstance.get("/categories/list", {
+    params: { page, limit, search },
+  });
   return res.data;
 };

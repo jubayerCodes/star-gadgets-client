@@ -1,3 +1,5 @@
+import { ICategory } from "../categories/types";
+
 export interface ISubCategory {
   _id?: string;
   title: string;
@@ -10,5 +12,5 @@ export interface ISubCategory {
 }
 
 export interface ISubCategoryAdmin extends ISubCategory {
-  category: ICategory;
+  categoryId: ICategory;
 }

@@ -62,10 +62,10 @@ export const useDeleteCategoryMutation = () => {
   });
 };
 
-export const useCategoriesListInfinityQuery = () => {
+export const useCategoriesListInfinityQuery = (search: string) => {
   return useInfiniteQuery({
-    queryKey: [QUERY_KEYS.CATEGORIES_LIST],
-    queryFn: getCategoriesListApi,
+    queryKey: [QUERY_KEYS.CATEGORIES_LIST, search],
+    queryFn: () => getCategoriesListApi({ page: 1, limit: 20, search }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, total, limit } = lastPage.meta;

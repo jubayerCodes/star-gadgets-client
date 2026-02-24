@@ -1,3 +1,5 @@
+import { ISubCategory } from "../sub-categories/types";
+
 export interface ICategory {
   _id: string;
   title: string;
@@ -6,6 +8,10 @@ export interface ICategory {
   featured: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface ICategoryAdmin extends ICategory {
+  subCategoriesCount: number;
 }
 
 export interface ICategoryWithSubCategories extends ICategory {

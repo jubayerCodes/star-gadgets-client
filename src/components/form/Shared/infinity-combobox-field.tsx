@@ -1,69 +1,76 @@
 "use client";
 
-import { CheckIcon, ChevronDownIcon } from "lucide-react";
-import { useId, useState } from "react";
+import { CheckIcon, ChevronDownIcon, Loader } from "lucide-react";
+import { useId, useState, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Controller,
-  FieldPath,
-  FieldValues,
-  UseFormReturn,
-} from "react-hook-form";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Controller, FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
+import { ApiResponse } from "@/types";
+import { useDebounce } from "@/hooks/use-debounce";
 
-export default function InfinityComboboxField<
-  T extends FieldValues,
-  TPath extends FieldPath<T>,
->({
+export default function InfinityComboboxField<T extends FieldValues, TPath extends FieldPath<T>>({
   form,
   name,
-  items,
   placeholder,
   required,
   label,
+  infinityFunction,
 }: {
   form: UseFormReturn<T>;
   name: TPath;
-  items: {
-    label: string;
-    value: string;
-  }[];
   placeholder: string;
   required?: boolean;
   label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  infinityFunction: (search: string) => UseInfiniteQueryResult<InfiniteData<ApiResponse<any>>, unknown>;
 }) {
   const id = useId();
   const [open, setOpen] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = infinityFunction(debouncedSearchValue);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastItemRef = (node: Element | null) => {
+    if (isFetchingNextPage) return;
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    });
+
+    if (node) observer.current.observe(node);
+  };
+
+  const items =
+    data?.pages
+      .flatMap((page) => page.data)
+      .map((item) => ({
+        value: item._id,
+        label: item.title,
+      })) || [];
 
   return (
     <Controller
       control={form.control}
       name={name}
       rules={{
-        required: required ? "This field is required" : false,
-        validate: required
-          ? (value) => (value && value !== "" ? true : "This field is required")
-          : undefined,
+        required: required,
       }}
       render={({ field, fieldState }) => {
         return (
-          <Field>
-            <div className="*:not-first:mt-2">
+          <Field className="gap-1">
+            <div className="flex flex-col gap-1">
               <FieldLabel htmlFor={id} className="text-sm font-normal gap-0.5">
                 {label}
                 {required && <span className="text-destructive">*</span>}
@@ -77,43 +84,31 @@ export default function InfinityComboboxField<
                     role="combobox"
                     variant="outline"
                   >
-                    <span
-                      className={cn(
-                        "truncate",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value
-                        ? items.find((item) => item.value === field.value)
-                            ?.label
-                        : placeholder}
+                    <span className={cn("truncate", !field.value && "text-muted-foreground")}>
+                      {field.value ? items.find((item) => item.value === field.value)?.label : placeholder}
                     </span>
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="shrink-0 text-muted-foreground/80"
-                      size={16}
-                    />
+                    <ChevronDownIcon aria-hidden="true" className="shrink-0 text-muted-foreground/80" size={16} />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
                   className="w-full min-w-[var(--radix-popper-anchor-width)] border-input p-0"
                 >
-                  <Command>
+                  <Command shouldFilter={false}>
                     <CommandInput
                       placeholder={`Search ${label.toLowerCase()}...`}
-                      className="text-sm focus-visible:ring-0 border border-input h-10"
+                      value={searchValue}
+                      onValueChange={(value) => setSearchValue(value)}
                     />
                     <CommandList>
                       <CommandEmpty>No items found.</CommandEmpty>
                       <CommandGroup>
-                        {items.map((item) => (
+                        {items.map((item, idx) => (
                           <CommandItem
-                            key={item.value}
+                            key={idx}
+                            ref={idx === items.length - 1 ? lastItemRef : undefined}
                             onSelect={(currentValue) => {
-                              const item = items.find(
-                                (item) => item.label === currentValue,
-                              );
+                              const item = items.find((item) => item.value === currentValue);
 
                               if (item?.value === field.value) {
                                 field.onChange("");
@@ -123,14 +118,17 @@ export default function InfinityComboboxField<
 
                               setOpen(false);
                             }}
-                            value={item.label}
+                            value={item.value}
                           >
                             {item.label}
-                            {field.value === item.value && (
-                              <CheckIcon className="ml-auto" size={16} />
-                            )}
+                            {field.value === item.value && <CheckIcon className="ml-auto" size={16} />}
                           </CommandItem>
                         ))}
+                        {isFetchingNextPage && (
+                          <div className="py-2 text-center animate-spin w-full flex items-center justify-center">
+                            <Loader size={16} />
+                          </div>
+                        )}
                       </CommandGroup>
                     </CommandList>
                   </Command>
