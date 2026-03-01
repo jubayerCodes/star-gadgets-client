@@ -1,6 +1,7 @@
+"use client";
+
 import { DataTable } from "@/components/data-table";
 import { ICategoryAdmin } from "../../types";
-import { FC } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import placeholder from "@/assets/img/placeholder.png";
@@ -8,14 +9,14 @@ import { IconCircleCheckFilled, IconPencil, IconTrash } from "@tabler/icons-reac
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useUpdateCategoryStore } from "../../store/updateCategoryStore";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { useDeleteCategoryMutation } from "../../hooks/useCategories";
+import { categoriesAdminQueryOptions, useDeleteCategoryMutation } from "../../hooks/useCategories";
+import { useSearchParams } from "next/navigation";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-export interface CategoriesTableProps {
-  data: ICategoryAdmin[];
-}
-
-const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
+const CategoriesTable = () => {
   const { mutateAsync: deleteCategory } = useDeleteCategoryMutation();
+  const searchParams = useSearchParams();
+  const { data } = useSuspenseQuery(categoriesAdminQueryOptions(searchParams));
 
   const columns: ColumnDef<ICategoryAdmin>[] = [
     {
@@ -41,11 +42,6 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
     {
       accessorKey: "slug",
       header: "Slug",
-    },
-    {
-      accessorKey: "description",
-      header: "Description",
-      minSize: 200,
     },
     {
       accessorKey: "subCategories",
@@ -105,7 +101,7 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
     },
   ];
 
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data?.data || []} meta={data?.meta} />;
 };
 
 export default CategoriesTable;

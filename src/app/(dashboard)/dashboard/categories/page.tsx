@@ -1,24 +1,20 @@
-"use client";
-
 import DashboardHeader from "@/components/dashboard/dashboard-header";
+import Loading from "@/components/layout/loading";
 import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
 import UpdateCategoryModal from "@/features/categories/components/modals/update-category-modal";
 import CategoriesTable from "@/features/categories/components/table/categories-table";
-import { categoriesAdminQueryOptions } from "@/features/categories/hooks/useCategories";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 
 const Categories = () => {
-  const { data } = useSuspenseQuery(categoriesAdminQueryOptions());
-
-  const categories = data?.data || [];
-
   return (
     <div>
       <DashboardHeader title="All Categories" description="Manage your categories">
         <CreateCategoryModal />
         <UpdateCategoryModal />
       </DashboardHeader>
-      <CategoriesTable data={categories} />
+      <Suspense fallback={<Loading />}>
+        <CategoriesTable />
+      </Suspense>
     </div>
   );
 };

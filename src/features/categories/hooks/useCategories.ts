@@ -6,14 +6,17 @@ import {
   getCategoriesListApi,
   updateCategoryApi,
 } from "../api";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/lib/extract-error-message";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const categoriesAdminQueryOptions = () => {
+export const categoriesAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
   return {
-    queryKey: [QUERY_KEYS.CATEGORIES_ADMIN],
-    queryFn: getCategoriesAdminApi,
+    queryKey: [QUERY_KEYS.CATEGORIES_ADMIN, searchParams.toString()],
+    queryFn: () => getCategoriesAdminApi(searchParams),
+    placeholderData: keepPreviousData,
+    keepPreviousData: true,
   };
 };
 

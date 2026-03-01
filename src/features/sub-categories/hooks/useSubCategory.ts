@@ -3,11 +3,12 @@ import { createSubCategoryApi, getSubCategoriesAdminApi } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/lib/extract-error-message";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const subCategoriesAdminQueryOptions = () => {
+export const subCategoriesAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
   return {
-    queryKey: [QUERY_KEYS.SUB_CATEGORIES_ADMIN],
-    queryFn: getSubCategoriesAdminApi,
+    queryKey: [QUERY_KEYS.SUB_CATEGORIES_ADMIN, searchParams.toString()],
+    queryFn: () => getSubCategoriesAdminApi(searchParams),
   };
 };
 

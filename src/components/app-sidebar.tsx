@@ -3,7 +3,6 @@
 import * as React from "react";
 import {
   Icon,
-  IconChartBar,
   IconDashboard,
   IconDeviceLaptop,
   IconFolder,
@@ -12,6 +11,7 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
+  IconWorld,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -103,9 +103,9 @@ const navMain: INavItem[] = [
     ],
   },
   {
-    title: "Analytics",
-    url: "#",
-    icon: IconChartBar,
+    title: "Brands",
+    url: "/dashboard/brands",
+    icon: IconWorld,
   },
   {
     title: "Projects",

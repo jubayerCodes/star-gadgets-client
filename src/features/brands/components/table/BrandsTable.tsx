@@ -1,20 +1,24 @@
-import { DataTable } from "@/components/data-table";
+"use client";
+
 import { ColumnDef } from "@tanstack/react-table";
+import { IBrand } from "../../types";
 import Image from "next/image";
+import { brandsAdminQueryOptions, useDeleteBrandMutation } from "../../hooks/useBrands";
+import { useSearchParams } from "next/navigation";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import placeholder from "@/assets/img/placeholder.png";
 import { IconCircleCheckFilled, IconPencil, IconTrash } from "@tabler/icons-react";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { ISubCategoryAdmin } from "../../types";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { subCategoriesAdminQueryOptions } from "../../hooks/useSubCategory";
-import { useSearchParams } from "next/navigation";
+import { DataTable } from "@/components/data-table";
+import { useUpdateBrandStore } from "../../store/useUpdateBrandStore";
 
-const SubCategoriesTable = () => {
+const BrandsTable = () => {
+  const { mutateAsync: deleteBrand } = useDeleteBrandMutation();
   const searchParams = useSearchParams();
-  const { data } = useSuspenseQuery(subCategoriesAdminQueryOptions(searchParams));
+  const { data } = useSuspenseQuery(brandsAdminQueryOptions(searchParams));
 
-  const columns: ColumnDef<ISubCategoryAdmin>[] = [
+  const columns: ColumnDef<IBrand>[] = [
     {
       accessorKey: "image",
       header: "",
@@ -40,13 +44,6 @@ const SubCategoriesTable = () => {
       header: "Slug",
     },
     {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => {
-        return <span>{row.original.categoryId?.title}</span>;
-      },
-    },
-    {
       accessorKey: "featured",
       header: "Featured",
       meta: {
@@ -61,12 +58,15 @@ const SubCategoriesTable = () => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: ({}) => {
+      cell: ({ row }) => {
         const actions: DataTableOption[] = [
           {
             label: "Edit",
             icon: IconPencil,
-            onClick() {},
+            onClick() {
+              const { openModal } = useUpdateBrandStore.getState();
+              openModal({ brand: row.original });
+            },
           },
           {
             label: "Delete",
@@ -75,9 +75,11 @@ const SubCategoriesTable = () => {
             onClick: () => {
               const { openModal } = useDeleteModalStore.getState();
               openModal({
-                title: "Delete Category",
-                description: "Are you sure you want to delete this category?",
-                onConfirm: async () => {},
+                title: "Delete Brand",
+                description: "Are you sure you want to delete this brand?",
+                onConfirm: async () => {
+                  await deleteBrand(row.original._id);
+                },
               });
             },
           },
@@ -88,7 +90,7 @@ const SubCategoriesTable = () => {
     },
   ];
 
-  return <DataTable meta={data?.meta} columns={columns} data={data?.data || []} />;
+  return <DataTable columns={columns} data={data?.data || []} meta={data?.meta} />;
 };
 
-export default SubCategoriesTable;
+export default BrandsTable;
