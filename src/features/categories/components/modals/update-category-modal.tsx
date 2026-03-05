@@ -40,17 +40,17 @@ const UpdateCategoryModal = () => {
     featured: category?.featured || false,
   };
 
+  const form = useForm<UpdateCategoryFormData>({
+    resolver: zodResolver(updateCategoryZodSchema),
+    defaultValues,
+  });
+
   useEffect(() => {
     if (category) {
       form.reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
-
-  const form = useForm<UpdateCategoryFormData>({
-    resolver: zodResolver(updateCategoryZodSchema),
-    defaultValues,
-  });
 
   const handleSubmit = async (data: UpdateCategoryFormData) => {
     const res = await createFormDataAction<UpdateCategoryFormData, ICategory>({

@@ -9,6 +9,7 @@ import { ISubCategoryAdmin } from "../../types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { subCategoriesAdminQueryOptions } from "../../hooks/useSubCategory";
 import { useSearchParams } from "next/navigation";
+import { useUpdateSubCategoryStore } from "../../store/useUpdateSubCategoryStore";
 
 const SubCategoriesTable = () => {
   const searchParams = useSearchParams();
@@ -61,12 +62,15 @@ const SubCategoriesTable = () => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: ({}) => {
+      cell: ({ row }) => {
         const actions: DataTableOption[] = [
           {
             label: "Edit",
             icon: IconPencil,
-            onClick() {},
+            onClick() {
+              const { openModal } = useUpdateSubCategoryStore.getState();
+              openModal({ subCategory: row.original });
+            },
           },
           {
             label: "Delete",

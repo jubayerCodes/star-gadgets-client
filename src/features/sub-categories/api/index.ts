@@ -22,3 +22,14 @@ export const createSubCategoryApi = async (data: FormData): Promise<ApiResponse<
   const res = await axiosInstance.post("/sub-categories", data);
   return res.data;
 };
+
+export const updateSubCategoryApi = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: FormData;
+}): Promise<ApiResponse<ISubCategory>> => {
+  const res = await axiosInstance.patch(`/sub-categories/${id}`, data);
+  return res.data;
+};

@@ -83,20 +83,14 @@ const UpdateBrandModal = () => {
         <DialogOverlay />
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className={"text-xl"}>Add Category</DialogTitle>
+            <DialogTitle className={"text-xl"}>Update Brand</DialogTitle>
           </DialogHeader>
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
                 <SingleImageUploader file={file} onChange={setFile} required />
-                <DashboardInputField
-                  form={form}
-                  name="title"
-                  label="Title"
-                  placeholder="Enter category title"
-                  required
-                />
-                <DashboardInputField form={form} name="slug" label="Slug" placeholder="Enter category slug" required />
+                <DashboardInputField form={form} name="title" label="Title" placeholder="Enter brand title" required />
+                <DashboardInputField form={form} name="slug" label="Slug" placeholder="Enter brand slug" required />
                 <CheckboxField form={form} name="featured" label="Featured" />
               </FieldGroup>
               <DialogFooter>
@@ -106,7 +100,7 @@ const UpdateBrandModal = () => {
                   className={"w-full!"}
                   isLoading={isPending}
                 >
-                  Add Category
+                  Update Brand
                 </DashboardButton>
               </DialogFooter>
             </form>
