@@ -16,8 +16,7 @@ export function usePagination({
   paginationItemsToDisplay,
 }: UsePaginationProps): UsePaginationReturn {
   const showLeftEllipsis = currentPage - 1 > paginationItemsToDisplay / 2;
-  const showRightEllipsis =
-    totalPages - currentPage + 1 > paginationItemsToDisplay / 2;
+  const showRightEllipsis = totalPages - currentPage + 1 > paginationItemsToDisplay / 2;
 
   function calculatePaginationRange(): number[] {
     if (totalPages <= paginationItemsToDisplay) {
@@ -45,10 +44,7 @@ export function usePagination({
     if (showLeftEllipsis) adjustedRange.start++;
     if (showRightEllipsis) adjustedRange.end--;
 
-    return Array.from(
-      { length: adjustedRange.end - adjustedRange.start + 1 },
-      (_, i) => adjustedRange.start + i,
-    );
+    return Array.from({ length: adjustedRange.end - adjustedRange.start + 1 }, (_, i) => adjustedRange.start + i);
   }
 
   const pages = calculatePaginationRange();

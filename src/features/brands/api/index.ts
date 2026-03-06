@@ -22,13 +22,7 @@ export const deleteBrandApi = async (id: string): Promise<ApiResponse<null>> => 
   return res.data;
 };
 
-export const updateBrandApi = async ({
-  id,
-  data,
-}: {
-  id: string;
-  data: FormData;
-}): Promise<ApiResponse<IBrand>> => {
+export const updateBrandApi = async ({ id, data }: { id: string; data: FormData }): Promise<ApiResponse<IBrand>> => {
   const res = await axiosInstance.patch(`/brands/${id}`, data);
   return res.data;
 };

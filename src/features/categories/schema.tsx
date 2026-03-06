@@ -24,7 +24,7 @@ export const updateCategoryZodSchema = z.object({
     .max(50, "Slug must be at most 50 characters long")
     .optional(),
   featured: z.boolean().optional(),
-}); 
+});
 
 export type CreateCategoryFormData = z.infer<typeof createCategoryZodSchema>;
 export type UpdateCategoryFormData = z.infer<typeof updateCategoryZodSchema>;

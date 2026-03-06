@@ -5,20 +5,9 @@ import { useId, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const frameworks = [
   {
@@ -105,22 +94,12 @@ export default function Combobox() {
             variant="outline"
           >
             <span className={cn("truncate", !value && "text-muted-foreground")}>
-              {value
-                ? frameworks.find((framework) => framework.value === value)
-                    ?.label
-                : "Select framework"}
+              {value ? frameworks.find((framework) => framework.value === value)?.label : "Select framework"}
             </span>
-            <ChevronDownIcon
-              aria-hidden="true"
-              className="shrink-0 text-muted-foreground/80"
-              size={16}
-            />
+            <ChevronDownIcon aria-hidden="true" className="shrink-0 text-muted-foreground/80" size={16} />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="w-full min-w-[var(--radix-popper-anchor-width)] border-input p-0"
-        >
+        <PopoverContent align="start" className="w-full min-w-[var(--radix-popper-anchor-width)] border-input p-0">
           <Command>
             <CommandInput placeholder="Search framework..." />
             <CommandList>
@@ -136,9 +115,7 @@ export default function Combobox() {
                     value={framework.value}
                   >
                     {framework.label}
-                    {value === framework.value && (
-                      <CheckIcon className="ml-auto" size={16} />
-                    )}
+                    {value === framework.value && <CheckIcon className="ml-auto" size={16} />}
                   </CommandItem>
                 ))}
               </CommandGroup>
