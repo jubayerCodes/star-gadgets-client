@@ -9,6 +9,7 @@ export const createBrandZodSchema = z.object({
     .string({ error: "Slug is required" })
     .min(1, "Slug is required")
     .max(50, "Slug must be at most 50 characters long"),
+  image: z.string().min(1, "Image is required"),
   featured: z.boolean().optional(),
 });
 
@@ -23,6 +24,7 @@ export const updateBrandZodSchema = z.object({
     .min(1, "Slug is required")
     .max(50, "Slug must be at most 50 characters long")
     .optional(),
+  image: z.string().optional(),
   featured: z.boolean().optional(),
 });
 

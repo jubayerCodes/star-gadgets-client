@@ -17,6 +17,7 @@ export const QUERY_KEYS = {
     CONFIG: "config",
     HEADER: "header-config",
   },
+  GALLERY: "gallery",
 };
 
 export const PAGINATION = {

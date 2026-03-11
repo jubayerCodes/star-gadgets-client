@@ -1,12 +1,9 @@
 "use client";
-import { IFile } from "@/types/file";
 import { useState } from "react";
 import { useCreateBrandMutation } from "../../hooks/useBrands";
 import { CreateBrandFormData, createBrandZodSchema } from "../../schema";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IBrand } from "../../types";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
 import {
   Dialog,
   DialogContent,
@@ -19,22 +16,19 @@ import {
 } from "@/components/ui/dialog";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { FieldGroup } from "@/components/ui/field";
-import SingleImageUploader from "@/components/SingleImageUploader";
+import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 
 const CreateBrandModal = () => {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState<IFile>({
-    file: null,
-    error: null,
-  });
 
   const { mutateAsync: createBrand, isPending } = useCreateBrandMutation();
 
   const defaultValues: CreateBrandFormData = {
     title: "",
     slug: "",
+    image: "",
     featured: false,
   };
 
@@ -44,12 +38,7 @@ const CreateBrandModal = () => {
   });
 
   const handleSubmit = async (data: CreateBrandFormData) => {
-    const res = await createFormDataAction<CreateBrandFormData, IBrand>({
-      data,
-      file,
-      setFile,
-      action: createBrand,
-    });
+    const res = await createBrand(data);
 
     if (res && res.success) {
       setOpen(false);
@@ -62,10 +51,6 @@ const CreateBrandModal = () => {
       onOpenChange={setOpen}
       onOpenChangeComplete={() => {
         form.reset();
-        setFile({
-          file: null,
-          error: null,
-        });
       }}
     >
       <DialogTrigger render={<DashboardButton>Add Brand</DashboardButton>} />
@@ -78,7 +63,18 @@ const CreateBrandModal = () => {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <SingleImageUploader file={file} onChange={setFile} required />
+                <Controller
+                  control={form.control}
+                  name="image"
+                  render={({ field, fieldState }) => (
+                    <div className="flex flex-col gap-1">
+                      <GalleryImagePicker value={field.value} onChange={field.onChange} required />
+                      {fieldState.error && (
+                        <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
+                      )}
+                    </div>
+                  )}
+                />
                 <DashboardInputField form={form} name="title" label="Title" placeholder="Enter brand title" required />
                 <DashboardInputField form={form} name="slug" label="Slug" placeholder="Enter brand slug" required />
                 <CheckboxField form={form} name="featured" label="Featured" />

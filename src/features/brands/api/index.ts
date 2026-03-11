@@ -3,6 +3,7 @@ import { axiosInstance } from "@/lib/axios";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ApiResponse } from "@/types";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { CreateBrandFormData, UpdateBrandFormData } from "../schema";
 
 export const getBrandsAdminApi = async (query: ReadonlyURLSearchParams): Promise<ApiResponse<IBrand[]>> => {
   const { page, limit } = parseSearchQuery(query);
@@ -12,7 +13,7 @@ export const getBrandsAdminApi = async (query: ReadonlyURLSearchParams): Promise
   return res.data;
 };
 
-export const createBrandApi = async (data: FormData): Promise<ApiResponse<IBrand>> => {
+export const createBrandApi = async (data: CreateBrandFormData): Promise<ApiResponse<IBrand>> => {
   const res = await axiosInstance.post("/brands", data);
   return res.data;
 };
@@ -22,7 +23,13 @@ export const deleteBrandApi = async (id: string): Promise<ApiResponse<null>> => 
   return res.data;
 };
 
-export const updateBrandApi = async ({ id, data }: { id: string; data: FormData }): Promise<ApiResponse<IBrand>> => {
+export const updateBrandApi = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: UpdateBrandFormData;
+}): Promise<ApiResponse<IBrand>> => {
   const res = await axiosInstance.patch(`/brands/${id}`, data);
   return res.data;
 };

@@ -1,13 +1,10 @@
 "use client";
 
-import { IFile } from "@/types/file";
 import { useState } from "react";
 import { useCreateSubCategoryMutation } from "../../hooks/useSubCategory";
 import { CreateSubCategoryFormData, createSubCategoryZodSchema } from "../../schema";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
-import { ISubCategory } from "../../types";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { FieldGroup } from "@/components/ui/field";
-import SingleImageUploader from "@/components/SingleImageUploader";
+import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useCategories";
@@ -28,16 +25,13 @@ import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-fi
 
 function CreateSubCategoryModal() {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState<IFile>({
-    file: null,
-    error: null,
-  });
 
   const { mutateAsync: createSubCategory, isPending } = useCreateSubCategoryMutation();
 
   const defaultValues: CreateSubCategoryFormData = {
     title: "",
     slug: "",
+    image: "",
     categoryId: "",
     featured: false,
   };
@@ -48,12 +42,7 @@ function CreateSubCategoryModal() {
   });
 
   const handleSubmit = async (data: CreateSubCategoryFormData) => {
-    const res = await createFormDataAction<CreateSubCategoryFormData, ISubCategory>({
-      data,
-      file,
-      setFile,
-      action: createSubCategory,
-    });
+    const res = await createSubCategory(data);
 
     if (res && res.success) {
       setOpen(false);
@@ -66,10 +55,6 @@ function CreateSubCategoryModal() {
       onOpenChange={setOpen}
       onOpenChangeComplete={() => {
         form.reset();
-        setFile({
-          file: null,
-          error: null,
-        });
       }}
     >
       <DialogTrigger render={<DashboardButton>Add Sub Category</DashboardButton>} />
@@ -82,7 +67,18 @@ function CreateSubCategoryModal() {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <SingleImageUploader file={file} onChange={setFile} required />
+                <Controller
+                  control={form.control}
+                  name="image"
+                  render={({ field, fieldState }) => (
+                    <div className="flex flex-col gap-1">
+                      <GalleryImagePicker value={field.value} onChange={field.onChange} required />
+                      {fieldState.error && (
+                        <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
+                      )}
+                    </div>
+                  )}
+                />
                 <DashboardInputField
                   form={form}
                   name="title"

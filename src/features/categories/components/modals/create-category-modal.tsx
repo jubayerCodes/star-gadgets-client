@@ -11,31 +11,25 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateCategoryFormData, createCategoryZodSchema } from "../../schema";
 import { FieldGroup } from "@/components/ui/field";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useState } from "react";
-import SingleImageUploader from "@/components/SingleImageUploader";
-import { IFile } from "@/types/file";
+import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import { useCreateCategoryMutation } from "../../hooks/useCategories";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
-import { ICategory } from "../../types";
 
 const CreateCategoryModal = () => {
   const [open, setOpen] = useState(false);
-  const [file, setFile] = useState<IFile>({
-    file: null,
-    error: null,
-  });
 
   const { mutateAsync: createCategory, isPending } = useCreateCategoryMutation();
 
   const defaultValues: CreateCategoryFormData = {
     title: "",
     slug: "",
+    image: "",
     featured: false,
   };
 
@@ -45,12 +39,7 @@ const CreateCategoryModal = () => {
   });
 
   const handleSubmit = async (data: CreateCategoryFormData) => {
-    const res = await createFormDataAction<CreateCategoryFormData, ICategory>({
-      data,
-      file,
-      setFile,
-      action: createCategory,
-    });
+    const res = await createCategory(data);
 
     if (res && res.success) {
       setOpen(false);
@@ -63,10 +52,6 @@ const CreateCategoryModal = () => {
       onOpenChange={setOpen}
       onOpenChangeComplete={() => {
         form.reset();
-        setFile({
-          file: null,
-          error: null,
-        });
       }}
     >
       <DialogTrigger render={<DashboardButton>Add Category</DashboardButton>} />
@@ -79,7 +64,18 @@ const CreateCategoryModal = () => {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <SingleImageUploader file={file} onChange={setFile} required />
+                <Controller
+                  control={form.control}
+                  name="image"
+                  render={({ field, fieldState }) => (
+                    <div className="flex flex-col gap-1">
+                      <GalleryImagePicker value={field.value} onChange={field.onChange} required />
+                      {fieldState.error && (
+                        <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
+                      )}
+                    </div>
+                  )}
+                />
                 <DashboardInputField
                   form={form}
                   name="title"

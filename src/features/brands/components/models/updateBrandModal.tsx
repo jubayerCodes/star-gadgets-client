@@ -1,7 +1,6 @@
 "use client";
 
-import { IFile } from "@/types/file";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUpdateBrandStore } from "../../store/useUpdateBrandStore";
 import { useUpdateBrandMutation } from "../../hooks/useBrands";
 import { UpdateBrandFormData, updateBrandZodSchema } from "../../schema";
@@ -14,12 +13,10 @@ import {
   DialogPortal,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
-import { IBrand } from "../../types";
 import { FieldGroup } from "@/components/ui/field";
-import SingleImageUploader from "@/components/SingleImageUploader";
+import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import DashboardButton from "@/components/dashboard/dashboard-button";
@@ -27,17 +24,13 @@ import DashboardButton from "@/components/dashboard/dashboard-button";
 const UpdateBrandModal = () => {
   const { open, setOpen, brand } = useUpdateBrandStore();
 
-  const [file, setFile] = useState<IFile>({
-    file: null,
-    error: null,
-  });
-
   const { mutateAsync: updateBrand, isPending } = useUpdateBrandMutation();
 
   const defaultValues: UpdateBrandFormData = {
     title: brand?.title || "",
     slug: brand?.slug || "",
     featured: brand?.featured || false,
+    image: brand?.image || "",
   };
 
   useEffect(() => {
@@ -53,13 +46,7 @@ const UpdateBrandModal = () => {
   });
 
   const handleSubmit = async (data: UpdateBrandFormData) => {
-    const res = await createFormDataAction<UpdateBrandFormData, IBrand>({
-      data,
-      file,
-      setFile,
-      action: updateBrand,
-      id: brand?._id,
-    });
+    const res = await updateBrand({ id: brand?._id as string, data });
 
     if (res && res.success) {
       setOpen(false);
@@ -72,11 +59,6 @@ const UpdateBrandModal = () => {
       onOpenChange={setOpen}
       onOpenChangeComplete={() => {
         form.reset();
-        setFile({
-          file: null,
-          error: null,
-          preview: brand?.image,
-        });
       }}
     >
       <DialogPortal>
@@ -88,7 +70,18 @@ const UpdateBrandModal = () => {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <SingleImageUploader file={file} onChange={setFile} required />
+                <Controller
+                  control={form.control}
+                  name="image"
+                  render={({ field, fieldState }) => (
+                    <div className="flex flex-col gap-1">
+                      <GalleryImagePicker value={field.value} onChange={field.onChange} />
+                      {fieldState.error && (
+                        <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
+                      )}
+                    </div>
+                  )}
+                />
                 <DashboardInputField form={form} name="title" label="Title" placeholder="Enter brand title" required />
                 <DashboardInputField form={form} name="slug" label="Slug" placeholder="Enter brand slug" required />
                 <CheckboxField form={form} name="featured" label="Featured" />

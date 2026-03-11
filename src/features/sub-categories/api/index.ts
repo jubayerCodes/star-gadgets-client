@@ -3,6 +3,7 @@ import { ApiResponse } from "@/types";
 import { ISubCategory, ISubCategoryAdmin } from "../types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { CreateSubCategoryFormData, UpdateSubCategoryFormData } from "../schema";
 
 export const getSubCategoriesAdminApi = async (
   query: ReadonlyURLSearchParams,
@@ -18,7 +19,7 @@ export const getSubCategoriesAdminApi = async (
   return res.data;
 };
 
-export const createSubCategoryApi = async (data: FormData): Promise<ApiResponse<ISubCategory>> => {
+export const createSubCategoryApi = async (data: CreateSubCategoryFormData): Promise<ApiResponse<ISubCategory>> => {
   const res = await axiosInstance.post("/sub-categories", data);
   return res.data;
 };
@@ -28,7 +29,7 @@ export const updateSubCategoryApi = async ({
   data,
 }: {
   id: string;
-  data: FormData;
+  data: UpdateSubCategoryFormData;
 }): Promise<ApiResponse<ISubCategory>> => {
   const res = await axiosInstance.patch(`/sub-categories/${id}`, data);
   return res.data;

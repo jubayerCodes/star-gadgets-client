@@ -7,6 +7,7 @@ import {
   IconDeviceLaptop,
   IconFolder,
   IconHelp,
+  IconLayout2,
   IconListDetails,
   IconSearch,
   IconSettings,
@@ -73,6 +74,11 @@ const navMain: INavItem[] = [
     title: "Dashboard",
     url: "/dashboard",
     icon: IconDashboard,
+  },
+  {
+    title: "Gallery",
+    url: "/dashboard/gallery",
+    icon: IconLayout2,
   },
   {
     title: "Products",

@@ -1,11 +1,8 @@
-import { IFile } from "@/types/file";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUpdateSubCategoryMutation } from "../../hooks/useSubCategory";
 import { UpdateSubCategoryFormData, updateSubCategoryZodSchema } from "../../schema";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFormDataAction } from "@/hooks/createFormDataAction";
-import { ISubCategory } from "../../types";
 import {
   Dialog,
   DialogContent,
@@ -14,11 +11,10 @@ import {
   DialogOverlay,
   DialogPortal,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { FieldGroup } from "@/components/ui/field";
-import SingleImageUploader from "@/components/SingleImageUploader";
+import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
@@ -28,17 +24,13 @@ import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useC
 const UpdateSubCategoryModal = () => {
   const { open, setOpen, subCategory } = useUpdateSubCategoryStore();
 
-  const [file, setFile] = useState<IFile>({
-    file: null,
-    error: null,
-  });
-
   const { mutateAsync: updateSubCategory, isPending } = useUpdateSubCategoryMutation();
 
   const defaultValues: UpdateSubCategoryFormData = {
     title: subCategory?.title,
     slug: subCategory?.slug,
     categoryId: subCategory?.categoryId._id as string,
+    image: subCategory?.image || "",
     featured: false,
   };
 
@@ -55,13 +47,7 @@ const UpdateSubCategoryModal = () => {
   }, [subCategory]);
 
   const handleSubmit = async (data: UpdateSubCategoryFormData) => {
-    const res = await createFormDataAction<UpdateSubCategoryFormData, ISubCategory>({
-      data,
-      file,
-      setFile,
-      action: updateSubCategory,
-      id: subCategory?._id,
-    });
+    const res = await updateSubCategory({ id: subCategory?._id as string, data });
 
     if (res && res.success) {
       setOpen(false);
@@ -74,14 +60,8 @@ const UpdateSubCategoryModal = () => {
       onOpenChange={setOpen}
       onOpenChangeComplete={() => {
         form.reset();
-        setFile({
-          file: null,
-          error: null,
-          preview: subCategory?.image,
-        });
       }}
     >
-      <DialogTrigger render={<DashboardButton>Update Sub Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>
@@ -91,7 +71,18 @@ const UpdateSubCategoryModal = () => {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <SingleImageUploader file={file} onChange={setFile} required />
+                <Controller
+                  control={form.control}
+                  name="image"
+                  render={({ field, fieldState }) => (
+                    <div className="flex flex-col gap-1">
+                      <GalleryImagePicker value={field.value} onChange={field.onChange} />
+                      {fieldState.error && (
+                        <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
+                      )}
+                    </div>
+                  )}
+                />
                 <DashboardInputField
                   form={form}
                   name="title"

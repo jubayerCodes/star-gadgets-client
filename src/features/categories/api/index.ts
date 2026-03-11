@@ -3,6 +3,7 @@ import { ApiResponse, QueryType } from "@/types";
 import { ICategory, ICategoryAdmin } from "../types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { CreateCategoryFormData, UpdateCategoryFormData } from "../schema";
 
 export const getCategoriesAdminApi = async (query: ReadonlyURLSearchParams): Promise<ApiResponse<ICategoryAdmin[]>> => {
   const { page, limit } = parseSearchQuery(query);
@@ -12,7 +13,7 @@ export const getCategoriesAdminApi = async (query: ReadonlyURLSearchParams): Pro
   return res.data;
 };
 
-export const createCategoryApi = async (data: FormData): Promise<ApiResponse<ICategory>> => {
+export const createCategoryApi = async (data: CreateCategoryFormData): Promise<ApiResponse<ICategory>> => {
   const res = await axiosInstance.post("/categories", data);
   return res.data;
 };
@@ -22,7 +23,7 @@ export const updateCategoryApi = async ({
   data,
 }: {
   id: string;
-  data: FormData;
+  data: UpdateCategoryFormData;
 }): Promise<ApiResponse<ICategory>> => {
   const res = await axiosInstance.patch(`/categories/${id}`, data);
   return res.data;
