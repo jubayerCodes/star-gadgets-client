@@ -10,9 +10,10 @@ interface InputFieldProps {
   label: string;
   placeholder?: string;
   required?: boolean;
+  type?: React.HTMLInputTypeAttribute;
 }
 
-const DashboardInputField = ({ form, name, label, placeholder, required }: InputFieldProps) => {
+const DashboardInputField = ({ form, name, label, placeholder, required, type = "text" }: InputFieldProps) => {
   return (
     <Controller
       control={form.control}
@@ -26,6 +27,7 @@ const DashboardInputField = ({ form, name, label, placeholder, required }: Input
             placeholder={placeholder}
             {...field}
             required={required}
+            type={type}
             className="text-sm focus-visible:ring-0 border border-input h-10"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

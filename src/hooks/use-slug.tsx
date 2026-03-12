@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
 import { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
 
-interface UseSlugProps<TFieldValues extends FieldValues> {
-  form: UseFormReturn<TFieldValues>;
+interface UseSlugProps<
+  TFieldValues extends FieldValues,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TContext = any,
+  TTransformedValues extends FieldValues | undefined = undefined
+> {
+  form: UseFormReturn<TFieldValues, TContext, TTransformedValues>;
   sourceName: Path<TFieldValues>;
   targetName: Path<TFieldValues>;
 }
 
-export const useSlug = <TFieldValues extends FieldValues>({
+export const useSlug = <
+  TFieldValues extends FieldValues,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TContext = any,
+  TTransformedValues extends FieldValues | undefined = undefined
+>({
   form,
   sourceName,
   targetName,
-}: UseSlugProps<TFieldValues>) => {
+}: UseSlugProps<TFieldValues, TContext, TTransformedValues>) => {
   const [isManualOverride, setIsManualOverride] = useState(false);
 
   // Watch the fields to trigger re-evaluations when they change

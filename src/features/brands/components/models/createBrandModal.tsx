@@ -21,7 +21,7 @@ import DashboardInputField from "@/components/form/dashboard/dashboard-input-fie
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useSlug } from "@/hooks/use-slug";
 
-const CreateBrandModal = () => {
+const CreateBrandModal = ({ children }: { children?: React.ReactElement }) => {
   const [open, setOpen] = useState(false);
 
   const { mutateAsync: createBrand, isPending } = useCreateBrandMutation();
@@ -56,7 +56,7 @@ const CreateBrandModal = () => {
         form.reset();
       }}
     >
-      <DialogTrigger render={<DashboardButton>Add Brand</DashboardButton>} />
+      <DialogTrigger render={children || <DashboardButton>Add Brand</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>

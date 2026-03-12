@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/constants";
-import { createSubCategoryApi, getSubCategoriesAdminApi, updateSubCategoryApi } from "../api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createSubCategoryApi, getSubCategoriesAdminApi, updateSubCategoryApi, getSubCategoriesListApi } from "../api";
+import { useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
@@ -10,6 +10,24 @@ export const subCategoriesAdminQueryOptions = (searchParams: ReadonlyURLSearchPa
     queryKey: [QUERY_KEYS.SUB_CATEGORIES_ADMIN, searchParams.toString()],
     queryFn: () => getSubCategoriesAdminApi(searchParams),
   };
+};
+
+export const useSubCategoriesListInfinityQuery = (search: string, categoryId?: string) => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.SUB_CATEGORIES_LIST, search, categoryId],
+    queryFn: ({ pageParam = 1 }) =>
+      getSubCategoriesListApi({ page: pageParam as number, limit: 20, search, categoryId }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { page, total, limit } = lastPage.meta;
+      const totalPages = Math.ceil(total / limit);
+      return page < totalPages ? page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      const { page } = firstPage.meta;
+      return page > 1 ? page - 1 : undefined;
+    },
+  });
 };
 
 export const useCreateSubCategoryMutation = () => {

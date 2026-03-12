@@ -1,0 +1,279 @@
+
+> star-gadgets-client@0.1.0 build D:\Work Related\Projects\Star Gadgets\star-gadgets-client
+> next build
+
+Γû▓ Next.js 16.1.4 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 11 errors:
+./src/features/products/components/form/add-product-form.tsx:13:1
+Module not found: Can't resolve '@/components/form/dashboard/dashboard-select-field'
+  11 | import { useProducts } from "../../api/useProducts";
+  12 | import { useSlug } from "@/hooks/use-slug";
+> 13 | import DashboardSelectField from "@/components/form/dashboard/dashboard-select-field";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+  15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+  16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+
+Import map: aliased to relative './src/components/form/dashboard/dashboard-select-field' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/products/components/form/add-product-form.tsx:5:1
+Module not found: Can't resolve '@/components/ui/form'
+  3 | import DashboardButton from "@/components/dashboard/dashboard-button";
+  4 | import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
+> 5 | import { Form } from "@/components/ui/form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useForm, useFieldArray, Controller } from "react-hook-form";
+  7 | import { zodResolver } from "@hookform/resolvers/zod";
+  8 | import { Grid2X2, ImageIcon, Plus, Trash2 } from "lucide-react";
+
+Import map: aliased to relative './src/components/ui/form' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/products/components/form/add-product-form.tsx:16:1
+Module not found: Can't resolve '@/features/sub-categories/api/sub-categories.api'
+  14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+  15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+> 16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+  18 | import CreateBrandModal from "@/features/brands/components/models/createBrandModal";
+  19 | import CreateSubCategoryModal from "@/features/sub-categories/components/modal/create-sub-category-modal";
+
+Import map: aliased to relative './src/features/sub-categories/api/sub-categories.api' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/ui/rich-text-editor.tsx:8:1
+Export default doesn't exist in target module
+   6 | import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+   7 | import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+>  8 | import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+  10 | import { MOCK_INITIAL_STATE_JSON } from "@lexical/react/LexicalMockInitialState";
+  11 | import { ComponentProps, useEffect } from "react";
+
+The export default was not found in module [project]/node_modules/.pnpm/@lexical+react@0.41.0_react_82bdc51547321e120ef476856be02788/node_modules/@lexical/react/LexicalErrorBoundary.prod.mjs [app-client] (ecmascript).
+Did you mean to import LexicalErrorBoundary?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/rich-text-editor.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/rich-text-editor.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+
+./src/components/ui/rich-text-editor.tsx:8:1
+Export default doesn't exist in target module
+   6 | import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+   7 | import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+>  8 | import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+  10 | import { MOCK_INITIAL_STATE_JSON } from "@lexical/react/LexicalMockInitialState";
+  11 | import { ComponentProps, useEffect } from "react";
+
+The export default was not found in module [project]/node_modules/.pnpm/@lexical+react@0.41.0_react_82bdc51547321e120ef476856be02788/node_modules/@lexical/react/LexicalErrorBoundary.prod.mjs [app-ssr] (ecmascript).
+Did you mean to import LexicalErrorBoundary?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/ui/rich-text-editor.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/ui/rich-text-editor.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+
+./src/features/products/api/useProducts.ts:2:1
+Export default doesn't exist in target module
+  1 | import { useMutation, useQueryClient } from "@tanstack/react-query";
+> 2 | import axios from "@/lib/axios";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import { CreateProductFormData } from "../schemas/product.schema";
+  4 | import { toast } from "sonner";
+  5 | import { IProduct } from "../types/product.types";
+
+The export default was not found in module [project]/src/lib/axios.ts [app-client] (ecmascript).
+Did you mean to import axiosInstance?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/features/products/api/useProducts.ts [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/products/api/useProducts.ts [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+
+./src/features/products/api/useProducts.ts:2:1
+Export default doesn't exist in target module
+  1 | import { useMutation, useQueryClient } from "@tanstack/react-query";
+> 2 | import axios from "@/lib/axios";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import { CreateProductFormData } from "../schemas/product.schema";
+  4 | import { toast } from "sonner";
+  5 | import { IProduct } from "../types/product.types";
+
+The export default was not found in module [project]/src/lib/axios.ts [app-ssr] (ecmascript).
+Did you mean to import axiosInstance?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/features/products/api/useProducts.ts [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component Browser]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/products/api/useProducts.ts [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Client Component SSR]
+    ./src/features/products/components/form/add-product-form.tsx [Server Component]
+    ./src/app/dashboard/products/add/page.tsx [Server Component]
+
+
+./src/features/products/components/form/add-product-form.tsx:15:1
+Export useBrandsQuery doesn't exist in target module
+  13 | import DashboardSelectField from "@/components/form/dashboard/dashboard-select-field";
+  14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+> 15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+  17 | import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+  18 | import CreateBrandModal from "@/features/brands/components/models/createBrandModal";
+
+The export useBrandsQuery was not found in module [project]/src/features/brands/hooks/useBrands.ts [app-client] (ecmascript).
+Did you mean to import useCreateBrandMutation?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+
+./src/features/products/components/form/add-product-form.tsx:15:1
+Export useBrandsQuery doesn't exist in target module
+  13 | import DashboardSelectField from "@/components/form/dashboard/dashboard-select-field";
+  14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+> 15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+  17 | import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+  18 | import CreateBrandModal from "@/features/brands/components/models/createBrandModal";
+
+The export useBrandsQuery was not found in module [project]/src/features/brands/hooks/useBrands.ts [app-ssr] (ecmascript).
+Did you mean to import useCreateBrandMutation?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+
+./src/features/products/components/form/add-product-form.tsx:14:1
+Export useCategories doesn't exist in target module
+  12 | import { useSlug } from "@/hooks/use-slug";
+  13 | import DashboardSelectField from "@/components/form/dashboard/dashboard-select-field";
+> 14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+  16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+  17 | import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+
+The export useCategories was not found in module [project]/src/features/categories/hooks/useCategories.ts [app-client] (ecmascript).
+Did you mean to import useCategoriesListInfinityQuery?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+
+./src/features/products/components/form/add-product-form.tsx:14:1
+Export useCategories doesn't exist in target module
+  12 | import { useSlug } from "@/hooks/use-slug";
+  13 | import DashboardSelectField from "@/components/form/dashboard/dashboard-select-field";
+> 14 | import { useCategories } from "@/features/categories/hooks/useCategories";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { useBrandsQuery } from "@/features/brands/hooks/useBrands";
+  16 | import { useSubCategoriesQuery } from "@/features/sub-categories/api/sub-categories.api";
+  17 | import CreateCategoryModal from "@/features/categories/components/modals/create-category-modal";
+
+The export useCategories was not found in module [project]/src/features/categories/hooks/useCategories.ts [app-ssr] (ecmascript).
+Did you mean to import useCategoriesListInfinityQuery?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./src/features/products/components/form/add-product-form.tsx
+    ./src/app/dashboard/products/add/page.tsx
+
+
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:13:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:5:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:16:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/ui/rich-text-editor.tsx:8:1)
+    at <unknown> (./src/components/ui/rich-text-editor.tsx:8:1)
+    at <unknown> (./src/features/products/api/useProducts.ts:2:1)
+    at <unknown> (./src/features/products/api/useProducts.ts:2:1)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:15:1)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:15:1)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:14:1)
+    at <unknown> (./src/features/products/components/form/add-product-form.tsx:14:1)
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

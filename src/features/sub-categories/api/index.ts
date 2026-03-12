@@ -19,6 +19,19 @@ export const getSubCategoriesAdminApi = async (
   return res.data;
 };
 
+export const getSubCategoriesListApi = async (query: {
+  page: number;
+  limit: number;
+  search?: string;
+  categoryId?: string;
+}): Promise<ApiResponse<ISubCategoryAdmin[]>> => {
+  const { page, limit, search, categoryId } = query;
+  const res = await axiosInstance.get("/sub-categories/list", {
+    params: { page, limit, search, categoryId },
+  });
+  return res.data;
+};
+
 export const createSubCategoryApi = async (data: CreateSubCategoryFormData): Promise<ApiResponse<ISubCategory>> => {
   const res = await axiosInstance.post("/sub-categories", data);
   return res.data;

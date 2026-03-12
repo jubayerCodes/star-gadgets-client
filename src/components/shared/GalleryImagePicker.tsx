@@ -17,14 +17,16 @@ import { useFileUpload } from "@/hooks/use-file-upload";
 import { Input } from "@/components/ui/input";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { useUploadImageMutation, useGalleryInfinityQuery } from "@/features/gallery/hooks/useGallery";
+import { cn } from "@/lib/utils";
 
 interface GalleryImagePickerProps {
   value?: string;
   onChange: (url: string) => void;
   required?: boolean;
+  className?: string;
 }
 
-export function GalleryImagePicker({ value, onChange, required }: GalleryImagePickerProps) {
+export function GalleryImagePicker({ value, onChange, required, className }: GalleryImagePickerProps) {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("gallery");
 
@@ -32,7 +34,10 @@ export function GalleryImagePicker({ value, onChange, required }: GalleryImagePi
     <div className="flex flex-col gap-2">
       <div className="relative">
         <div
-          className="relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-input border-dashed p-4 transition-colors hover:bg-accent/10 cursor-pointer"
+          className={cn(
+            "relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-input border-dashed p-4 transition-colors hover:bg-accent/10 cursor-pointer",
+            className,
+          )}
           onClick={() => setOpen(true)}
           role="button"
           tabIndex={0}

@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/constants";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { createBrandApi, deleteBrandApi, getBrandsAdminApi, updateBrandApi } from "../api";
-import { keepPreviousData, useMutation, useQueryClient } from "@tanstack/react-query";
+import { createBrandApi, deleteBrandApi, getBrandsAdminApi, updateBrandApi, getBrandsListApi } from "../api";
+import { keepPreviousData, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 
@@ -12,6 +12,23 @@ export const brandsAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) =
     placeholderData: keepPreviousData,
     keepPreviousData: true,
   };
+};
+
+export const useBrandsListInfinityQuery = (search: string) => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.BRANDS_LIST, search],
+    queryFn: ({ pageParam = 1 }) => getBrandsListApi({ page: pageParam as number, limit: 20, search }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { page, total, limit } = lastPage.meta;
+      const totalPages = Math.ceil(total / limit);
+      return page < totalPages ? page + 1 : undefined;
+    },
+    getPreviousPageParam: (firstPage) => {
+      const { page } = firstPage.meta;
+      return page > 1 ? page - 1 : undefined;
+    },
+  });
 };
 
 export const useDeleteBrandMutation = () => {

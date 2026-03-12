@@ -22,7 +22,7 @@ import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import { useCreateCategoryMutation } from "../../hooks/useCategories";
 import { useSlug } from "@/hooks/use-slug";
 
-const CreateCategoryModal = () => {
+const CreateCategoryModal = ({ children }: { children?: React.ReactElement }) => {
   const [open, setOpen] = useState(false);
 
   const { mutateAsync: createCategory, isPending } = useCreateCategoryMutation();
@@ -57,7 +57,7 @@ const CreateCategoryModal = () => {
         form.reset();
       }}
     >
-      <DialogTrigger render={<DashboardButton>Add Category</DashboardButton>} />
+      <DialogTrigger render={children || <DashboardButton>Add Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>

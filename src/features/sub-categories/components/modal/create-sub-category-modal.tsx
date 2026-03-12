@@ -24,7 +24,7 @@ import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useC
 import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-field";
 import { useSlug } from "@/hooks/use-slug";
 
-function CreateSubCategoryModal() {
+function CreateSubCategoryModal({ children }: { children?: React.ReactElement }) {
   const [open, setOpen] = useState(false);
 
   const { mutateAsync: createSubCategory, isPending } = useCreateSubCategoryMutation();
@@ -60,7 +60,7 @@ function CreateSubCategoryModal() {
         form.reset();
       }}
     >
-      <DialogTrigger render={<DashboardButton>Add Sub Category</DashboardButton>} />
+      <DialogTrigger render={children || <DashboardButton>Add Sub Category</DashboardButton>} />
       <DialogPortal>
         <DialogOverlay />
         <DialogContent>

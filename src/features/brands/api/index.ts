@@ -13,6 +13,18 @@ export const getBrandsAdminApi = async (query: ReadonlyURLSearchParams): Promise
   return res.data;
 };
 
+export const getBrandsListApi = async (query: {
+  page: number;
+  limit: number;
+  search?: string;
+}): Promise<ApiResponse<IBrand[]>> => {
+  const { page, limit, search } = query;
+  const res = await axiosInstance.get("/brands/list", {
+    params: { page, limit, search },
+  });
+  return res.data;
+};
+
 export const createBrandApi = async (data: CreateBrandFormData): Promise<ApiResponse<IBrand>> => {
   const res = await axiosInstance.post("/brands", data);
   return res.data;
