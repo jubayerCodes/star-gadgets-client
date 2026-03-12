@@ -20,6 +20,7 @@ import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import DashboardButton from "@/components/dashboard/dashboard-button";
+import { useSlug } from "@/hooks/use-slug";
 
 const UpdateBrandModal = () => {
   const { open, setOpen, brand } = useUpdateBrandStore();
@@ -44,6 +45,8 @@ const UpdateBrandModal = () => {
     resolver: zodResolver(updateBrandZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   const handleSubmit = async (data: UpdateBrandFormData) => {
     const res = await updateBrand({ id: brand?._id as string, data });

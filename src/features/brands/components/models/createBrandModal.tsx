@@ -19,6 +19,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import DashboardInputField from "@/components/form/dashboard/dashboard-input-field";
 import CheckboxField from "@/components/form/Shared/checkbox-field";
+import { useSlug } from "@/hooks/use-slug";
 
 const CreateBrandModal = () => {
   const [open, setOpen] = useState(false);
@@ -36,6 +37,8 @@ const CreateBrandModal = () => {
     resolver: zodResolver(createBrandZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   const handleSubmit = async (data: CreateBrandFormData) => {
     const res = await createBrand(data);

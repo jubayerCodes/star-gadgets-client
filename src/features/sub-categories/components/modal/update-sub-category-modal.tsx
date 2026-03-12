@@ -20,6 +20,7 @@ import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-fi
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useUpdateSubCategoryStore } from "../../store/useUpdateSubCategoryStore";
 import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useCategories";
+import { useSlug } from "@/hooks/use-slug";
 
 const UpdateSubCategoryModal = () => {
   const { open, setOpen, subCategory } = useUpdateSubCategoryStore();
@@ -38,6 +39,8 @@ const UpdateSubCategoryModal = () => {
     resolver: zodResolver(updateSubCategoryZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   useEffect(() => {
     if (subCategory) {

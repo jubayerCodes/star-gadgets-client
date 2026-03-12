@@ -21,6 +21,7 @@ import { useUpdateCategoryStore } from "../../store/updateCategoryStore";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { Controller } from "react-hook-form";
 import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
+import { useSlug } from "@/hooks/use-slug";
 
 const UpdateCategoryModal = () => {
   const { open, setOpen, category } = useUpdateCategoryStore();
@@ -38,6 +39,8 @@ const UpdateCategoryModal = () => {
     resolver: zodResolver(updateCategoryZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   useEffect(() => {
     if (category) {

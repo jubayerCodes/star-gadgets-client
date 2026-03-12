@@ -20,6 +20,7 @@ import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useState } from "react";
 import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import { useCreateCategoryMutation } from "../../hooks/useCategories";
+import { useSlug } from "@/hooks/use-slug";
 
 const CreateCategoryModal = () => {
   const [open, setOpen] = useState(false);
@@ -37,6 +38,8 @@ const CreateCategoryModal = () => {
     resolver: zodResolver(createCategoryZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   const handleSubmit = async (data: CreateCategoryFormData) => {
     const res = await createCategory(data);

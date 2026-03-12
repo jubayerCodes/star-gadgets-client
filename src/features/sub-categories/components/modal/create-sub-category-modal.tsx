@@ -22,6 +22,7 @@ import DashboardInputField from "@/components/form/dashboard/dashboard-input-fie
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useCategories";
 import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-field";
+import { useSlug } from "@/hooks/use-slug";
 
 function CreateSubCategoryModal() {
   const [open, setOpen] = useState(false);
@@ -40,6 +41,8 @@ function CreateSubCategoryModal() {
     resolver: zodResolver(createSubCategoryZodSchema),
     defaultValues,
   });
+
+  useSlug({ form, sourceName: "title", targetName: "slug" });
 
   const handleSubmit = async (data: CreateSubCategoryFormData) => {
     const res = await createSubCategory(data);
