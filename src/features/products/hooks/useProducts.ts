@@ -1,6 +1,18 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants";
+import { keepPreviousData, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createProductApi } from "../api";
+import { createProductApi, getProductsAdminApi } from "../api";
+import { extractErrorMessage } from "@/lib/extract-error-message";
+import { ReadonlyURLSearchParams } from "next/navigation";
+
+export const productsAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
+  return {
+    queryKey: [QUERY_KEYS.PRODUCTS_ADMIN, searchParams.toString()],
+    queryFn: () => getProductsAdminApi(searchParams),
+    placeholderData: keepPreviousData,
+    keepPreviousData: true,
+  };
+};
 
 export const useCreateProductMutation = () => {
   const queryClient = useQueryClient();
@@ -8,20 +20,13 @@ export const useCreateProductMutation = () => {
   return useMutation({
     mutationFn: createProductApi,
     onSuccess: (data) => {
-      if (data.success) {
-        toast.success(data.message || "Product created successfully");
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-      } else {
-        toast.error(data.message || "Failed to create product");
-      }
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS_ADMIN] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS] });
+      toast.success(data.message || "Product created successfully");
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      // eslint-disable-next-line no-console
-      console.error("Error creating product:", error);
-      toast.error(
-        error?.response?.data?.message || error.message || "Something went wrong while creating the product.",
-      );
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
     },
   });
 };
+

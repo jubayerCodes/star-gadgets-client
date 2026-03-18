@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({ columns, data, meta }: DataTableProps
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

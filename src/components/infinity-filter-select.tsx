@@ -1,0 +1,127 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { CheckIcon, ChevronDownIcon, Loader, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
+import { ApiResponse } from "@/types";
+import { useDebounce } from "@/hooks/use-debounce";
+
+interface InfinityFilterSelectProps {
+  placeholder: string;
+  selectedSlug: string | null;
+  /** Called with the slug string to set, or null to clear */
+  onSelect: (slug: string | null) => void;
+  /** The infinite query factory – receives the current search string */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  infinityFunction: (search: string) => UseInfiniteQueryResult<InfiniteData<ApiResponse<any>>, unknown>;
+  className?: string;
+}
+
+const InfinityFilterSelect = ({
+  placeholder,
+  selectedSlug,
+  onSelect,
+  infinityFunction,
+  className,
+}: InfinityFilterSelectProps) => {
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedSearch = useDebounce(searchValue, 400);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = infinityFunction(debouncedSearch);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastItemRef = (node: Element | null) => {
+    if (isFetchingNextPage) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasNextPage) fetchNextPage();
+    });
+    if (node) observer.current.observe(node);
+  };
+
+  const items =
+    data?.pages.flatMap((page) =>
+      page.data.map((item: { _id: string; title: string; slug: string }) => ({
+        value: item.slug,
+        label: item.title,
+      })),
+    ) ?? [];
+
+  const selectedLabel = selectedSlug ? items.find((i) => i.value === selectedSlug)?.label ?? selectedSlug : null;
+
+  const handleSelect = (slug: string) => {
+    if (slug === selectedSlug) {
+      onSelect(null); // deselect
+    } else {
+      onSelect(slug);
+    }
+    setOpen(false);
+  };
+
+  return (
+    <div className={cn("relative inline-flex items-center", className)}>
+      <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearchValue(""); }}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "h-9 px-3 text-sm font-normal justify-between gap-1 border-input bg-background hover:bg-background hover:text-foreground w-full rounded-md",
+              !selectedLabel && "text-muted-foreground",
+              selectedSlug && "pr-10",
+            )}
+          >
+            <span className="truncate">{selectedLabel ?? placeholder}</span>
+            <ChevronDownIcon size={14} className="text-muted-foreground/80 shrink-0" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-56 p-0 border-input">
+          <Command shouldFilter={false}>
+            <CommandInput
+              placeholder={`Search ${placeholder.toLowerCase()}…`}
+              value={searchValue}
+              onValueChange={setSearchValue}
+            />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup>
+                {items.map((item, idx) => (
+                  <CommandItem
+                    key={item.value}
+                    value={item.value}
+                    ref={idx === items.length - 1 ? lastItemRef : undefined}
+                    onSelect={handleSelect}
+                  >
+                    {item.label}
+                    {selectedSlug === item.value && <CheckIcon className="ml-auto" size={14} />}
+                  </CommandItem>
+                ))}
+                {isFetchingNextPage && (
+                  <div className="py-2 flex items-center justify-center">
+                    <Loader size={14} className="animate-spin text-muted-foreground" />
+                  </div>
+                )}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      {selectedSlug && (
+        <X
+          size={16}
+          className="absolute right-7 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground bg-white"
+          onClick={() => onSelect(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default InfinityFilterSelect;

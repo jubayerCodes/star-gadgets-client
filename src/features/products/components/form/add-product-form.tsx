@@ -11,14 +11,7 @@ import DashboardSelectField from "@/components/form/dashboard/dashboard-select-f
 import CheckboxField from "@/components/form/Shared/checkbox-field";
 import InfinityComboboxField from "@/components/form/Shared/infinity-combobox-field";
 import { TagInput } from "@/components/form/dashboard/tag-input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { CreateProductFormData, createProductZodSchema } from "../../schemas/product.schema";
 import { useCreateProductMutation } from "../../hooks/useProducts";
@@ -250,7 +243,7 @@ export const AddProductForm = () => {
                     />
                   </div>
                   <CreateCategoryModal>
-                    <DashboardButton className={"h-9"}>Add</DashboardButton>
+                    <DashboardButton>Add</DashboardButton>
                   </CreateCategoryModal>
                 </div>
 
@@ -268,7 +261,7 @@ export const AddProductForm = () => {
                     />
                   </div>
                   <CreateSubCategoryModal>
-                    <DashboardButton className={"h-9"}>Add</DashboardButton>
+                    <DashboardButton>Add</DashboardButton>
                   </CreateSubCategoryModal>
                 </div>
 
@@ -285,7 +278,7 @@ export const AddProductForm = () => {
                     />
                   </div>
                   <CreateBrandModal>
-                    <DashboardButton className={"h-9"}>Add</DashboardButton>
+                    <DashboardButton>Add</DashboardButton>
                   </CreateBrandModal>
                 </div>
               </div>
@@ -371,483 +364,511 @@ export const AddProductForm = () => {
         )}
 
         {/* STEP 3: Attributes & Variants */}
-        {currentStep === 2 && (() => {
-          const allAttributes = form.watch("attributes") ?? [];
-          const hasAttributes = allAttributes.some((a) => a.name?.trim());
+        {currentStep === 2 &&
+          (() => {
+            const allAttributes = form.watch("attributes") ?? [];
+            const hasAttributes = allAttributes.some((a) => a.name?.trim());
 
-          // A variant is "complete" when its required fields are filled AND all attr rows are fully selected
-          const isVariantComplete = (idx: number) => {
-            const v = form.watch(`variants.${idx}`);
-            // Rejects empty strings (""), null, undefined and NaN — but allows 0 (valid price/stock)
-            const isValidNumber = (val: unknown) => String(val).trim() !== "" && !isNaN(Number(val));
-            const coreComplete = !!(
-              v?.sku?.trim() &&
-              isValidNumber(v?.regularPrice) &&
-              isValidNumber(v?.stock) &&
-              v?.featuredImage?.trim() &&
-              v?.images?.some((u: string) => u?.trim())
-            );
+            // A variant is "complete" when its required fields are filled AND all attr rows are fully selected
+            const isVariantComplete = (idx: number) => {
+              const v = form.watch(`variants.${idx}`);
+              // Rejects empty strings (""), null, undefined and NaN — but allows 0 (valid price/stock)
+              const isValidNumber = (val: unknown) => String(val).trim() !== "" && !isNaN(Number(val));
+              const coreComplete = !!(
+                v?.sku?.trim() &&
+                isValidNumber(v?.regularPrice) &&
+                isValidNumber(v?.stock) &&
+                v?.featuredImage?.trim() &&
+                v?.images?.some((u: string) => u?.trim())
+              );
 
-            // Every attribute row must have BOTH name and value (a half-filled row counts as incomplete)
-            const attrRows: { name?: string; value?: string }[] = v?.attributes ?? [];
-            const attrsComplete = attrRows.every((a) => !!a.name?.trim() && !!a.value?.trim());
-            return coreComplete && attrsComplete;
-          };
+              // Every attribute row must have BOTH name and value (a half-filled row counts as incomplete)
+              const attrRows: { name?: string; value?: string }[] = v?.attributes ?? [];
+              const attrsComplete = attrRows.every((a) => !!a.name?.trim() && !!a.value?.trim());
+              return coreComplete && attrsComplete;
+            };
 
-          const lastVariantIdx = variantFields.length - 1;
-          const canAddVariant = hasAttributes && isVariantComplete(lastVariantIdx);
+            const lastVariantIdx = variantFields.length - 1;
+            const canAddVariant = hasAttributes && isVariantComplete(lastVariantIdx);
 
-          return (
-            <div className="space-y-6">
-              {/* ── Attributes (optional) ── */}
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">Attributes</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">Optional — define attributes if this product has variants (e.g. Color, Size)</p>
+            return (
+              <div className="space-y-6">
+                {/* ── Attributes (optional) ── */}
+                <div className="rounded-lg border bg-card p-6 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">Attributes</h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Optional — define attributes if this product has variants (e.g. Color, Size)
+                      </p>
+                    </div>
+                    <DashboardButton
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={(() => {
+                        if (attributeFields.length === 0) return false;
+                        const lastAttr = form.watch(`attributes.${attributeFields.length - 1}`);
+                        return !lastAttr?.name?.trim() || !lastAttr?.values?.some((v: string) => v?.trim());
+                      })()}
+                      onClick={() => appendAttribute({ name: "", values: [""] })}
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Add Attribute
+                    </DashboardButton>
                   </div>
-                  <DashboardButton
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={(() => {
-                      if (attributeFields.length === 0) return false;
-                      const lastAttr = form.watch(`attributes.${attributeFields.length - 1}`);
-                      return !lastAttr?.name?.trim() || !lastAttr?.values?.some((v: string) => v?.trim());
-                    })()}
-                    onClick={() => appendAttribute({ name: "", values: [""] })}
-                  >
-                    <Plus className="h-4 w-4 mr-1" /> Add Attribute
-                  </DashboardButton>
+
+                  {attributeFields.length === 0 ? (
+                    <p className="py-6 text-center text-sm text-muted-foreground">
+                      No attributes added. Click &quot;Add Attribute&quot; to define product attributes, or skip to add
+                      a single variant below.
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {attributeFields.map((field, index) => (
+                        <div key={field.id} className="relative rounded-md border p-4">
+                          <DashboardButton
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-1 top-1 text-destructive hover:bg-destructive/10 hover:text-destructive size-7"
+                            onClick={() => removeAttribute(index)}
+                          >
+                            <Trash2 className="size-4" />
+                          </DashboardButton>
+
+                          <div className="mt-4 grid grid-cols-1 gap-4 md:mt-0 md:grid-cols-2">
+                            <DashboardInputField
+                              form={form}
+                              name={`attributes.${index}.name`}
+                              label="Attribute Name"
+                              placeholder="e.g. Color, Size"
+                              required
+                            />
+
+                            <div className="flex flex-col gap-2">
+                              <label className="text-sm font-medium leading-none">Attribute Values</label>
+                              <Controller
+                                control={form.control}
+                                name={`attributes.${index}.values`}
+                                render={({ field, fieldState }) => (
+                                  <div className="flex flex-col gap-1">
+                                    <TagInput
+                                      value={Array.isArray(field.value) ? field.value.filter((v) => v !== "") : []}
+                                      onChange={(tags) => field.onChange(tags.length > 0 ? tags : [""])}
+                                      placeholder="Type a value and press Enter…"
+                                    />
+                                    {fieldState.error && (
+                                      <p className="text-[0.8rem] font-medium text-destructive">
+                                        {fieldState.error.message}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {attributeFields.length === 0 ? (
-                  <p className="py-6 text-center text-sm text-muted-foreground">
-                    No attributes added. Click &quot;Add Attribute&quot; to define product attributes, or skip to add a single variant below.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {attributeFields.map((field, index) => (
-                      <div key={field.id} className="relative rounded-md border p-4">
-                        <DashboardButton
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-1 top-1 text-destructive hover:bg-destructive/10 hover:text-destructive size-7"
-                          onClick={() => removeAttribute(index)}
-                        >
-                          <Trash2 className="size-4" />
-                        </DashboardButton>
+                {/* ── Variants ── */}
+                <div className="rounded-lg border bg-card p-6 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">Variants</h3>
+                      {!hasAttributes && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Add attributes above to enable multiple variants
+                        </p>
+                      )}
+                    </div>
+                    {/* Only show Add Variant if attributes exist; disabled until last variant is complete */}
+                    {hasAttributes && (
+                      <DashboardButton
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={!canAddVariant}
+                        onClick={() =>
+                          appendVariant({
+                            attributes: [],
+                            price: 0,
+                            regularPrice: 0,
+                            stock: 0,
+                            status: ProductStatus.IN_STOCK,
+                            sku: "",
+                            images: [],
+                            featuredImage: "",
+                            featured: false,
+                            isActive: true,
+                          })
+                        }
+                      >
+                        <Plus className="mr-2 h-4 w-4" /> Add Variant
+                      </DashboardButton>
+                    )}
+                  </div>
 
-                        <div className="mt-4 grid grid-cols-1 gap-4 md:mt-0 md:grid-cols-2">
+                  <div className="space-y-6">
+                    {variantFields.map((field, index) => (
+                      <div key={field.id} className="relative rounded-md border bg-muted/20 p-4">
+                        <div className="mb-4 flex items-center justify-between border-b pb-2">
+                          <h4 className="text-sm font-medium">Variant #{index + 1}</h4>
+                          {/* Don't allow removing the only remaining variant */}
+                          {variantFields.length > 1 && (
+                            <DashboardButton
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => removeVariant(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </DashboardButton>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                           <DashboardInputField
                             form={form}
-                            name={`attributes.${index}.name`}
-                            label="Attribute Name"
-                            placeholder="e.g. Color, Size"
+                            name={`variants.${index}.sku` as const}
+                            label="SKU"
                             required
                           />
+                          <DashboardInputField
+                            form={form}
+                            name={`variants.${index}.regularPrice` as const}
+                            label="Regular Price"
+                            required
+                          />
+                          <DashboardInputField
+                            form={form}
+                            name={`variants.${index}.price` as const}
+                            label="Sale Price (Optional)"
+                          />
+                          <DashboardInputField
+                            form={form}
+                            name={`variants.${index}.stock` as const}
+                            label="Stock"
+                            required
+                          />
+                        </div>
 
-                          <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium leading-none">Attribute Values</label>
-                            <Controller
-                              control={form.control}
-                              name={`attributes.${index}.values`}
-                              render={({ field, fieldState }) => (
-                                <div className="flex flex-col gap-1">
-                                  <TagInput
-                                    value={Array.isArray(field.value) ? field.value.filter((v) => v !== "") : []}
-                                    onChange={(tags) => field.onChange(tags.length > 0 ? tags : [""])}
-                                    placeholder="Type a value and press Enter…"
-                                  />
-                                  {fieldState.error && (
-                                    <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
-                                  )}
-                                </div>
-                              )}
-                            />
+                        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                          <DashboardSelectField
+                            form={form}
+                            name={`variants.${index}.status`}
+                            label="Status"
+                            options={Object.values(ProductStatus).map((s) => ({ label: s, value: s }))}
+                            required
+                          />
+                          <div className="flex items-center gap-4 pt-8">
+                            <CheckboxField form={form} name={`variants.${index}.featured`} label="Featured" />
+                            <CheckboxField form={form} name={`variants.${index}.isActive`} label="Active" />
+                          </div>
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                          {/* Variant Attributes — only shown when product has attributes */}
+                          {hasAttributes && (
+                            <div className="flex flex-col gap-2">
+                              <label className="text-sm font-medium leading-none">
+                                Variant Attributes Configuration
+                              </label>
+                              <Controller
+                                control={form.control}
+                                name={`variants.${index}.attributes`}
+                                render={({ field: attrField }) => {
+                                  const usedNames = new Set((attrField.value ?? []).map((a) => a.name).filter(Boolean));
+                                  const lastAttr = (attrField.value ?? [])[attrField.value?.length - 1];
+                                  const canAddMore = !!(lastAttr?.name && lastAttr?.value);
+
+                                  return (
+                                    <div className="flex flex-col gap-2 rounded-md border p-3">
+                                      {(attrField.value ?? []).map((attr, attrIdx) => {
+                                        const availableNames = allAttributes
+                                          .map((a) => a.name)
+                                          .filter((n) => n && (!usedNames.has(n) || n === attr.name));
+
+                                        const selectedAttrDef = allAttributes.find((a) => a.name === attr.name);
+                                        const availableValues = (selectedAttrDef?.values ?? []).filter((v) => v !== "");
+
+                                        return (
+                                          <div key={attrIdx} className="flex items-center gap-2">
+                                            <Select
+                                              value={attr.name}
+                                              onValueChange={(val) => {
+                                                const newAttrs = [...(attrField.value ?? [])];
+                                                newAttrs[attrIdx] = { name: val, value: "" };
+                                                attrField.onChange(newAttrs);
+                                              }}
+                                            >
+                                              <SelectTrigger className="w-1/2 h-9 text-sm border border-input shadow-sm transition-colors data-[state=open]:border-ring focus-visible:ring-0">
+                                                <SelectValue placeholder="Select attribute…" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectGroup>
+                                                  {availableNames.map((n) => (
+                                                    <SelectItem key={n} value={n}>
+                                                      {n}
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectGroup>
+                                              </SelectContent>
+                                            </Select>
+
+                                            <Select
+                                              value={attr.value}
+                                              onValueChange={(val) => {
+                                                const newAttrs = [...(attrField.value ?? [])];
+                                                newAttrs[attrIdx].value = val;
+                                                attrField.onChange(newAttrs);
+                                              }}
+                                              disabled={!attr.name || availableValues.length === 0}
+                                            >
+                                              <SelectTrigger className="w-1/2 h-9 text-sm border border-input shadow-sm transition-colors data-[state=open]:border-ring focus-visible:ring-0">
+                                                <SelectValue placeholder="Select value…" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectGroup>
+                                                  {availableValues.map((v) => (
+                                                    <SelectItem key={v} value={v}>
+                                                      {v}
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectGroup>
+                                              </SelectContent>
+                                            </Select>
+
+                                            <DashboardButton
+                                              type="button"
+                                              variant="ghost"
+                                              size="icon"
+                                              className="h-8 w-8 text-destructive"
+                                              onClick={() => {
+                                                const newAttrs = (attrField.value ?? []).filter(
+                                                  (_, i) => i !== attrIdx,
+                                                );
+                                                attrField.onChange(newAttrs);
+                                              }}
+                                            >
+                                              <Trash2 className="h-4 w-4" />
+                                            </DashboardButton>
+                                          </div>
+                                        );
+                                      })}
+
+                                      <DashboardButton
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-2 w-full text-xs"
+                                        disabled={!canAddMore && (attrField.value ?? []).length > 0}
+                                        onClick={() =>
+                                          attrField.onChange([...(attrField.value ?? []), { name: "", value: "" }])
+                                        }
+                                      >
+                                        <Plus className="mr-1 h-3 w-3" /> Add Variant Attribute
+                                      </DashboardButton>
+                                    </div>
+                                  );
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          {/* Featured image + gallery images */}
+                          <div className={`flex flex-col gap-4 ${!hasAttributes ? "md:col-span-2" : ""}`}>
+                            <div className="flex flex-col gap-2">
+                              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                Featured Image *
+                              </label>
+                              <Controller
+                                control={form.control}
+                                name={`variants.${index}.featuredImage`}
+                                render={({ field, fieldState }) => (
+                                  <div className="flex flex-col gap-1">
+                                    <GalleryImagePicker value={field.value} onChange={field.onChange} required />
+                                    {fieldState.error && (
+                                      <p className="text-[0.8rem] font-medium text-destructive">
+                                        {fieldState.error.message}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                              <label className="text-sm font-medium leading-none">Gallery Images *</label>
+                              <Controller
+                                control={form.control}
+                                name={`variants.${index}.images`}
+                                render={({ field, fieldState }) => (
+                                  <div className="flex flex-col gap-1">
+                                    <GalleryImagePicker
+                                      multiple
+                                      value={Array.isArray(field.value) ? field.value.filter((v) => v !== "") : []}
+                                      onChange={(urls) => field.onChange(urls.length > 0 ? urls : [""])}
+                                      required
+                                    />
+                                    {fieldState.error && (
+                                      <p className="text-[0.8rem] font-medium text-destructive">
+                                        {fieldState.error.message}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
+            );
+          })()}
 
-              {/* ── Variants ── */}
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">Variants</h3>
-                    {!hasAttributes && (
-                      <p className="text-xs text-muted-foreground mt-0.5">Add attributes above to enable multiple variants</p>
-                    )}
-                  </div>
-                  {/* Only show Add Variant if attributes exist; disabled until last variant is complete */}
-                  {hasAttributes && (
+        {/* STEP 4: Specifications */}
+        {currentStep === 3 &&
+          (() => {
+            const lastGroup = form.watch(`specifications.${specificationFields.length - 1}`);
+            const lastGroupComplete = !!(
+              lastGroup?.heading?.trim() &&
+              lastGroup?.specifications?.some(
+                (s: { name?: string; value?: string }) => s.name?.trim() && s.value?.trim(),
+              )
+            );
+            const canAddGroup = specificationFields.length === 0 || lastGroupComplete;
+
+            return (
+              <div className="space-y-6">
+                <div className="rounded-lg border bg-card p-6 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-lg font-medium">Specifications</h3>
                     <DashboardButton
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled={!canAddVariant}
+                      disabled={!canAddGroup}
                       onClick={() =>
-                        appendVariant({
-                          attributes: [],
-                          price: 0,
-                          regularPrice: 0,
-                          stock: 0,
-                          status: ProductStatus.IN_STOCK,
-                          sku: "",
-                          images: [],
-                          featuredImage: "",
-                          featured: false,
-                          isActive: true,
+                        appendSpecification({
+                          heading: "",
+                          specifications: [{ name: "", value: "" }],
                         })
                       }
                     >
-                      <Plus className="mr-2 h-4 w-4" /> Add Variant
+                      <Plus className="mr-2 h-4 w-4" /> Add Specification Group
                     </DashboardButton>
-                  )}
-                </div>
+                  </div>
 
-                <div className="space-y-6">
-                  {variantFields.map((field, index) => (
-                    <div key={field.id} className="relative rounded-md border bg-muted/20 p-4">
-                      <div className="mb-4 flex items-center justify-between border-b pb-2">
-                        <h4 className="text-sm font-medium">Variant #{index + 1}</h4>
-                        {/* Don't allow removing the only remaining variant */}
-                        {variantFields.length > 1 && (
+                  <div className="space-y-6">
+                    {specificationFields.map((field, index) => (
+                      <div key={field.id} className="relative rounded-md border p-4">
+                        {/* Show delete button only when there are multiple groups */}
+                        {specificationFields.length > 1 && (
                           <DashboardButton
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => removeVariant(index)}
+                            className="absolute right-2 top-2 h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            onClick={() => removeSpecification(index)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </DashboardButton>
                         )}
-                      </div>
 
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <DashboardInputField form={form} name={`variants.${index}.sku` as const} label="SKU" required />
-                        <DashboardInputField
-                          form={form}
-                          name={`variants.${index}.regularPrice` as const}
-                          label="Regular Price"
-                          required
-                        />
-                        <DashboardInputField
-                          form={form}
-                          name={`variants.${index}.price` as const}
-                          label="Sale Price (Optional)"
-                        />
-                        <DashboardInputField
-                          form={form}
-                          name={`variants.${index}.stock` as const}
-                          label="Stock"
-                          required
-                        />
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <DashboardSelectField
-                          form={form}
-                          name={`variants.${index}.status`}
-                          label="Status"
-                          options={Object.values(ProductStatus).map((s) => ({ label: s, value: s }))}
-                          required
-                        />
-                        <div className="flex items-center gap-4 pt-8">
-                          <CheckboxField form={form} name={`variants.${index}.featured`} label="Featured" />
-                          <CheckboxField form={form} name={`variants.${index}.isActive`} label="Active" />
+                        <div className={`mb-4 ${specificationFields.length > 1 ? "pr-10" : ""}`}>
+                          <DashboardInputField
+                            form={form}
+                            name={`specifications.${index}.heading`}
+                            label="Specification Group Heading"
+                            placeholder="e.g. Display, Processor, Memory"
+                            required
+                          />
                         </div>
-                      </div>
 
-                      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {/* Variant Attributes — only shown when product has attributes */}
-                        {hasAttributes && (
-                          <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium leading-none">Variant Attributes Configuration</label>
-                            <Controller
-                              control={form.control}
-                              name={`variants.${index}.attributes`}
-                              render={({ field: attrField }) => {
-                                const usedNames = new Set((attrField.value ?? []).map((a) => a.name).filter(Boolean));
-                                const lastAttr = (attrField.value ?? [])[attrField.value?.length - 1];
-                                const canAddMore = !!(lastAttr?.name && lastAttr?.value);
+                        <Controller
+                          control={form.control}
+                          name={`specifications.${index}.specifications`}
+                          render={({ field: subField }) => {
+                            const lastItem = subField.value[subField.value.length - 1];
+                            const canAddItem = !!(lastItem?.name?.trim() && lastItem?.value?.trim());
 
-                                return (
-                                  <div className="flex flex-col gap-2 rounded-md border p-3">
-                                    {(attrField.value ?? []).map((attr, attrIdx) => {
-                                      const availableNames = allAttributes
-                                        .map((a) => a.name)
-                                        .filter((n) => n && (!usedNames.has(n) || n === attr.name));
-
-                                      const selectedAttrDef = allAttributes.find((a) => a.name === attr.name);
-                                      const availableValues = (selectedAttrDef?.values ?? []).filter((v) => v !== "");
-
-                                      return (
-                                        <div key={attrIdx} className="flex items-center gap-2">
-                                          <Select
-                                            value={attr.name}
-                                            onValueChange={(val) => {
-                                              const newAttrs = [...(attrField.value ?? [])];
-                                              newAttrs[attrIdx] = { name: val, value: "" };
-                                              attrField.onChange(newAttrs);
-                                            }}
-                                          >
-                                            <SelectTrigger className="w-1/2 h-9 text-sm border border-input shadow-sm transition-colors data-[state=open]:border-ring focus-visible:ring-0">
-                                              <SelectValue placeholder="Select attribute…" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                              <SelectGroup>
-                                                {availableNames.map((n) => (
-                                                  <SelectItem key={n} value={n}>{n}</SelectItem>
-                                                ))}
-                                              </SelectGroup>
-                                            </SelectContent>
-                                          </Select>
-
-                                          <Select
-                                            value={attr.value}
-                                            onValueChange={(val) => {
-                                              const newAttrs = [...(attrField.value ?? [])];
-                                              newAttrs[attrIdx].value = val;
-                                              attrField.onChange(newAttrs);
-                                            }}
-                                            disabled={!attr.name || availableValues.length === 0}
-                                          >
-                                            <SelectTrigger className="w-1/2 h-9 text-sm border border-input shadow-sm transition-colors data-[state=open]:border-ring focus-visible:ring-0">
-                                              <SelectValue placeholder="Select value…" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                              <SelectGroup>
-                                                {availableValues.map((v) => (
-                                                  <SelectItem key={v} value={v}>{v}</SelectItem>
-                                                ))}
-                                              </SelectGroup>
-                                            </SelectContent>
-                                          </Select>
-
-                                          <DashboardButton
-                                            type="button"
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 text-destructive"
-                                            onClick={() => {
-                                              const newAttrs = (attrField.value ?? []).filter((_, i) => i !== attrIdx);
-                                              attrField.onChange(newAttrs);
-                                            }}
-                                          >
-                                            <Trash2 className="h-4 w-4" />
-                                          </DashboardButton>
-                                        </div>
-                                      );
-                                    })}
-
-                                    <DashboardButton
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      className="mt-2 w-full text-xs"
-                                      disabled={!canAddMore && (attrField.value ?? []).length > 0}
-                                      onClick={() => attrField.onChange([...(attrField.value ?? []), { name: "", value: "" }])}
-                                    >
-                                      <Plus className="mr-1 h-3 w-3" /> Add Variant Attribute
-                                    </DashboardButton>
+                            return (
+                              <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-4">
+                                <label className="text-sm font-medium">Items</label>
+                                {subField.value.map((spec, specIdx) => (
+                                  <div key={specIdx} className="flex items-start gap-3">
+                                    <div className="flex-1">
+                                      <input
+                                        className="mb-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors"
+                                        placeholder="Name (e.g. Resolution)"
+                                        value={spec.name}
+                                        onChange={(e) => {
+                                          const newSpecs = [...subField.value];
+                                          newSpecs[specIdx].name = e.target.value;
+                                          subField.onChange(newSpecs);
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="flex-2">
+                                      <input
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors"
+                                        placeholder="Value (e.g. 1920x1080px)"
+                                        value={spec.value}
+                                        onChange={(e) => {
+                                          const newSpecs = [...subField.value];
+                                          newSpecs[specIdx].value = e.target.value;
+                                          subField.onChange(newSpecs);
+                                        }}
+                                      />
+                                    </div>
+                                    {/* Show delete button only when there are multiple items */}
+                                    {subField.value.length > 1 ? (
+                                      <DashboardButton
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="mt-0 h-10 w-10 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                        onClick={() => {
+                                          const newSpecs = subField.value.filter((_, i) => i !== specIdx);
+                                          subField.onChange(newSpecs);
+                                        }}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </DashboardButton>
+                                    ) : (
+                                      // Placeholder so the grid doesn't shift
+                                      <div className="h-10 w-10 shrink-0" />
+                                    )}
                                   </div>
-                                );
-                              }}
-                            />
-                          </div>
-                        )}
-
-                        {/* Featured image + gallery images */}
-                        <div className={`flex flex-col gap-4 ${!hasAttributes ? "md:col-span-2" : ""}`}>
-                          <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                              Featured Image *
-                            </label>
-                            <Controller
-                              control={form.control}
-                              name={`variants.${index}.featuredImage`}
-                              render={({ field, fieldState }) => (
-                                <div className="flex flex-col gap-1">
-                                  <GalleryImagePicker value={field.value} onChange={field.onChange} required />
-                                  {fieldState.error && (
-                                    <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
-                                  )}
-                                </div>
-                              )}
-                            />
-                          </div>
-
-                          <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium leading-none">
-                              Gallery Images *
-                            </label>
-                            <Controller
-                              control={form.control}
-                              name={`variants.${index}.images`}
-                              render={({ field, fieldState }) => (
-                                <div className="flex flex-col gap-1">
-                                  <GalleryImagePicker
-                                    multiple
-                                    value={Array.isArray(field.value) ? field.value.filter((v) => v !== "") : []}
-                                    onChange={(urls) => field.onChange(urls.length > 0 ? urls : [""])}
-                                    required
-                                  />
-                                  {fieldState.error && (
-                                    <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error.message}</p>
-                                  )}
-                                </div>
-                              )}
-                            />
-                          </div>
-                        </div>
+                                ))}
+                                <DashboardButton
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="mt-2 self-start text-xs"
+                                  disabled={!canAddItem}
+                                  onClick={() => subField.onChange([...subField.value, { name: "", value: "" }])}
+                                >
+                                  <Plus className="mr-2 h-3 w-3" /> Add Item
+                                </DashboardButton>
+                              </div>
+                            );
+                          }}
+                        />
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })()}
-
-        {/* STEP 4: Specifications */}
-        {currentStep === 3 && (() => {
-          const lastGroup = form.watch(`specifications.${specificationFields.length - 1}`);
-          const lastGroupComplete = !!(lastGroup?.heading?.trim() && lastGroup?.specifications?.some(
-            (s: { name?: string; value?: string }) => s.name?.trim() && s.value?.trim()
-          ));
-          const canAddGroup = specificationFields.length === 0 || lastGroupComplete;
-
-          return (
-            <div className="space-y-6">
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-medium">Specifications</h3>
-                  <DashboardButton
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={!canAddGroup}
-                    onClick={() =>
-                      appendSpecification({
-                        heading: "",
-                        specifications: [{ name: "", value: "" }],
-                      })
-                    }
-                  >
-                    <Plus className="mr-2 h-4 w-4" /> Add Specification Group
-                  </DashboardButton>
-                </div>
-
-                <div className="space-y-6">
-                  {specificationFields.map((field, index) => (
-                    <div key={field.id} className="relative rounded-md border p-4">
-                      {/* Show delete button only when there are multiple groups */}
-                      {specificationFields.length > 1 && (
-                        <DashboardButton
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-2 top-2 h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          onClick={() => removeSpecification(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </DashboardButton>
-                      )}
-
-                      <div className={`mb-4 ${specificationFields.length > 1 ? "pr-10" : ""}`}>
-                        <DashboardInputField
-                          form={form}
-                          name={`specifications.${index}.heading`}
-                          label="Specification Group Heading"
-                          placeholder="e.g. Display, Processor, Memory"
-                          required
-                        />
-                      </div>
-
-                      <Controller
-                        control={form.control}
-                        name={`specifications.${index}.specifications`}
-                        render={({ field: subField }) => {
-                          const lastItem = subField.value[subField.value.length - 1];
-                          const canAddItem = !!(lastItem?.name?.trim() && lastItem?.value?.trim());
-
-                          return (
-                            <div className="flex flex-col gap-3 rounded-md bg-muted/30 p-4">
-                              <label className="text-sm font-medium">Items</label>
-                              {subField.value.map((spec, specIdx) => (
-                                <div key={specIdx} className="flex items-start gap-3">
-                                  <div className="flex-1">
-                                    <input
-                                      className="mb-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors"
-                                      placeholder="Name (e.g. Resolution)"
-                                      value={spec.name}
-                                      onChange={(e) => {
-                                        const newSpecs = [...subField.value];
-                                        newSpecs[specIdx].name = e.target.value;
-                                        subField.onChange(newSpecs);
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="flex-2">
-                                    <input
-                                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors"
-                                      placeholder="Value (e.g. 1920x1080px)"
-                                      value={spec.value}
-                                      onChange={(e) => {
-                                        const newSpecs = [...subField.value];
-                                        newSpecs[specIdx].value = e.target.value;
-                                        subField.onChange(newSpecs);
-                                      }}
-                                    />
-                                  </div>
-                                  {/* Show delete button only when there are multiple items */}
-                                  {subField.value.length > 1 ? (
-                                    <DashboardButton
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      className="mt-0 h-10 w-10 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                      onClick={() => {
-                                        const newSpecs = subField.value.filter((_, i) => i !== specIdx);
-                                        subField.onChange(newSpecs);
-                                      }}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </DashboardButton>
-                                  ) : (
-                                    // Placeholder so the grid doesn't shift
-                                    <div className="h-10 w-10 shrink-0" />
-                                  )}
-                                </div>
-                              ))}
-                              <DashboardButton
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="mt-2 self-start text-xs"
-                                disabled={!canAddItem}
-                                onClick={() => subField.onChange([...subField.value, { name: "", value: "" }])}
-                              >
-                                <Plus className="mr-2 h-3 w-3" /> Add Item
-                              </DashboardButton>
-                            </div>
-                          );
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
+            );
+          })()}
 
         <div className="flex items-center justify-between pb-12 pt-4">
           <DashboardButton
@@ -876,12 +897,7 @@ export const AddProductForm = () => {
               Next Step
             </DashboardButton>
           ) : (
-            <DashboardButton
-              type="button"
-              size="lg"
-              isLoading={isPending}
-              onClick={form.handleSubmit(handleSubmit)}
-            >
+            <DashboardButton type="button" size="lg" isLoading={isPending} onClick={form.handleSubmit(handleSubmit)}>
               Create Product
             </DashboardButton>
           )}

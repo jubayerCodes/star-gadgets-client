@@ -58,3 +58,20 @@ export interface IProduct {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IProductAdmin {
+  _id: string;
+  title: string;
+  slug: string;
+  featuredImage: string;
+  productCode: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  priceRange: number | { min: number; max: number };
+  stock: number;
+  variants: IVariant[];
+  subCategoryId: ISubCategory;
+  categoryId: ICategory;
+  brandId: IBrand;
+}

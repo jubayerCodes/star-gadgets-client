@@ -15,7 +15,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         }
       >
         <AppSidebar variant="sidebar" />
-        <SidebarInset>
+        <SidebarInset className="overflow-x-hidden min-w-0">
           <div className="flex-1 overflow-y-auto p-6">{children}</div>
         </SidebarInset>
       </SidebarProvider>

@@ -52,7 +52,7 @@ const BrandsTable = () => {
       },
       cell: ({ row }) => {
         const featured = row.original.featured;
-        return <span>{featured ? <IconCircleCheckFilled className="text-green-700" /> : ""}</span>;
+        return <span>{featured ? <IconCircleCheckFilled className="text-accent" /> : ""}</span>;
       },
     },
     {
