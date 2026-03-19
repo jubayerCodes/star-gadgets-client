@@ -38,3 +38,8 @@ export const createProductApi = async (data: CreateProductFormData): Promise<Api
   const response = await axiosInstance.post("/products", data);
   return response.data;
 };
+
+export const deleteProductApi = async (id: string): Promise<ApiResponse<null>> => {
+  const res = await axiosInstance.delete(`/products/${id}`);
+  return res.data;
+};

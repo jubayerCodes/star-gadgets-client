@@ -8,13 +8,14 @@ import placeholder from "@/assets/img/placeholder.png";
 import { IconCircleCheckFilled, IconTrash } from "@tabler/icons-react";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { productsAdminQueryOptions } from "../../hooks/useProducts";
+import { productsAdminQueryOptions, useDeleteProductMutation } from "../../hooks/useProducts";
 import { useSearchParams } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const ProductsTable = () => {
   const searchParams = useSearchParams();
   const { data } = useSuspenseQuery(productsAdminQueryOptions(searchParams));
+  const { mutateAsync: deleteProduct } = useDeleteProductMutation();
 
   const columns: ColumnDef<IProductAdmin>[] = [
     {
@@ -100,16 +101,8 @@ const ProductsTable = () => {
     {
       accessorKey: "",
       header: "Actions",
-      cell: () => {
+      cell: ({ row }) => {
         const actions: DataTableOption[] = [
-          // {
-          //   label: "Edit",
-          //   icon: IconPencil,
-          //   onClick() {
-          //     const { openModal } = useUpdateCategoryStore.getState();
-          //     openModal({ category: row.original });
-          //   },
-          // },
           {
             label: "Delete",
             icon: IconTrash,
@@ -117,10 +110,10 @@ const ProductsTable = () => {
             onClick: () => {
               const { openModal } = useDeleteModalStore.getState();
               openModal({
-                title: "Delete Category",
-                description: "Are you sure you want to delete this product?",
+                title: "Delete Product",
+                description: "Are you sure you want to delete this product? This action cannot be undone.",
                 onConfirm: async () => {
-                  console.log("something deleted");
+                  await deleteProduct(row.original._id);
                 },
               });
             },

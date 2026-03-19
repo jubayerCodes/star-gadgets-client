@@ -25,7 +25,7 @@ const SearchInput = ({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-8 h-9 text-sm"
+        className="pl-8 h-9 text-sm focus-visible:ring-0"
       />
     </div>
   );

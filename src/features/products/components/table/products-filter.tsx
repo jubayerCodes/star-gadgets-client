@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Input } from "@/components/ui/input";
 import FilterSelect from "@/components/filter-select";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconFilter } from "@tabler/icons-react";
 import SearchInput from "@/components/search-input";
 import InfinityFilterSelect from "@/components/infinity-filter-select";
 import { useCategoriesListInfinityQuery } from "@/features/categories/hooks/useCategories";
@@ -38,6 +38,7 @@ const ProductsFilter = () => {
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "");
+  const [showFilters, setShowFilters] = useState(false);
 
   const debouncedSearch = useDebounce(search, 400);
   const debouncedMinPrice = useDebounce(minPrice, 500);
@@ -110,86 +111,98 @@ const ProductsFilter = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-between gap-3 mb-4">
-      {/* Row 1: Search + Clear */}
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-3 mb-4">
+      {/* Row 1: Search + Filter toggle + Clear */}
+      <div className="flex items-center gap-2 justify-between">
         <SearchInput
           value={search}
           onChange={setSearch}
           placeholder="Search by name, slug, code…"
-          className="flex-1 w-sm"
+          className="flex-1 max-w-sm"
         />
-        {hasFilters && (
-          <DashboardButton variant="ghost" onClick={clearFilters} className="gap-1 text-muted-foreground h-9">
-            <IconX size={14} />
-            Clear filters
+        <div className="flex items-center gap-2">
+          <DashboardButton
+            variant={showFilters ? "default" : "outline"}
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="gap-1 h-9"
+          >
+            <IconFilter size={14} />
+            Filter
           </DashboardButton>
-        )}
+          {hasFilters && (
+            <DashboardButton variant="ghost" onClick={clearFilters} className="gap-1 text-muted-foreground h-9">
+              <IconX size={14} />
+              Clear filters
+            </DashboardButton>
+          )}
+        </div>
       </div>
 
-      {/* Row 2: Infinity selects + static filters */}
-      <div className="flex flex-wrap items-center gap-2">
-        <InfinityFilterSelect
-          placeholder="Category"
-          selectedSlug={searchParams.get("category")}
-          onSelect={(slug) => setParam("category", slug)}
-          infinityFunction={useCategoriesListInfinityQuery}
-          className="w-full md:w-40"
-        />
-
-        <InfinityFilterSelect
-          placeholder="Sub Category"
-          selectedSlug={searchParams.get("subCategory")}
-          onSelect={(slug) => setParam("subCategory", slug)}
-          infinityFunction={useSubCategoriesListInfinityQuery}
-          className="w-full md:w-44"
-        />
-
-        <InfinityFilterSelect
-          placeholder="Brand"
-          selectedSlug={searchParams.get("brand")}
-          onSelect={(slug) => setParam("brand", slug)}
-          infinityFunction={useBrandsListInfinityQuery}
-          className="w-full md:w-36"
-        />
-
-        {/* Status */}
-        <FilterSelect
-          value={searchParams.get("isActive") ?? "all"}
-          onChange={(v) => setParam("isActive", v)}
-          options={STATUS_OPTIONS}
-          allLabel="All Status"
-          className="w-full md:w-32"
-        />
-
-        {/* Price range */}
-        <div className="flex items-center gap-1">
-          <Input
-            placeholder="Min ৳"
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className="h-9 text-sm w-24"
+      {/* Row 2: Infinity selects + static filters (collapsible) */}
+      {showFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          <InfinityFilterSelect
+            placeholder="Category"
+            selectedSlug={searchParams.get("category")}
+            onSelect={(slug) => setParam("category", slug)}
+            infinityFunction={useCategoriesListInfinityQuery}
+            className="w-full md:w-40"
           />
-          <span className="text-muted-foreground text-sm">–</span>
-          <Input
-            placeholder="Max ৳"
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="h-9 text-sm w-24"
+
+          <InfinityFilterSelect
+            placeholder="Sub Category"
+            selectedSlug={searchParams.get("subCategory")}
+            onSelect={(slug) => setParam("subCategory", slug)}
+            infinityFunction={useSubCategoriesListInfinityQuery}
+            className="w-full md:w-44"
+          />
+
+          <InfinityFilterSelect
+            placeholder="Brand"
+            selectedSlug={searchParams.get("brand")}
+            onSelect={(slug) => setParam("brand", slug)}
+            infinityFunction={useBrandsListInfinityQuery}
+            className="w-full md:w-36"
+          />
+
+          {/* Status */}
+          <FilterSelect
+            value={searchParams.get("isActive") ?? "all"}
+            onChange={(v) => setParam("isActive", v)}
+            options={STATUS_OPTIONS}
+            allLabel="All Status"
+            className="w-full md:w-32"
+          />
+
+          {/* Price range */}
+          <div className="flex items-center gap-1">
+            <Input
+              placeholder="Min ৳"
+              type="number"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="h-9 text-sm w-24 focus:ring-0 focus-visible:ring-0"
+            />
+            <span className="text-muted-foreground text-sm">–</span>
+            <Input
+              placeholder="Max ৳"
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="h-9 text-sm w-24 focus:ring-0 focus-visible:ring-0"
+            />
+          </div>
+
+          {/* Sort */}
+          <FilterSelect
+            value={currentSort}
+            onChange={handleSortChange}
+            options={SORT_OPTIONS}
+            allLabel="Default Sort"
+            className="w-full md:w-44"
           />
         </div>
-
-        {/* Sort */}
-        <FilterSelect
-          value={currentSort}
-          onChange={handleSortChange}
-          options={SORT_OPTIONS}
-          allLabel="Default Sort"
-          className="w-full md:w-44"
-        />
-      </div>
+      )}
     </div>
   );
 };
