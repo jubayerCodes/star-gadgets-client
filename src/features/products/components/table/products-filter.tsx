@@ -13,17 +13,6 @@ import { useSubCategoriesListInfinityQuery } from "@/features/sub-categories/hoo
 import { useBrandsListInfinityQuery } from "@/features/brands/hooks/useBrands";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 
-const SORT_OPTIONS = [
-  { value: "createdAt_desc", label: "Newest First" },
-  { value: "createdAt_asc", label: "Oldest First" },
-  { value: "title_asc", label: "Name A–Z" },
-  { value: "title_desc", label: "Name Z–A" },
-  { value: "priceRange_asc", label: "Price Low–High" },
-  { value: "priceRange_desc", label: "Price High–Low" },
-  { value: "stock_desc", label: "Stock (Most)" },
-  { value: "stock_asc", label: "Stock (Least)" },
-];
-
 const STATUS_OPTIONS = [
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
@@ -81,33 +70,13 @@ const ProductsFilter = () => {
     !!searchParams.get("brand") ||
     !!searchParams.get("isActive") ||
     !!searchParams.get("minPrice") ||
-    !!searchParams.get("maxPrice") ||
-    !!searchParams.get("sortBy");
+    !!searchParams.get("maxPrice");
 
   const clearFilters = () => {
     setSearch("");
     setMinPrice("");
     setMaxPrice("");
     router.push(pathname);
-  };
-
-  // Sort combined value (sortBy_sortOrder)
-  const currentSort = searchParams.get("sortBy")
-    ? `${searchParams.get("sortBy")}_${searchParams.get("sortOrder") ?? "desc"}`
-    : "all";
-
-  const handleSortChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
-      params.delete("sortBy");
-      params.delete("sortOrder");
-    } else {
-      const lastUnder = value.lastIndexOf("_");
-      params.set("sortBy", value.slice(0, lastUnder));
-      params.set("sortOrder", value.slice(lastUnder + 1));
-      params.delete("page");
-    }
-    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -192,15 +161,6 @@ const ProductsFilter = () => {
               className="h-9 text-sm w-24 focus:ring-0 focus-visible:ring-0"
             />
           </div>
-
-          {/* Sort */}
-          <FilterSelect
-            value={currentSort}
-            onChange={handleSortChange}
-            options={SORT_OPTIONS}
-            allLabel="Default Sort"
-            className="w-full md:w-44"
-          />
         </div>
       )}
     </div>

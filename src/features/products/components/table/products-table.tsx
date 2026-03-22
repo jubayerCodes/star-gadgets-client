@@ -5,15 +5,16 @@ import { IProductAdmin } from "../../types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import placeholder from "@/assets/img/placeholder.png";
-import { IconCircleCheckFilled, IconTrash } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconEdit, IconTrash } from "@tabler/icons-react";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
 import { productsAdminQueryOptions, useDeleteProductMutation } from "../../hooks/useProducts";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const ProductsTable = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { data } = useSuspenseQuery(productsAdminQueryOptions(searchParams));
   const { mutateAsync: deleteProduct } = useDeleteProductMutation();
 
@@ -37,6 +38,9 @@ const ProductsTable = () => {
     {
       accessorKey: "title",
       header: "Name",
+      meta: {
+        sortable: true,
+      },
     },
     {
       accessorKey: "productCode",
@@ -63,6 +67,7 @@ const ProductsTable = () => {
       meta: {
         align: "center",
         headerAlign: "center",
+        sortable: true,
       },
       cell: ({ row }) => {
         const price = row.original.priceRange;
@@ -77,6 +82,7 @@ const ProductsTable = () => {
       meta: {
         align: "center",
         headerAlign: "center",
+        sortable: true,
       },
       cell: ({ row }) => <span>{row.original.stock ?? 0}</span>,
     },
@@ -103,6 +109,13 @@ const ProductsTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const actions: DataTableOption[] = [
+          {
+            label: "Edit",
+            icon: IconEdit,
+            onClick: () => {
+              router.push(`/dashboard/products/${row.original._id}`);
+            },
+          },
           {
             label: "Delete",
             icon: IconTrash,

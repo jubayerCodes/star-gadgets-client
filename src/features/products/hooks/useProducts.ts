@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/constants";
-import { keepPreviousData, useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createProductApi, deleteProductApi, getProductsAdminApi } from "../api";
+import { createProductApi, deleteProductApi, getProductByIdApi, getProductsAdminApi, updateProductApi } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -39,6 +39,30 @@ export const useDeleteProductMutation = () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS_ADMIN] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS] });
       toast.success(data.message || "Product deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
+    },
+  });
+};
+
+export const useGetProductByIdQuery = (id: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCTS, id],
+    queryFn: () => getProductByIdApi(id),
+    enabled: !!id,
+  });
+};
+
+export const useUpdateProductMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateProductApi,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS_ADMIN] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PRODUCTS] });
+      toast.success(data.message || "Product updated successfully");
     },
     onError: (error) => {
       toast.error(extractErrorMessage(error));

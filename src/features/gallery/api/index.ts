@@ -5,9 +5,9 @@ import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 export const getImagesApi = async (query: ReadonlyURLSearchParams): Promise<ApiResponse<IUploadImage[]>> => {
-  const { page, limit } = parseSearchQuery(query);
+  const { page } = parseSearchQuery(query);
   const res = await axiosInstance.get("/uploads", {
-    params: { page, limit },
+    params: { page, limit: 32 },
   });
   return res.data;
 };

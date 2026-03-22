@@ -6,9 +6,9 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import { CreateCategoryFormData, UpdateCategoryFormData } from "../schema";
 
 export const getCategoriesAdminApi = async (query: ReadonlyURLSearchParams): Promise<ApiResponse<ICategoryAdmin[]>> => {
-  const { page, limit } = parseSearchQuery(query);
+  const { page, limit, search, featured, sortBy, sortOrder } = parseSearchQuery(query);
   const res = await axiosInstance.get("/categories/admin", {
-    params: { page, limit },
+    params: { page, limit, search, featured, sortBy, sortOrder },
   });
   return res.data;
 };

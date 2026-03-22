@@ -38,6 +38,10 @@ const BrandsTable = () => {
     {
       accessorKey: "title",
       header: "Name",
+      meta: {
+        sortable: true,
+        sortKey: "title",
+      },
     },
     {
       accessorKey: "slug",

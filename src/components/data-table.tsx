@@ -18,12 +18,21 @@ import { usePagination } from "@/hooks/use-pagination";
 import { Meta } from "@/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
+import { IconArrowsUpDown, IconArrowUp, IconArrowDown } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData, TValue> {
     align?: "left" | "center" | "right" | "justify";
     headerAlign?: "left" | "center" | "right" | "justify";
+    /** If true, the column header renders a clickable sort icon */
+    sortable?: boolean;
+    /**
+     * The URL query key used for sortBy. Defaults to the column's accessorKey
+     * when not provided.
+     */
+    sortKey?: string;
   }
 }
 
@@ -41,16 +50,34 @@ export function DataTable<TData, TValue>({ columns, data, meta }: DataTableProps
 
   const pageIndex = page - 1;
 
-  const updateSearchParams = (updates: Record<string, string>) => {
+  const updateSearchParams = (updates: Record<string, string>, deletions?: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
       params.set(key, value);
     });
 
+    deletions?.forEach((key) => params.delete(key));
+
     router.replace(`${pathname}?${params.toString()}`, {
       scroll: false,
     });
+  };
+
+  const currentSortBy = searchParams.get("sortBy") ?? "";
+  const currentSortOrder = searchParams.get("sortOrder") ?? "";
+
+  /** Cycle: none → asc → desc → none. Always resets page to 1. */
+  const handleSort = (sortKey: string) => {
+    if (currentSortBy !== sortKey) {
+      // Different column — start with asc
+      updateSearchParams({ sortBy: sortKey, sortOrder: "asc", page: "1" });
+    } else if (currentSortOrder === "asc") {
+      updateSearchParams({ sortBy: sortKey, sortOrder: "desc", page: "1" });
+    } else {
+      // Was desc — clear sort, reset page
+      updateSearchParams({ page: "1" }, ["sortBy", "sortOrder"]);
+    }
   };
 
   const table = useReactTable({
@@ -76,17 +103,52 @@ export function DataTable<TData, TValue>({ columns, data, meta }: DataTableProps
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta;
+                  const isSortable = meta?.sortable === true;
+                  const sortKey =
+                    meta?.sortKey ??
+                    (typeof (header.column.columnDef as { accessorKey?: string }).accessorKey === "string"
+                      ? (header.column.columnDef as { accessorKey?: string }).accessorKey!
+                      : undefined);
+                  const isActiveSort = isSortable && !!sortKey && currentSortBy === sortKey;
+
                   return (
                     <TableHead
                       key={header.id}
                       style={{
                         width: header.getSize(),
                         minWidth: header.getSize(),
-                        textAlign: header.column.columnDef.meta?.headerAlign || "left",
+                        textAlign: meta?.headerAlign || "left",
                       }}
                       className="last:text-right!"
                     >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : (
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1",
+                            isSortable && "cursor-pointer select-none group",
+                          )}
+                          onClick={() => isSortable && sortKey && handleSort(sortKey)}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {isSortable && (
+                            <span
+                              className={cn(
+                                "transition-colors",
+                                isActiveSort ? "text-foreground" : "text-muted-foreground/40 group-hover:text-muted-foreground",
+                              )}
+                            >
+                              {isActiveSort && currentSortOrder === "asc" ? (
+                                <IconArrowUp size={14} />
+                              ) : isActiveSort && currentSortOrder === "desc" ? (
+                                <IconArrowDown size={14} />
+                              ) : (
+                                <IconArrowsUpDown size={14} />
+                              )}
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </TableHead>
                   );
                 })}

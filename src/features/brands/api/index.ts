@@ -6,9 +6,9 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import { CreateBrandFormData, UpdateBrandFormData } from "../schema";
 
 export const getBrandsAdminApi = async (query: ReadonlyURLSearchParams): Promise<ApiResponse<IBrand[]>> => {
-  const { page, limit } = parseSearchQuery(query);
+  const { page, limit, search, featured, sortBy, sortOrder } = parseSearchQuery(query);
   const res = await axiosInstance.get("/brands/admin", {
-    params: { page, limit },
+    params: { page, limit, search, featured, sortBy, sortOrder },
   });
   return res.data;
 };

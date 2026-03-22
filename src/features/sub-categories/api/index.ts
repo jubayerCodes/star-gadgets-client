@@ -8,12 +8,17 @@ import { CreateSubCategoryFormData, UpdateSubCategoryFormData } from "../schema"
 export const getSubCategoriesAdminApi = async (
   query: ReadonlyURLSearchParams,
 ): Promise<ApiResponse<ISubCategoryAdmin[]>> => {
-  const { limit, page } = parseSearchQuery(query);
+  const { limit, page, search, featured, sortBy, sortOrder, category } = parseSearchQuery(query);
 
   const res = await axiosInstance.get("/sub-categories/admin", {
     params: {
       limit,
       page,
+      search,
+      featured,
+      sortBy,
+      sortOrder,
+      category,
     },
   });
   return res.data;

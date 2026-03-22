@@ -73,3 +73,8 @@ export const createProductZodSchema = z.object({
 });
 
 export type CreateProductFormData = z.infer<typeof createProductZodSchema>;
+
+// Update schema — identical validation to create (full form submission)
+export const updateProductZodSchema = createProductZodSchema;
+
+export type UpdateProductFormData = z.infer<typeof updateProductZodSchema>;

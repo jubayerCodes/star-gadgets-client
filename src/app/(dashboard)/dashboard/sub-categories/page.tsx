@@ -4,6 +4,7 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import Loading from "@/components/layout/loading";
 import CreateSubCategoryModal from "@/features/sub-categories/components/modal/create-sub-category-modal";
 import UpdateSubCategoryModal from "@/features/sub-categories/components/modal/update-sub-category-modal";
+import SubCategoriesFilter from "@/features/sub-categories/components/table/sub-categories-filter";
 import SubCategoriesTable from "@/features/sub-categories/components/table/sub-categories-table";
 import { Suspense } from "react";
 
@@ -14,6 +15,9 @@ function SubCategoriesPage() {
         <CreateSubCategoryModal />
         <UpdateSubCategoryModal />
       </DashboardHeader>
+      <Suspense fallback={null}>
+        <SubCategoriesFilter />
+      </Suspense>
       <Suspense fallback={<Loading />}>
         <SubCategoriesTable />
       </Suspense>

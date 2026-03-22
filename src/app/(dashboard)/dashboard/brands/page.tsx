@@ -2,6 +2,7 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import Loading from "@/components/layout/loading";
 import CreateBrandModal from "@/features/brands/components/models/createBrandModal";
 import UpdateBrandModal from "@/features/brands/components/models/updateBrandModal";
+import BrandsFilter from "@/features/brands/components/table/brands-filter";
 import BrandsTable from "@/features/brands/components/table/BrandsTable";
 import { Suspense } from "react";
 
@@ -12,6 +13,9 @@ const Brands = () => {
         <CreateBrandModal />
         <UpdateBrandModal />
       </DashboardHeader>
+      <Suspense fallback={null}>
+        <BrandsFilter />
+      </Suspense>
       <Suspense fallback={<Loading />}>
         <BrandsTable />
       </Suspense>

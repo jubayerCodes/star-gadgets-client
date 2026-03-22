@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
-import { CreateProductFormData } from "../schemas/product.schema";
+import { CreateProductFormData, UpdateProductFormData } from "../schemas/product.schema";
 import { ApiResponse } from "@/types";
 import { IProduct, IProductAdmin } from "../types/product.types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
@@ -41,5 +41,15 @@ export const createProductApi = async (data: CreateProductFormData): Promise<Api
 
 export const deleteProductApi = async (id: string): Promise<ApiResponse<null>> => {
   const res = await axiosInstance.delete(`/products/${id}`);
+  return res.data;
+};
+
+export const getProductByIdApi = async (id: string): Promise<ApiResponse<IProduct>> => {
+  const res = await axiosInstance.get(`/products/${id}`);
+  return res.data;
+};
+
+export const updateProductApi = async ({ id, data }: { id: string; data: UpdateProductFormData }): Promise<ApiResponse<IProduct>> => {
+  const res = await axiosInstance.patch(`/products/${id}`, data);
   return res.data;
 };

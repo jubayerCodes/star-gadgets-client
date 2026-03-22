@@ -5,13 +5,11 @@ import {
   Icon,
   IconDashboard,
   IconDeviceLaptop,
-  IconFolder,
   IconHelp,
   IconLayout2,
   IconListDetails,
   IconSearch,
   IconSettings,
-  IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
 
@@ -112,16 +110,6 @@ const navMain: INavItem[] = [
     title: "Brands",
     url: "/dashboard/brands",
     icon: IconWorld,
-  },
-  {
-    title: "Projects",
-    url: "#",
-    icon: IconFolder,
-  },
-  {
-    title: "Team",
-    url: "#",
-    icon: IconUsers,
   },
 ];
 
