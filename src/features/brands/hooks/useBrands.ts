@@ -17,7 +17,7 @@ export const brandsAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) =
 export const useBrandsListInfinityQuery = (search: string) => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.BRANDS_LIST, search],
-    queryFn: ({ pageParam = 1 }) => getBrandsListApi({ page: pageParam as number, limit: 20, search }),
+    queryFn: ({ pageParam }) => getBrandsListApi({ page: pageParam, limit: 20, search }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, total, limit } = lastPage.meta;

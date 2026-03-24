@@ -15,8 +15,7 @@ export const subCategoriesAdminQueryOptions = (searchParams: ReadonlyURLSearchPa
 export const useSubCategoriesListInfinityQuery = (search: string, categoryId?: string) => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.SUB_CATEGORIES_LIST, search, categoryId],
-    queryFn: ({ pageParam = 1 }) =>
-      getSubCategoriesListApi({ page: pageParam as number, limit: 20, search, categoryId }),
+    queryFn: ({ pageParam }) => getSubCategoriesListApi({ page: pageParam, limit: 20, search, categoryId }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { page, total, limit } = lastPage.meta;

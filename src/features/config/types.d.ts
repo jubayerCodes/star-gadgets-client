@@ -5,5 +5,6 @@ export interface IHeaderConfigResponse {
 }
 
 export interface IConfigResponse {
+  _id: string;
   header: IHeaderConfigResponse;
 }

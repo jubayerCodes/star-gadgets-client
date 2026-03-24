@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { UpdateHeaderConfigFormData } from "../schema";
 import { UseFormReturn } from "react-hook-form";
 import DashboardButton from "@/components/dashboard/dashboard-button";
@@ -25,10 +25,10 @@ interface AddNavLinkModalProps {
 function AddNavLinkModal({ form }: AddNavLinkModalProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [selection, setSelection] = useState<string[]>([]);
+  const [selection, setSelection] = useState<{ _id: string; title: string }[]>([]);
 
-  const toggleCategory = (id: string) => {
-    setSelection((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+  const toggleCategory = (category: { _id: string; title: string }) => {
+    setSelection((prev) => (prev.includes(category) ? prev.filter((i) => i !== category) : [...prev, category]));
   };
 
   const debouncedSearchValue = useDebounce(searchValue, 500);
@@ -36,15 +36,32 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useCategoriesListInfinityQuery(debouncedSearchValue);
 
   const categories = data?.pages.flatMap((page) => page.data) || [];
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastItemRef = (node: Element | null) => {
+    if (isFetchingNextPage) return;
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    });
+
+    if (node) observer.current.observe(node);
+  };
+
+  const handleAdd = () => {
+    const currentNavLinks = form.getValues("header.navLinks");
+    const newNavLinks = [...currentNavLinks, ...selection];
+    form.setValue("header.navLinks", newNavLinks);
+    setOpen(false);
+    setSelection([]);
+    setSearchValue("");
+  };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-      onOpenChangeComplete={() => {
-        form.reset();
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
           <DashboardButton variant="outline" size="sm">
@@ -70,32 +87,24 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
               />
             </div>
             <div className="flex flex-wrap gap-2 max-h-[60vh] overflow-y-auto">
-              {categories.map((category) => (
+              {categories.map((category, idx) => (
                 <DashboardButton
                   size={"sm"}
-                  variant={selection.includes(category._id) ? "default" : "outline"}
+                  variant={selection.includes(category) ? "default" : "outline"}
                   key={category._id}
-                  onClick={() => toggleCategory(category._id)}
+                  onClick={() => toggleCategory(category)}
+                  ref={idx === categories.length - 1 ? lastItemRef : undefined}
+                  className={"text-xs h-7 px-2"}
                 >
                   {category.title}
                 </DashboardButton>
               ))}
-              {hasNextPage && (
-                <DashboardButton variant="outline" size="sm" onClick={() => fetchNextPage()}>
-                  {isFetchingNextPage ? "Loading..." : "Load More"}
-                </DashboardButton>
-              )}
             </div>
             <DialogFooter>
-              <DashboardButton variant="outline" onClick={() => setOpen(false)}>
+              <DashboardButton type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </DashboardButton>
-              <DashboardButton
-                onClick={() => {
-                  form.setValue("header.navLinks", selection);
-                  setOpen(false);
-                }}
-              >
+              <DashboardButton onClick={handleAdd} type="button">
                 Add
               </DashboardButton>
             </DialogFooter>
