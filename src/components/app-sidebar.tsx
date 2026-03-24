@@ -5,10 +5,9 @@ import {
   Icon,
   IconDashboard,
   IconDeviceLaptop,
-  IconHelp,
+  IconHome,
   IconLayout2,
   IconListDetails,
-  IconSearch,
   IconSettings,
   IconWorld,
 } from "@tabler/icons-react";
@@ -50,19 +49,9 @@ const data = {
   },
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
+      title: "Back to Home",
+      url: "/",
+      icon: IconHome,
     },
   ],
 };
@@ -110,6 +99,16 @@ const navMain: INavItem[] = [
     title: "Brands",
     url: "/dashboard/brands",
     icon: IconWorld,
+  },
+  {
+    title: "Configurations",
+    icon: IconSettings,
+    children: [
+      {
+        title: "Header",
+        url: "/dashboard/configurations/header",
+      },
+    ],
   },
 ];
 

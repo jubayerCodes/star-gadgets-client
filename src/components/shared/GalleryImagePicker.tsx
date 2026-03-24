@@ -213,10 +213,9 @@ function GalleryImagePickerModal({
 
   const handleUploadedSingle = (url: string) => {
     if (multiple) {
-      // Add to local selection; don't close
       setSelection((prev) => (prev.includes(url) ? prev : [...prev, url]));
     } else {
-      onSelect!(url);
+      onSelect(url);
     }
   };
 
