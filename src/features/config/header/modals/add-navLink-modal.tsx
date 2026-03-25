@@ -8,9 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UpdateHeaderConfigFormData } from "../schema";
-import { UseFormReturn } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import DashboardButton from "@/components/dashboard/dashboard-button";
 import { Plus, SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -25,10 +25,23 @@ interface AddNavLinkModalProps {
 function AddNavLinkModal({ form }: AddNavLinkModalProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+
+  const { fields: currentNavLinks } = useFieldArray({
+    control: form.control,
+    name: "header.navLinks",
+  });
+
   const [selection, setSelection] = useState<{ _id: string; title: string }[]>([]);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelection(currentNavLinks.map((link) => ({ _id: link._id, title: link.title })));
+  }, [currentNavLinks]);
+
   const toggleCategory = (category: { _id: string; title: string }) => {
-    setSelection((prev) => (prev.includes(category) ? prev.filter((i) => i !== category) : [...prev, category]));
+    setSelection((prev) =>
+      prev.some((item) => item._id === category._id) ? prev.filter((i) => i._id !== category._id) : [...prev, category],
+    );
   };
 
   const debouncedSearchValue = useDebounce(searchValue, 500);
@@ -52,9 +65,8 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
   };
 
   const handleAdd = () => {
-    const currentNavLinks = form.getValues("header.navLinks");
-    const newNavLinks = [...currentNavLinks, ...selection];
-    form.setValue("header.navLinks", newNavLinks);
+    const newNavLinks = [...selection];
+    form.setValue("header.navLinks", newNavLinks, { shouldDirty: true });
     setOpen(false);
     setSelection([]);
     setSearchValue("");
@@ -90,7 +102,7 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
               {categories.map((category, idx) => (
                 <DashboardButton
                   size={"sm"}
-                  variant={selection.includes(category) ? "default" : "outline"}
+                  variant={selection.some((item) => item._id === category._id) ? "default" : "outline"}
                   key={category._id}
                   onClick={() => toggleCategory(category)}
                   ref={idx === categories.length - 1 ? lastItemRef : undefined}
@@ -105,7 +117,7 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
                 Cancel
               </DashboardButton>
               <DashboardButton onClick={handleAdd} type="button">
-                Add
+                Update
               </DashboardButton>
             </DialogFooter>
           </div>

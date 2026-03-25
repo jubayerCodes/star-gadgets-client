@@ -223,17 +223,19 @@ const Header = () => {
                       {category?.title}
                     </NavigationMenuTrigger>
                   </Link>
-                  <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
-                    {category?.subCategories?.map((subCategory) => (
-                      <NavigationMenuLink
-                        key={subCategory?._id}
-                        className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline "
-                        href={`/sub-categories/${subCategory?.slug}`}
-                      >
-                        {subCategory?.title}
-                      </NavigationMenuLink>
-                    ))}
-                  </NavigationMenuContent>
+                  {category?.subCategories?.length > 0 && (
+                    <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
+                      {category?.subCategories?.map((subCategory) => (
+                        <NavigationMenuLink
+                          key={subCategory?._id}
+                          className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline "
+                          href={`/sub-categories/${subCategory?.slug}`}
+                        >
+                          {subCategory?.title}
+                        </NavigationMenuLink>
+                      ))}
+                    </NavigationMenuContent>
+                  )}
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>

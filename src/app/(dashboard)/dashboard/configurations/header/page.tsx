@@ -1,4 +1,4 @@
-import HeaderConfigForm from "@/features/config/header/form/header-config-form";
+import { HeaderConfigForm } from "@/features/config/header/form/header-config-form";
 
 function HeaderConfigPage() {
   return <HeaderConfigForm />;
