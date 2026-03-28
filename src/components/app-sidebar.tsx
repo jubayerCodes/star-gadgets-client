@@ -108,6 +108,10 @@ const navMain: INavItem[] = [
         title: "Header",
         url: "/dashboard/configurations/header",
       },
+      {
+        title: "Hero",
+        url: "/dashboard/configurations/hero",
+      },
     ],
   },
 ];

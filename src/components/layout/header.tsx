@@ -213,13 +213,13 @@ const Header = () => {
         </div>
       </div>
       <div className="border-b">
-        <div className="container">
+        <div className="container py-2">
           <NavigationMenu align="start" className="max-w-full!">
-            <NavigationMenuList className="gap-4 justify-center">
+            <NavigationMenuList className="justify-between">
               {categories?.map((category) => (
                 <NavigationMenuItem key={category?._id}>
                   <Link href={`/categories/${category?.slug}`}>
-                    <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! py-6! *:hidden!">
+                    <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! *:hidden!">
                       {category?.title}
                     </NavigationMenuTrigger>
                   </Link>

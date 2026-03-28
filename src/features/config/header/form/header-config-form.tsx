@@ -5,15 +5,14 @@ import { UpdateHeaderConfigPayload, updateHeaderConfigValidation } from "../sche
 import { UpdateHeaderConfigFormData } from "../schema";
 import { useFieldArray, useForm } from "react-hook-form";
 import AddNavLinkModal from "../modals/add-navLink-modal";
-import DashboardButton from "@/components/dashboard/dashboard-button";
-import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { useUpdateHeaderConfig } from "../../hooks/useHeaderConfig";
 import { useGetConfig } from "../../hooks/useConfig";
 import { GripVertical, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DashboardConfigHeader from "@/components/dashboard/dashbaord-config-header";
 
 export function HeaderConfigForm() {
   const { data: config } = useGetConfig();
@@ -27,12 +26,9 @@ export function HeaderConfigForm() {
     },
   });
 
-  const hasInitialized = useRef(false);
-
   useEffect(() => {
-    if (!hasInitialized.current && config?.data?.header?.navLinks) {
+    if (config?.data?.header?.navLinks) {
       form.reset({ header: { navLinks: config.data.header.navLinks } });
-      hasInitialized.current = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config]);
@@ -75,11 +71,12 @@ export function HeaderConfigForm() {
   return (
     <div className="mx-auto max-w-4xl">
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
-        <DashboardHeader title="Header Configurations" description="Manage your header configurations">
-          <DashboardButton type="submit" disabled={isPending || !form.formState.isDirty}>
-            {isPending ? "Saving..." : "Save"}
-          </DashboardButton>
-        </DashboardHeader>
+        <DashboardConfigHeader
+          title="Header Configurations"
+          description="Manage your header configurations"
+          isPending={isPending}
+          form={form}
+        />
         <div className="rounded-lg border bg-card p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-medium">Nav Links</h3>
