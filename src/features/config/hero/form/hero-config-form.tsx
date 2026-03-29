@@ -2,33 +2,35 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { useEffect } from "react";
-import Image from "next/image";
-import { X, ImageIcon, Link2, MousePointerClick } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ImageIcon, Plus } from "lucide-react";
 
 import DashboardConfigHeader from "@/components/dashboard/dashbaord-config-header";
+import DashboardButton from "@/components/dashboard/dashboard-button";
 import { useGetConfig } from "../../hooks/useConfig";
 import { useUpdateHeroConfig } from "../../hooks/useHeroConfig";
-import {
-  UpdateHeroConfigFormData,
-  UpdateHeroConfigPayload,
-  updateHeroConfigValidation,
-} from "../schema";
-import HeroItemModal from "../modals/hero-item-modal";
-import ImagePickerModal from "../modals/image-picker-modal";
-import { Label } from "@/components/ui/label";
+import { updateHeroConfigValidation } from "../schema";
+import { UpdateHeroConfigFormData, UpdateHeroConfigPayload } from "../types";
+import { HeroItemCard } from "./hero-item-card";
+import { HeroItemFields } from "./hero-item-form";
 import { cn } from "@/lib/utils";
 
 export function HeroConfigForm() {
   const { data: config } = useGetConfig();
   const { mutateAsync: updateHeroConfig, isPending } = useUpdateHeroConfig();
 
+  /**
+   * Index of the newly appended (draft) item, or null when not adding.
+   */
+  const [draftIndex, setDraftIndex] = useState<number | null>(null);
+
   const form = useForm<UpdateHeroConfigFormData>({
     resolver: zodResolver(updateHeroConfigValidation),
     defaultValues: {
       hero: {
         heroType: "fixed",
-        heroContent: [],
+        fixedContent: [],
+        carouselContent: [],
       },
     },
   });
@@ -39,34 +41,79 @@ export function HeroConfigForm() {
       form.reset({
         hero: {
           heroType: config.data.hero.heroType,
-          heroContent: config.data.hero.heroContent as UpdateHeroConfigFormData["hero"]["heroContent"],
+          fixedContent: config.data.hero.fixedContent as UpdateHeroConfigFormData["hero"]["fixedContent"],
+          carouselContent: config.data.hero.carouselContent as UpdateHeroConfigFormData["hero"]["carouselContent"],
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config]);
 
-  const { fields, append, remove, update } = useFieldArray({
+  const {
+    fields: fixedFields,
+    append: appendFixed,
+    remove: removeFixed,
+  } = useFieldArray({
     control: form.control,
-    name: "hero.heroContent",
+    name: "hero.fixedContent",
+  });
+
+  const {
+    fields: carouselFields,
+    append: appendCarousel,
+    remove: removeCarousel,
+  } = useFieldArray({
+    control: form.control,
+    name: "hero.carouselContent",
   });
 
   const heroType = useWatch({ control: form.control, name: "hero.heroType" });
   const isFixed = heroType === "fixed";
-  const maxItems = isFixed ? 3 : Infinity;
-  const canAddMore = fields.length < maxItems;
+  const fields = isFixed ? fixedFields : carouselFields;
+  const append = isFixed ? appendFixed : appendCarousel;
+  const remove = isFixed ? removeFixed : removeCarousel;
+  const arrayName = isFixed ? "fixedContent" : "carouselContent";
 
-  // When hero type changes, clear content to avoid mismatched fields
+  const maxItems = isFixed ? 3 : Infinity;
+  // Don't count the draft item toward the "can add more" limit
+  const committedCount = draftIndex !== null ? fields.length - 1 : fields.length;
+  const canAddMore = committedCount < maxItems && draftIndex === null;
+
+  // When hero type changes, clear all content and any draft
   const handleTypeChange = (type: "fixed" | "carousel") => {
     form.setValue("hero.heroType", type, { shouldDirty: true });
-    form.setValue("hero.heroContent", [], { shouldDirty: true });
+    setDraftIndex(null);
+  };
+
+  /** Append a blank placeholder and open HeroItemFields for it */
+  const handleAddItem = () => {
+    // Both types conform to the optional superset during add
+    append({ id: "", image: "", link: "", button: "", buttonLink: "" });
+    setDraftIndex(fields.length); // index of the just-appended item
+  };
+
+  /** User confirmed the new item — validate it, then commit */
+  const handleDraftConfirm = () => {
+    if (draftIndex === null) return;
+    form.trigger(`hero.${arrayName}.${draftIndex}`).then((valid) => {
+      if (valid) setDraftIndex(null);
+    });
+  };
+
+  /** User cancelled adding — remove the draft item */
+  const handleDraftCancel = () => {
+    if (draftIndex !== null) {
+      remove(draftIndex);
+      setDraftIndex(null);
+    }
   };
 
   const handleSubmit = (data: UpdateHeroConfigFormData) => {
     const payload: UpdateHeroConfigPayload = {
       hero: {
         heroType: data.hero.heroType,
-        heroContent: data.hero.heroContent,
+        fixedContent: data.hero.fixedContent,
+        carouselContent: data.hero.carouselContent,
       },
     };
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -83,7 +130,7 @@ export function HeroConfigForm() {
           form={form}
         />
 
-        {/* ── Hero Type Switcher ───────────────────────────────────────── */}
+        {/* ── Hero Type Switcher ──────────────────────────────────────────── */}
         <div className="rounded-lg border bg-card p-6 shadow-sm">
           <div className="mb-1">
             <h3 className="text-lg font-medium">Hero Type</h3>
@@ -98,9 +145,9 @@ export function HeroConfigForm() {
                 type="button"
                 onClick={() => handleTypeChange(type)}
                 className={cn(
-                  "flex-1 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all",
+                  "flex-1 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all cursor-pointer",
                   heroType === type
-                    ? "border-primary bg-primary/5 text-primary"
+                    ? "border-primary text-primary"
                     : "border-input bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
                 )}
               >
@@ -113,27 +160,38 @@ export function HeroConfigForm() {
           </div>
         </div>
 
-        {/* ── Hero Content ─────────────────────────────────────────────── */}
-        <div className="rounded-lg border bg-card p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
+        {/* ── Hero Content ────────────────────────────────────────────────── */}
+        <div className="rounded-lg border bg-card p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium">Hero Content</h3>
               <p className="text-sm text-muted-foreground">
                 {isFixed
-                  ? `Add up to 3 items. Each needs an image and a link.`
-                  : `Add carousel slides. Each needs an image, button label, and button link.`}
+                  ? "Add up to 3 items. Each needs an image and a link."
+                  : "Add carousel slides. Each needs an image, button label, and button link."}
               </p>
             </div>
             {canAddMore && (
-              <HeroItemModal
-                heroType={heroType}
-                mode="add"
-                onSave={(item) => append(item)}
-              />
+              <DashboardButton
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddItem}
+              >
+                <Plus className="size-4" />
+                Add Item
+              </DashboardButton>
             )}
           </div>
 
+          {form.formState.errors.hero?.[arrayName]?.message && (
+             <p className="text-sm font-medium text-destructive">
+               {form.formState.errors.hero[arrayName]?.message as string}
+             </p>
+          )}
+
           {fields.length === 0 ? (
+            /* Empty state */
             <div className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-input py-12 text-center">
               <div className="flex size-12 items-center justify-center rounded-full border bg-muted/40">
                 <ImageIcon className="size-5 text-muted-foreground" />
@@ -148,117 +206,46 @@ export function HeroConfigForm() {
           ) : (
             <div
               className={cn(
-                "grid gap-4",
+                "grid gap-4 items-start",
                 isFixed ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2",
               )}
             >
-              {fields.map((field, index) => (
-                <HeroItemCard
-                  key={field.id}
-                  field={field}
-                  heroType={heroType}
-                  onEdit={(updated) => update(index, updated)}
-                  onRemove={() => remove(index)}
-                />
-              ))}
+              {fields.map((field, index) =>
+                index === draftIndex ? (
+                  /* New item: show inline fields */
+                  <HeroItemFields
+                    key={field.id}
+                    form={form}
+                    index={index}
+                    heroType={heroType}
+                    arrayName={arrayName}
+                    mode="add"
+                    onConfirm={handleDraftConfirm}
+                    onCancel={handleDraftCancel}
+                  />
+                ) : (
+                  /* Existing item: card with edit-in-place */
+                  <HeroItemCard
+                    key={field.id}
+                    form={form}
+                    index={index}
+                    field={field}
+                    heroType={heroType}
+                    arrayName={arrayName}
+                    onRemove={() => {
+                      remove(index);
+                      // If the draft was after this item, shift its index down
+                      if (draftIndex !== null && index < draftIndex) {
+                        setDraftIndex(draftIndex - 1);
+                      }
+                    }}
+                  />
+                ),
+              )}
             </div>
           )}
         </div>
       </form>
-    </div>
-  );
-}
-
-// ─── Hero Item Card ───────────────────────────────────────────────────────────
-
-interface HeroItemCardProps {
-  field: UpdateHeroConfigFormData["hero"]["heroContent"][number] & { id: string };
-  heroType: "fixed" | "carousel";
-  onEdit: (updated: UpdateHeroConfigFormData["hero"]["heroContent"][number]) => void;
-  onRemove: () => void;
-}
-
-function HeroItemCard({ field, heroType, onEdit, onRemove }: HeroItemCardProps) {
-  return (
-    <div className="group relative rounded-lg border bg-background shadow-sm overflow-hidden">
-      {/* Image area */}
-      <div className="relative h-40 w-full bg-muted/30">
-        {field.image ? (
-          <Image src={field.image} alt={field.id} fill className="object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <ImagePickerModal
-              value={field.image}
-              onChange={(url) => onEdit({ ...field, image: url })}
-              label="Add image"
-            />
-          </div>
-        )}
-        {/* Overlay actions */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-          <ImagePickerModal
-            value={field.image}
-            onChange={(url) => onEdit({ ...field, image: url })}
-            trigger={
-              <button
-                type="button"
-                className="flex items-center gap-1 rounded-md bg-white/90 px-3 py-1.5 text-xs font-medium text-black hover:bg-white"
-              >
-                <ImageIcon className="size-3" /> Change
-              </button>
-            }
-          />
-        </div>
-      </div>
-
-      {/* Meta */}
-      <div className="p-3 space-y-1.5">
-        <div className="flex items-center justify-between gap-2">
-          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            {field.id || "No ID"}
-          </Label>
-          <div className="flex items-center gap-1">
-            <HeroItemModal
-              heroType={heroType}
-              mode="edit"
-              defaultValues={field}
-              onSave={onEdit}
-            />
-            <button
-              type="button"
-              onClick={onRemove}
-              className="flex items-center justify-center size-7 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-              aria-label="Remove item"
-            >
-              <X className="size-3.5" />
-            </button>
-          </div>
-        </div>
-
-        {heroType === "fixed" && field.link && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground truncate">
-            <Link2 className="size-3 shrink-0" />
-            <span className="truncate">{field.link}</span>
-          </div>
-        )}
-
-        {heroType === "carousel" && (
-          <>
-            {field.button && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <MousePointerClick className="size-3 shrink-0" />
-                <span className="font-medium">{field.button}</span>
-              </div>
-            )}
-            {field.buttonLink && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground truncate">
-                <Link2 className="size-3 shrink-0" />
-                <span className="truncate">{field.buttonLink}</span>
-              </div>
-            )}
-          </>
-        )}
-      </div>
     </div>
   );
 }

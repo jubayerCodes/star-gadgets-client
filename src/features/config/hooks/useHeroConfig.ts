@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UpdateHeroConfigPayload } from "../hero/schema";
+import { UpdateHeroConfigPayload } from "../hero/types";
 import { updateHeroConfigApi } from "../api";
 import { toast } from "sonner";
 import { QUERY_KEYS } from "@/constants";

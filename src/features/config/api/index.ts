@@ -2,7 +2,7 @@ import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types";
 import { IConfigResponse } from "../types";
 import { UpdateHeaderConfigPayload } from "../header/schema";
-import { UpdateHeroConfigPayload } from "../hero/schema";
+import { UpdateHeroConfigPayload } from "../hero/types";
 
 export const getConfigApi = async (): Promise<ApiResponse<IConfigResponse>> => {
   const res = await axiosInstance.get("/config");

@@ -72,9 +72,9 @@ export const GalleryGrid = () => {
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
         {images.length > 0 ? (
-          images.map((img) => (
+          images.map((img, idx) => (
             <div
-              key={img._id}
+              key={`${img._id}-${idx}`}
               className="group relative aspect-square overflow-hidden rounded-xl border bg-accent/10"
             >
               <Image

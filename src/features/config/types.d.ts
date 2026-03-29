@@ -19,7 +19,8 @@ export interface IHeroCarouselItem {
 
 export interface IHeroConfigResponse {
   heroType: "fixed" | "carousel";
-  heroContent: IHeroFixedItem[] | IHeroCarouselItem[];
+  fixedContent: IHeroFixedItem[];
+  carouselContent: IHeroCarouselItem[];
 }
 
 export interface IConfigResponse {
