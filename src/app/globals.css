@@ -153,3 +153,137 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── Hero Section ─────────────────────────────────────────────────── */
+
+/* Fixed layout */
+.hero-fixed-grid {
+  @apply container py-4 grid gap-3;
+  grid-template-columns: 65fr 35fr;
+}
+
+@media (max-width: 768px) {
+  .hero-fixed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-fixed-main {
+  @apply relative rounded-xl overflow-hidden block;
+  aspect-ratio: 16 / 7;
+}
+
+.hero-fixed-stack {
+  @apply flex flex-col gap-3;
+}
+
+.hero-fixed-small {
+  @apply relative rounded-xl overflow-hidden block flex-1;
+  aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 768px) {
+  .hero-fixed-small {
+    aspect-ratio: 16 / 7;
+    flex: none;
+  }
+}
+
+.hero-fixed-overlay {
+  @apply absolute inset-0 bg-black/0 transition-colors duration-300;
+}
+
+.hero-fixed-main:hover .hero-fixed-overlay,
+.hero-fixed-small:hover .hero-fixed-overlay {
+  @apply bg-black/10;
+}
+
+/* Skeletons */
+.hero-skeleton-main {
+  @apply w-full rounded-xl;
+  aspect-ratio: 16 / 7;
+}
+
+.hero-skeleton-small {
+  @apply w-full rounded-xl flex-1;
+  aspect-ratio: 4 / 3;
+}
+
+/* Carousel layout */
+.hero-carousel-wrapper {
+  @apply w-full relative;
+}
+
+.hero-swiper {
+  @apply w-full overflow-hidden;
+  aspect-ratio: 16 / 5.5;
+}
+
+@media (max-width: 768px) {
+  .hero-swiper {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.hero-slide {
+  @apply w-full h-full;
+}
+
+.hero-slide-inner {
+  @apply relative w-full h-full;
+}
+
+.hero-slide-overlay {
+  @apply absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent;
+}
+
+.hero-slide-cta {
+  @apply absolute inset-0 flex items-end justify-start p-8 md:p-12;
+}
+
+.hero-cta-btn {
+  @apply inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm
+    text-white bg-tartiary hover:bg-tartiary/90
+    shadow-lg shadow-tartiary/30
+    transition-all duration-300 hover:scale-105 hover:shadow-tartiary/50;
+}
+
+/* Custom Swiper nav buttons */
+.hero-nav-btn {
+  @apply absolute top-1/2 -translate-y-1/2 z-10
+    flex items-center justify-center
+    w-10 h-10 rounded-full
+    bg-white/90 hover:bg-white
+    text-foreground shadow-md
+    transition-all duration-200
+    hover:scale-110 hover:shadow-lg
+    border border-border/30;
+}
+
+.hero-prev-btn {
+  @apply left-3;
+}
+
+.hero-next-btn {
+  @apply right-3;
+}
+
+/* Swiper pagination dots */
+.hero-pagination {
+  @apply absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10;
+}
+
+.hero-pagination .swiper-pagination-bullet {
+  @apply w-2 h-2 rounded-full bg-white/60 transition-all duration-300 opacity-100;
+}
+
+.hero-pagination .swiper-pagination-bullet-active {
+  @apply w-6 bg-white;
+}
+
+/* Hide default swiper nav */
+.hero-swiper .swiper-button-prev,
+.hero-swiper .swiper-button-next {
+  display: none !important;
+}
+

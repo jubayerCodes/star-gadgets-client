@@ -21,6 +21,7 @@ import {
 import { useConfigStore } from "@/store/configStore";
 import { useLogoutUser } from "@/features/account/hooks/useAccount";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
+import MobileMenu from "./mobile-menu";
 
 const Header = () => {
   const { user } = useAuthStore();
@@ -82,7 +83,7 @@ const Header = () => {
 
   return (
     <header>
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-primary text-primary-foreground hidden lg:block">
         <div className="container flex items-center justify-between">
           <div className="flex items-stretch">
             {contactInfo.map((item, index) => (
@@ -130,6 +131,7 @@ const Header = () => {
       <div className="py-4 border-b">
         <div className="container flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
+            <MobileMenu />
             <Link href="/">
               <Image
                 src={logo}
@@ -137,13 +139,15 @@ const Header = () => {
                 loading="eager"
                 width={500}
                 height={100}
-                className="w-auto! h-10! aspect-auto"
+                className="w-auto! h-8! lg:h-10! aspect-auto"
               />
             </Link>
-            <SearchInput className="max-w-2xl" />
+            <div className="hidden lg:block flex-1">
+              <SearchInput className="max-w-2xl w-full" />
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2">
               {user ? (
                 <NavigationMenu align="end">
                   <NavigationMenuList>
@@ -196,15 +200,15 @@ const Header = () => {
                 </>
               )}
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="/wishlist">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/wishlist" className="hidden lg:block">
                 <IconWithCount icon={Heart} count={0} />
               </Link>
               <Link href="/cart">
                 <IconWithCount icon={ShoppingCart} count={0} />
               </Link>
             </div>
-            <Link href="/pc-builder">
+            <Link href="/pc-builder" className="hidden lg:block">
               <Button variant={"outline"} className="ml-2">
                 PC Builder
               </Button>
@@ -212,7 +216,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="border-b">
+      <div className="border-b hidden lg:block">
         <div className="container py-2">
           <NavigationMenu align="start" className="max-w-full!">
             <NavigationMenuList className="justify-between">

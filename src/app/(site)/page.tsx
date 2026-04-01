@@ -1,12 +1,9 @@
-import ComingSoon from "@/components/shared/coming-soon";
+import HeroSection from "@/features/hero/components/hero-section";
 
 export default function Home() {
   return (
-    <ComingSoon
-      title="Star Gadgets"
-      description="Star Gadgets is a leading online store for electronics and gadgets."
-      showCountdown={true}
-      targetDate={new Date(new Date().setDate(new Date().getDate() + 7))}
-    />
+    <div>
+      <HeroSection />
+    </div>
   );
 }
