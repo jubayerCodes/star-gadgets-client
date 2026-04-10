@@ -26,6 +26,7 @@ import { GalleryImagePicker } from "@/components/shared/GalleryImagePicker";
 import { ProductStatus } from "../../types/product.types";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import SubCategoryComboboxField from "@/features/sub-categories/components/form/SubCategoryComboboxField";
+import ProductBadgesField from "./product-badges-field";
 
 export const AddProductForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -44,6 +45,7 @@ export const AddProductForm = () => {
     description: "",
     isActive: true,
     isDeleted: false,
+    isFeatured: false,
     specifications: [
       {
         heading: "",
@@ -51,6 +53,7 @@ export const AddProductForm = () => {
       },
     ],
     attributes: [],
+    badges: [],
     variants: [
       {
         attributes: [],
@@ -150,6 +153,20 @@ export const AddProductForm = () => {
     }
   };
 
+  const goToStep = async (index: number) => {
+    if (index === currentStep) return;
+    if (index < currentStep) {
+      setCurrentStep(index);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const output = await form.trigger(steps[currentStep].fields as any, { shouldFocus: true });
+      if (!output) return;
+      setCurrentStep(index);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleSubmit = async (data: CreateProductFormData) => {
     const result = await createProduct(data);
     if (result.success) {
@@ -164,9 +181,14 @@ export const AddProductForm = () => {
       <div className="relative mb-8 pt-4">
         <div className="relative z-10 flex w-full items-center justify-between">
           {steps.map((step, index) => (
-            <div key={step.name} className="flex flex-col items-center gap-2 bg-background px-2">
+            <button
+              key={step.name}
+              type="button"
+              onClick={() => goToStep(index)}
+              className="flex flex-col items-center gap-2 bg-background px-2 cursor-pointer group"
+            >
               <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-medium transition-colors ${
+                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 font-medium transition-colors group-hover:scale-105 ${
                   currentStep > index
                     ? "border-primary bg-primary text-primary-foreground"
                     : currentStep === index
@@ -183,11 +205,13 @@ export const AddProductForm = () => {
                 )}
               </div>
               <span
-                className={`text-sm font-medium ${currentStep >= index ? "text-foreground" : "text-muted-foreground"}`}
+                className={`text-sm font-medium transition-colors ${
+                  currentStep >= index ? "text-foreground" : "text-muted-foreground group-hover:text-foreground/70"
+                }`}
               >
                 {step.name}
               </span>
-            </div>
+            </button>
           ))}
           {/* Progress Line */}
           <div className="absolute left-0 top-[20px] -z-10 h-[2px] w-full bg-muted-foreground/30">
@@ -223,8 +247,19 @@ export const AddProductForm = () => {
                 />
                 <div className="flex items-center gap-4 pt-8 md:col-span-3">
                   <CheckboxField form={form} name="isActive" label="Is Active?" />
+                  <CheckboxField form={form} name="isFeatured" label="Is Featured?" />
                 </div>
               </div>
+            </div>
+
+            <div className="rounded-lg border bg-card p-6 shadow-sm">
+              <div className="mb-4">
+                <h3 className="text-lg font-medium">Badges</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Optional — assign badges (e.g. New, Sale, Hot). Each badge can only be added once.
+                </p>
+              </div>
+              <ProductBadgesField control={form.control} register={form.register} />
             </div>
 
             <div className="rounded-lg border bg-card p-6 shadow-sm">
@@ -565,7 +600,26 @@ export const AddProductForm = () => {
                             required
                           />
                           <div className="flex items-center gap-4 pt-8">
-                            <CheckboxField form={form} name={`variants.${index}.featured`} label="Featured" />
+                            <Controller
+                              control={form.control}
+                              name={`variants.${index}.featured`}
+                              render={({ field }) => (
+                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                  <input
+                                    type="radio"
+                                    checked={!!field.value}
+                                    onChange={() => {
+                                      const all = form.getValues("variants");
+                                      all.forEach((_, i) => {
+                                        form.setValue(`variants.${i}.featured`, i === index, { shouldDirty: true });
+                                      });
+                                    }}
+                                    className="accent-primary w-4 h-4"
+                                  />
+                                  <span className="text-sm font-medium">Featured</span>
+                                </label>
+                              )}
+                            />
                             <CheckboxField form={form} name={`variants.${index}.isActive`} label="Active" />
                           </div>
                         </div>

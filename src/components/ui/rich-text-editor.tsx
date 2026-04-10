@@ -17,24 +17,11 @@ import {
 } from "lexical";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
-import {
-  ListItemNode,
-  ListNode,
-  INSERT_UNORDERED_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
-} from "@lexical/list";
+import { ListItemNode, ListNode, INSERT_UNORDERED_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-import {
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  List,
-  ListOrdered,
-  Highlighter,
-} from "lucide-react";
+import { Bold, Italic, Underline, Strikethrough, List, ListOrdered, Highlighter } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const theme = {
@@ -48,8 +35,8 @@ const theme = {
     h3: "text-lg font-semibold mb-1",
   },
   list: {
-    ul: "list-disc list-inside mb-2",
-    ol: "list-decimal list-inside mb-2",
+    ul: "list-disc mb-2",
+    ol: "list-decimal mb-2",
     listitem: "mb-1",
   },
   text: {
@@ -93,34 +80,66 @@ function ToolbarPlugin() {
     );
   }, [editor, updateToolbar]);
 
-
   const btn = (active: boolean) =>
     cn(
       "flex h-7 w-7 items-center justify-center rounded text-sm transition-colors",
-      active
-        ? "bg-primary text-primary-foreground"
-        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+      active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
     );
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-input pb-2 mb-2">
       {/* format */}
-      <button type="button" className={btn(isBold)} title="Bold (Ctrl+B)" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold"); }}>
+      <button
+        type="button"
+        className={btn(isBold)}
+        title="Bold (Ctrl+B)"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+        }}
+      >
         <Bold className="h-3.5 w-3.5" />
       </button>
-      <button type="button" className={btn(isItalic)} title="Italic (Ctrl+I)" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic"); }}>
+      <button
+        type="button"
+        className={btn(isItalic)}
+        title="Italic (Ctrl+I)"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+        }}
+      >
         <Italic className="h-3.5 w-3.5" />
       </button>
-      <button type="button" className={btn(isUnderline)} title="Underline (Ctrl+U)" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline"); }}>
+      <button
+        type="button"
+        className={btn(isUnderline)}
+        title="Underline (Ctrl+U)"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+        }}
+      >
         <Underline className="h-3.5 w-3.5" />
       </button>
-      <button type="button" className={btn(isStrikethrough)} title="Strikethrough" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough"); }}>
+      <button
+        type="button"
+        className={btn(isStrikethrough)}
+        title="Strikethrough"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
+        }}
+      >
         <Strikethrough className="h-3.5 w-3.5" />
       </button>
       <button
         type="button"
         title="Highlight"
-        onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight"); }}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight");
+        }}
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded text-sm transition-colors",
           isHighlight
@@ -134,10 +153,26 @@ function ToolbarPlugin() {
       <div className="mx-1 h-5 w-px bg-border" />
 
       {/* lists */}
-      <button type="button" className={btn(false)} title="Bullet List" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined); }}>
+      <button
+        type="button"
+        className={btn(false)}
+        title="Bullet List"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+        }}
+      >
         <List className="h-3.5 w-3.5" />
       </button>
-      <button type="button" className={btn(false)} title="Numbered List" onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined); }}>
+      <button
+        type="button"
+        className={btn(false)}
+        title="Numbered List"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+        }}
+      >
         <ListOrdered className="h-3.5 w-3.5" />
       </button>
     </div>
@@ -220,5 +255,55 @@ export const RichTextEditor = ({ value, onChange, placeholder, error }: EditorPr
         </div>
       </LexicalComposer>
     </div>
+  );
+};
+
+export const RichTextRenderer = ({ value }: { value: string }) => {
+  const initialConfig: Parameters<typeof LexicalComposer>[0]["initialConfig"] = {
+    namespace: "RichTextRenderer",
+    theme,
+    editable: false,
+    onError: (err: Error) => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    },
+    nodes: [
+      HeadingNode,
+      ListNode,
+      ListItemNode,
+      QuoteNode,
+      CodeNode,
+      CodeHighlightNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+      AutoLinkNode,
+      LinkNode,
+      HorizontalRuleNode,
+    ],
+  };
+
+  if (value) {
+    try {
+      // @ts-expect-error Lexical editorState can be initialised from a JSON string
+      initialConfig.editorState = value;
+    } catch {
+      // ignore
+    }
+  }
+
+  return (
+    <LexicalComposer initialConfig={initialConfig}>
+      <div className="relative w-full">
+        <RichTextPlugin
+          contentEditable={
+            <ContentEditable className="w-full outline-none prose prose-sm max-w-none dark:prose-invert" />
+          }
+          placeholder={null}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <ListPlugin />
+      </div>
+    </LexicalComposer>
   );
 };

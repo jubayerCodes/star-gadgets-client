@@ -7,7 +7,8 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import SearchInput from "../form/site/search-input";
 import { useAuthStore } from "@/store/authStore";
-import { Heart, LogOutIcon, ShoppingCart } from "lucide-react";
+import { LogOutIcon, Search, ShoppingCart, X } from "lucide-react";
+import { useState } from "react";
 import IconWithCount from "../shared/icon-with-count";
 import { Button } from "../ui/button";
 import {
@@ -22,12 +23,17 @@ import { useConfigStore } from "@/store/configStore";
 import { useLogoutUser } from "@/features/account/hooks/useAccount";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
 import MobileMenu from "./mobile-menu";
+import CartDrawer from "./cart-drawer";
+import { selectCartCount, useCartStore } from "@/store/cartStore";
 
 const Header = () => {
   const { user } = useAuthStore();
   const { config } = useConfigStore();
   const { mutateAsync: logoutUser } = useLogoutUser();
   const { openModal } = useDeleteModalStore();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const openCart = useCartStore((s) => s.openCart);
+  const cartCount = useCartStore(selectCartCount);
 
   const categories = config?.header.navLinks || [];
 
@@ -75,15 +81,12 @@ const Header = () => {
       label: "Order History",
       href: "/account/orders",
     },
-    {
-      label: "Wishlist",
-      href: "/account/wishlist",
-    },
   ];
 
   return (
-    <header>
-      <div className="bg-primary text-primary-foreground hidden lg:block">
+    <>
+      <header>
+        <div className="bg-primary text-primary-foreground hidden lg:block">
         <div className="container flex items-center justify-between">
           <div className="flex items-stretch">
             {contactInfo.map((item, index) => (
@@ -142,7 +145,7 @@ const Header = () => {
                 className="w-auto! h-8! lg:h-10! aspect-auto"
               />
             </Link>
-            <div className="hidden lg:block flex-1">
+            <div className="hidden lg:flex flex-1">
               <SearchInput className="max-w-2xl w-full" />
             </div>
           </div>
@@ -201,18 +204,37 @@ const Header = () => {
               )}
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
-              <Link href="/wishlist" className="hidden lg:block">
-                <IconWithCount icon={Heart} count={0} />
-              </Link>
-              <Link href="/cart">
-                <IconWithCount icon={ShoppingCart} count={0} />
-              </Link>
+              {/* Mobile search toggle button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden shrink-0 hover:bg-accent/10"
+                onClick={() => setSearchOpen((prev) => !prev)}
+                aria-label="Toggle search"
+              >
+                {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
+              </Button>
+
+              <button onClick={openCart} aria-label="Open cart" className="cursor-pointer">
+                <IconWithCount icon={ShoppingCart} count={cartCount} />
+              </button>
             </div>
             <Link href="/pc-builder" className="hidden lg:block">
               <Button variant={"outline"} className="ml-2">
                 PC Builder
               </Button>
             </Link>
+          </div>
+        </div>
+
+        {/* Mobile slide-down search panel */}
+        <div
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            searchOpen ? "max-h-20 border-t" : "max-h-0"
+          }`}
+        >
+          <div className="container py-3">
+            <SearchInput className="w-full" />
           </div>
         </div>
       </div>
@@ -247,6 +269,10 @@ const Header = () => {
         </div>
       </div>
     </header>
+
+    {/* Cart drawer — uses a Portal, safe to render anywhere */}
+    <CartDrawer />
+  </>
   );
 };
 

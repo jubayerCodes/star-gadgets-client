@@ -18,6 +18,11 @@ const STATUS_OPTIONS = [
   { value: "false", label: "Inactive" },
 ];
 
+const FEATURED_OPTIONS = [
+  { value: "true", label: "Featured" },
+  { value: "false", label: "Not Featured" },
+];
+
 const ProductsFilter = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -69,6 +74,7 @@ const ProductsFilter = () => {
     !!searchParams.get("subCategory") ||
     !!searchParams.get("brand") ||
     !!searchParams.get("isActive") ||
+    !!searchParams.get("isFeatured") ||
     !!searchParams.get("minPrice") ||
     !!searchParams.get("maxPrice");
 
@@ -141,6 +147,15 @@ const ProductsFilter = () => {
             options={STATUS_OPTIONS}
             allLabel="All Status"
             className="w-full md:w-32"
+          />
+
+          {/* Featured */}
+          <FilterSelect
+            value={searchParams.get("isFeatured") ?? "all"}
+            onChange={(v) => setParam("isFeatured", v)}
+            options={FEATURED_OPTIONS}
+            allLabel="All Featured"
+            className="w-full md:w-36"
           />
 
           {/* Price range */}

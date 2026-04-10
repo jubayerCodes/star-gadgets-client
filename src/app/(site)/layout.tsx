@@ -1,5 +1,6 @@
 // app/(client)/layout.tsx
 import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import { QUERY_KEYS } from "@/constants";
 import { getConfigApi } from "@/features/config/api";
 import { getCurrentUserApi } from "@/features/account/api";
@@ -19,9 +20,10 @@ export default async function ClientLayout({ children }: { children: React.React
   });
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-16 lg:pb-0">
       <Header />
       <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }

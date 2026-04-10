@@ -8,6 +8,11 @@ export const productAttributeZodSchema = z.object({
     .min(1, "At least one attribute value is required"),
 });
 
+export const productBadgeZodSchema = z.object({
+  title: z.string({ error: "Badge title is required" }).min(1, "Badge title is required"),
+  value: z.string().optional(),
+});
+
 export const variantAttributeZodSchema = z.object({
   name: z.string().optional().default(""),
   value: z.string().optional().default(""),
@@ -67,8 +72,10 @@ export const createProductZodSchema = z.object({
   description: z.string({ error: "Description is required" }).min(1, "Description is required"),
   isActive: z.boolean().optional(),
   isDeleted: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
   // Top-level attributes are optional — a product may have no attribute groups
   attributes: z.array(productAttributeZodSchema).optional().default([]),
+  badges: z.array(productBadgeZodSchema).optional().default([]),
   variants: z.array(variantZodSchema).min(1, "At least one variant is required"),
 });
 

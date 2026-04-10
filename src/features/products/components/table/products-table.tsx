@@ -5,10 +5,10 @@ import { IProductAdmin } from "../../types/product.types";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import placeholder from "@/assets/img/placeholder.png";
-import { IconCircleCheckFilled, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconEdit, IconTrash, IconExchange, IconStar, IconX } from "@tabler/icons-react";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
-import { productsAdminQueryOptions, useDeleteProductMutation } from "../../hooks/useProducts";
+import { productsAdminQueryOptions, useDeleteProductMutation, useUpdateProductMutation } from "../../hooks/useProducts";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -17,6 +17,7 @@ const ProductsTable = () => {
   const router = useRouter();
   const { data } = useSuspenseQuery(productsAdminQueryOptions(searchParams));
   const { mutateAsync: deleteProduct } = useDeleteProductMutation();
+  const { mutateAsync: updateProduct } = useUpdateProductMutation();
 
   const columns: ColumnDef<IProductAdmin>[] = [
     {
@@ -105,6 +106,17 @@ const ProductsTable = () => {
       cell: ({ row }) => <span>{row.original.isActive ? <IconCircleCheckFilled className="text-accent" /> : ""}</span>,
     },
     {
+      accessorKey: "isFeatured",
+      header: "Featured",
+      meta: {
+        align: "center",
+        headerAlign: "center",
+      },
+      cell: ({ row }) => (
+        <span>{row.original.isFeatured ? <IconCircleCheckFilled className="text-accent" /> : ""}</span>
+      ),
+    },
+    {
       accessorKey: "",
       header: "Actions",
       cell: ({ row }) => {
@@ -115,6 +127,40 @@ const ProductsTable = () => {
             onClick: () => {
               router.push(`/dashboard/products/${row.original._id}`);
             },
+          },
+          {
+            label: "Change Status",
+            icon: IconExchange,
+            children: [
+              {
+                label: row.original.isFeatured ? "Unmark as Featured" : "Mark as Featured",
+                icon: row.original.isFeatured ? IconX : IconStar,
+                onClick: async () => {
+                  try {
+                    await updateProduct({
+                      id: row.original._id,
+                      data: { isFeatured: !row.original.isFeatured },
+                    });
+                  } catch {
+                    // Handled by the useUpdateProductMutation hook
+                  }
+                },
+              },
+              {
+                label: row.original.isActive ? "Mark as Inactive" : "Mark as Active",
+                icon: row.original.isActive ? IconX : IconCircleCheckFilled,
+                onClick: async () => {
+                  try {
+                    await updateProduct({
+                      id: row.original._id,
+                      data: { isActive: !row.original.isActive },
+                    });
+                  } catch {
+                    // Handled by the useUpdateProductMutation hook
+                  }
+                },
+              },
+            ],
           },
           {
             label: "Delete",

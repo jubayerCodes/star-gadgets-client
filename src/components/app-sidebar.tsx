@@ -79,6 +79,10 @@ const navMain: INavItem[] = [
         title: "Add Product",
         url: "/dashboard/products/add",
       },
+      {
+        title: "Badges",
+        url: "/dashboard/products/badges",
+      },
     ],
   },
   {

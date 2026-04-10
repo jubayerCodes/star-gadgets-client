@@ -39,6 +39,11 @@ export interface ISpecification {
   }[];
 }
 
+export interface IProductBadge {
+  title: string;
+  value?: string;
+}
+
 export interface IProduct {
   _id?: string;
   title: string;
@@ -48,15 +53,39 @@ export interface IProduct {
   brandId: IBrand;
   categoryId: ICategory;
   isDeleted?: boolean;
+  isFeatured?: boolean;
   productCode: string;
   keyFeatures: string;
   specifications: ISpecification[];
   isActive?: boolean;
   attributes: IProductAttribute[];
+  badges?: IProductBadge[];
   variants: IVariant[];
   description: string;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface IFeaturedProduct {
+  _id: string;
+  title: string;
+  slug: string;
+  badges?: IProductBadge[];
+  category: { _id: string; title: string; slug: string };
+  brand: { _id: string; title: string; slug: string };
+  featuredVariant: {
+    _id?: string;
+    price?: number;
+    regularPrice: number;
+    stock: number;
+    status: ProductStatus;
+    sku: string;
+    images: string[];
+    featuredImage: string;
+    featured?: boolean;
+    isActive?: boolean;
+    attributes?: { name: string; value: string }[];
+  };
 }
 
 export interface IProductAdmin {
@@ -66,6 +95,7 @@ export interface IProductAdmin {
   featuredImage: string;
   productCode: string;
   isActive: boolean;
+  isFeatured: boolean;
   createdAt: Date;
   updatedAt: Date;
   priceRange: number | { min: number; max: number };

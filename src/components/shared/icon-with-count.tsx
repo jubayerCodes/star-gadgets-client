@@ -1,10 +1,10 @@
 "use client";
 
-import { IconType } from "react-icons";
+import React from "react";
 import { Badge } from "../ui/badge";
 
 interface IconWithCountProps {
-  icon: IconType;
+  icon: React.ComponentType<{ className?: string }>;
   count: number;
 }
 

@@ -287,3 +287,23 @@
   display: none !important;
 }
 
+/* Product Detail Swiper Navigation */
+.product-swiper .swiper-button-next,
+.product-swiper .swiper-button-prev {
+  @apply w-10 h-10 text-foreground transition-all duration-200 mt-0 -translate-y-1/2;
+}
+
+.product-swiper .swiper-button-next:after,
+.product-swiper .swiper-button-prev:after {
+  @apply text-sm font-bold;
+}
+
+.product-swiper .swiper-button-next:hover,
+.product-swiper .swiper-button-prev:hover {
+  @apply scale-110 text-tartiary;
+}
+
+.product-swiper .swiper-button-disabled {
+  opacity: 0 !important;
+  pointer-events: none;
+}

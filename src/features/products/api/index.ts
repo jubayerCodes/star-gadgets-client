@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { CreateProductFormData, UpdateProductFormData } from "../schemas/product.schema";
 import { ApiResponse } from "@/types";
-import { IProduct, IProductAdmin } from "../types/product.types";
+import { IFeaturedProduct, IProduct, IProductAdmin } from "../types/product.types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -12,6 +12,7 @@ export const getProductsAdminApi = async (query: ReadonlyURLSearchParams): Promi
 
   const search = query.get("search");
   const isActive = query.get("isActive");
+  const isFeatured = query.get("isFeatured");
   const category = query.get("category");
   const subCategory = query.get("subCategory");
   const brand = query.get("brand");
@@ -22,6 +23,7 @@ export const getProductsAdminApi = async (query: ReadonlyURLSearchParams): Promi
 
   if (search) params.search = search;
   if (isActive !== null) params.isActive = isActive;
+  if (isFeatured !== null) params.isFeatured = isFeatured;
   if (category) params.category = category;
   if (subCategory) params.subCategory = subCategory;
   if (brand) params.brand = brand;
@@ -49,7 +51,17 @@ export const getProductByIdApi = async (id: string): Promise<ApiResponse<IProduc
   return res.data;
 };
 
-export const updateProductApi = async ({ id, data }: { id: string; data: UpdateProductFormData }): Promise<ApiResponse<IProduct>> => {
+export const updateProductApi = async ({ id, data }: { id: string; data: Partial<UpdateProductFormData> }): Promise<ApiResponse<IProduct>> => {
   const res = await axiosInstance.patch(`/products/${id}`, data);
+  return res.data;
+};
+
+export const getFeaturedProductsApi = async (): Promise<ApiResponse<IFeaturedProduct[]>> => {
+  const res = await axiosInstance.get("/products/featured");
+  return res.data;
+};
+
+export const getProductBySlugApi = async (slug: string): Promise<ApiResponse<IProduct>> => {
+  const res = await axiosInstance.get(`/products/slug/${slug}`);
   return res.data;
 };

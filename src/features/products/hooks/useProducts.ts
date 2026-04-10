@@ -1,7 +1,7 @@
 import { QUERY_KEYS } from "@/constants";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createProductApi, deleteProductApi, getProductByIdApi, getProductsAdminApi, updateProductApi } from "../api";
+import { createProductApi, deleteProductApi, getFeaturedProductsApi, getProductByIdApi, getProductBySlugApi, getProductsAdminApi, updateProductApi } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -67,5 +67,22 @@ export const useUpdateProductMutation = () => {
     onError: (error) => {
       toast.error(extractErrorMessage(error));
     },
+  });
+};
+
+export const useGetFeaturedProductsQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.FEATURED_PRODUCTS],
+    queryFn: getFeaturedProductsApi,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useGetProductBySlugQuery = (slug: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCTS, "slug", slug],
+    queryFn: () => getProductBySlugApi(slug),
+    enabled: !!slug,
+    staleTime: 2 * 60 * 1000,
   });
 };
