@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  crossOrigin: "anonymous",
+  // crossOrigin: "anonymous",
 };
 
 export default nextConfig;
