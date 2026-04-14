@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { usePathname } from "next/navigation";
-import { Home, User, ShoppingCart, Wrench, Circle } from "lucide-react";
+import { Home, User, ShoppingCart, Wrench } from "lucide-react";
 import Link from "next/link";
 import Marquee from "react-fast-marquee";
 import Image from "next/image";

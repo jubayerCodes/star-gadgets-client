@@ -72,6 +72,7 @@ export interface IFeaturedProduct {
   slug: string;
   badges?: IProductBadge[];
   category: { _id: string; title: string; slug: string };
+  subCategory: { _id: string; title: string; slug: string };
   brand: { _id: string; title: string; slug: string };
   featuredVariant: {
     _id?: string;
@@ -104,4 +105,40 @@ export interface IProductAdmin {
   subCategoryId: ISubCategory;
   categoryId: ICategory;
   brandId: IBrand;
+}
+
+export interface ISearchProduct {
+  _id: string;
+  title: string;
+  slug: string;
+  featuredImage: string;
+  priceRange: number | { min: number; max: number };
+  stock: number;
+  badges?: IProductBadge[];
+  subCategoryId: { _id: string; title: string; slug: string };
+  brandId: { _id: string; title: string; slug: string };
+  featuredVariant: {
+    _id?: string;
+    price?: number;
+    regularPrice: number;
+    stock: number;
+    status: ProductStatus;
+    sku: string;
+    featuredImage: string;
+    images: string[];
+    featured?: boolean;
+    isActive?: boolean;
+    attributes?: { name: string; value: string }[];
+  };
+}
+
+export interface ISearchBrand {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
+export interface ISearchResultData {
+  products: ISearchProduct[];
+  brands: ISearchBrand[];
 }

@@ -2,7 +2,6 @@
 
 import { useGetFeaturedProductsQuery } from "../../hooks/useProducts";
 import FeaturedProductCard from "./featured-product-card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const SKELETON_COUNT = 5;
 
@@ -10,13 +9,15 @@ function FeaturedProductsSkeleton() {
   return (
     <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-        <div key={i} className="flex flex-col border border-border overflow-hidden">
-          <Skeleton className="w-full aspect-square" />
-          <div className="flex flex-col items-center gap-2 p-3">
-            <Skeleton className="h-3 w-1/3 rounded" />
-            <Skeleton className="h-4 w-full rounded" />
-            <Skeleton className="h-4 w-3/4 rounded" />
-            <Skeleton className="h-4 w-1/2 rounded" />
+        <div key={i} className="border border-border bg-card overflow-hidden">
+          {/* Image placeholder */}
+          <div className="aspect-square bg-muted animate-pulse" />
+          {/* Body — mirrors centered FeaturedProductCard layout */}
+          <div className="flex flex-col items-center gap-2 px-3 pt-3 pb-4 border-t border-border">
+            <div className="h-3 bg-muted animate-pulse rounded w-full" />
+            <div className="h-3 bg-muted animate-pulse rounded w-3/4" />
+            <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
+            <div className="h-4 bg-muted animate-pulse rounded w-2/5 mt-1" />
           </div>
         </div>
       ))}

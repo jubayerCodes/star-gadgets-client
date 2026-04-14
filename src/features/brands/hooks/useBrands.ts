@@ -68,6 +68,7 @@ export const useCreateBrandMutation = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BRANDS_ADMIN] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BRANDS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BRANDS_LIST] });
       toast.success(data.message);
     },
     onError: (error) => {

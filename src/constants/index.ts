@@ -11,6 +11,7 @@ export const QUERY_KEYS = {
   PRODUCTS: "products",
   PRODUCTS_ADMIN: "products-admin",
   FEATURED_PRODUCTS: "featured-products",
+  PRODUCT_SEARCH: "product-search",
   BADGES: "badges",
   BADGES_ADMIN: "badges-admin",
   CART: "cart",

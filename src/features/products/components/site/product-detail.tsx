@@ -55,7 +55,14 @@ function MagnifierImage({ src, alt, priority }: { src: string; alt: string; prio
           transition: "transform 0.2s ease-out",
         }}
       >
-        <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-contain pointer-events-none" priority={priority} />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-contain pointer-events-none"
+          priority={priority}
+        />
       </div>
     </div>
   );
@@ -175,10 +182,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               >
                 {galleryImages.map((img, i) => (
                   <SwiperSlide key={i}>
-                    <MagnifierImage 
-                      src={img || productFeaturedImage || ""} 
-                      alt={`${title} - view ${i + 1}`} 
-                      priority={i === 0} 
+                    <MagnifierImage
+                      src={img || productFeaturedImage || ""}
+                      alt={`${title} - view ${i + 1}`}
+                      priority={i === 0}
                     />
                   </SwiperSlide>
                 ))}
@@ -212,8 +219,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   className="w-full h-[72px]"
                 >
                   {galleryImages.map((img, i) => (
-                    <SwiperSlide 
-                      key={i} 
+                    <SwiperSlide
+                      key={i}
                       className="w-[72px]! h-[72px]! cursor-pointer border-2 border-border opacity-70 transition-all duration-200 hover:opacity-100 hover:border-foreground/50 [&.swiper-slide-thumb-active]:border-foreground [&.swiper-slide-thumb-active]:opacity-100 bg-white box-border"
                     >
                       <div className="w-full h-full relative">
@@ -288,7 +295,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Key Features */}
             {keyFeatures && (
-              <div className="text-base text-foreground/75 leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-1 [&_li]:leading-snug [&_a]:text-tartiary [&_a]:underline [&_a:hover]:text-tartiary/80">
+              <div className="text-base text-foreground/75 leading-relaxed [&_ul]:list-disc [&_ul]:list-outside [&_ol]:list-outside [&_ul]:pl-5 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-1 [&_li]:leading-snug [&_a]:text-tartiary [&_a]:underline [&_a:hover]:text-tartiary/80">
                 <RichTextRenderer value={keyFeatures} />
               </div>
             )}
@@ -412,9 +419,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             >
               <Heart
                 size={16}
-                className={`transition-colors ${
-                  isWishlisted ? "fill-accent text-accent" : "group-hover:text-accent"
-                }`}
+                className={`transition-colors ${isWishlisted ? "fill-accent text-accent" : "group-hover:text-accent"}`}
               />
               {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
             </button>
@@ -444,12 +449,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
           {/* Description */}
           {activeTab === "description" && (
-            <div className="prose prose-sm max-w-none text-foreground/80 [&_a]:text-tartiary [&_a:hover]:underline [&_img]:rounded-md [&_table]:w-full [&_table]:text-sm [&_th]:bg-muted [&_th]:p-2 [&_td]:p-2 [&_td]:border [&_td]:border-border [&_th]:border [&_th]:border-border">
-              {description ? (
-                <RichTextRenderer value={description} />
-              ) : (
-                <p>No description available.</p>
-              )}
+            <div className="prose prose-sm max-w-none text-foreground/80 [&_a]:text-tartiary [&_a:hover]:underline [&_img]:rounded-md [&_table]:w-full [&_table]:text-sm [&_th]:bg-muted [&_th]:p-2 [&_td]:p-2 [&_td]:border [&_td]:border-border [&_th]:border [&_th]:border-border list-outside">
+              {description ? <RichTextRenderer value={description} /> : <p>No description available.</p>}
             </div>
           )}
 
@@ -466,9 +467,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       <tbody>
                         {spec.specifications.map((item, j) => (
                           <tr key={j} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                            <td className="py-3 px-5 font-medium text-muted-foreground w-1/3 align-top">
-                              {item.name}
-                            </td>
+                            <td className="py-3 px-5 font-medium text-muted-foreground w-1/3 align-top">{item.name}</td>
                             <td className="py-3 px-5 text-foreground align-top">{item.value}</td>
                           </tr>
                         ))}

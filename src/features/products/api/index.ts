@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { CreateProductFormData, UpdateProductFormData } from "../schemas/product.schema";
 import { ApiResponse } from "@/types";
-import { IFeaturedProduct, IProduct, IProductAdmin } from "../types/product.types";
+import { IFeaturedProduct, IProduct, IProductAdmin, ISearchResultData } from "../types/product.types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -51,7 +51,13 @@ export const getProductByIdApi = async (id: string): Promise<ApiResponse<IProduc
   return res.data;
 };
 
-export const updateProductApi = async ({ id, data }: { id: string; data: Partial<UpdateProductFormData> }): Promise<ApiResponse<IProduct>> => {
+export const updateProductApi = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: Partial<UpdateProductFormData>;
+}): Promise<ApiResponse<IProduct>> => {
   const res = await axiosInstance.patch(`/products/${id}`, data);
   return res.data;
 };
@@ -63,5 +69,28 @@ export const getFeaturedProductsApi = async (): Promise<ApiResponse<IFeaturedPro
 
 export const getProductBySlugApi = async (slug: string): Promise<ApiResponse<IProduct>> => {
   const res = await axiosInstance.get(`/products/slug/${slug}`);
+  return res.data;
+};
+
+export interface SearchParams {
+  query: string;
+  page?: number;
+  limit?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  availability?: "inStock" | "outOfStock";
+  brand?: string;
+  sortBy?: "relevance" | "priceAsc" | "priceDesc" | "newest";
+}
+
+export const searchProductsApi = async (params: SearchParams): Promise<ApiResponse<ISearchResultData>> => {
+  const { query, page = 1, limit = 20, minPrice, maxPrice, availability, brand, sortBy } = params;
+  const queryParams: Record<string, string | number | undefined> = { query, page, limit };
+  if (minPrice !== undefined) queryParams.minPrice = minPrice;
+  if (maxPrice !== undefined) queryParams.maxPrice = maxPrice;
+  if (availability) queryParams.availability = availability;
+  if (brand) queryParams.brand = brand;
+  if (sortBy) queryParams.sortBy = sortBy;
+  const res = await axiosInstance.get("/products/search", { params: queryParams });
   return res.data;
 };

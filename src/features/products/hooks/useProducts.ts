@@ -1,7 +1,17 @@
 import { QUERY_KEYS } from "@/constants";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createProductApi, deleteProductApi, getFeaturedProductsApi, getProductByIdApi, getProductBySlugApi, getProductsAdminApi, updateProductApi } from "../api";
+import {
+  createProductApi,
+  deleteProductApi,
+  getFeaturedProductsApi,
+  getProductByIdApi,
+  getProductBySlugApi,
+  getProductsAdminApi,
+  searchProductsApi,
+  SearchParams,
+  updateProductApi,
+} from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -84,5 +94,16 @@ export const useGetProductBySlugQuery = (slug: string) => {
     queryFn: () => getProductBySlugApi(slug),
     enabled: !!slug,
     staleTime: 2 * 60 * 1000,
+  });
+};
+
+export const useSearchProductsQuery = (params: SearchParams) => {
+  const { query, page = 1, limit = 20, minPrice, maxPrice, availability, brand, sortBy } = params;
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCT_SEARCH, query, page, limit, minPrice, maxPrice, availability, brand, sortBy],
+    queryFn: () => searchProductsApi(params),
+    enabled: query.trim().length >= 2,
+    staleTime: 30 * 1000,
+    placeholderData: keepPreviousData,
   });
 };

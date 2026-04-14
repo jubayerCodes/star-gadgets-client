@@ -35,7 +35,11 @@ export const useCreateSubCategoryMutation = () => {
     mutationFn: createSubCategoryApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SUB_CATEGORIES_ADMIN] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SUB_CATEGORIES_LIST] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SUB_CATEGORIES] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES_ADMIN] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES_LIST] });
     },
     onError: (error) => {
       toast.error(extractErrorMessage(error));

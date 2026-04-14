@@ -27,6 +27,7 @@ export const useCreateCategoryMutation = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES_ADMIN] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CATEGORIES_LIST] });
       toast.success(data.message);
     },
     onError: (error) => {

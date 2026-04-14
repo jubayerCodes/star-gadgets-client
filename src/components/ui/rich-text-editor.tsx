@@ -35,8 +35,8 @@ const theme = {
     h3: "text-lg font-semibold mb-1",
   },
   list: {
-    ul: "list-disc mb-2",
-    ol: "list-decimal mb-2",
+    ul: "list-disc mb-2 list-inside",
+    ol: "list-decimal mb-2 list-inside",
     listitem: "mb-1",
   },
   text: {

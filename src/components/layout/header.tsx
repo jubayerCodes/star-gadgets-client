@@ -8,7 +8,7 @@ import logo from "@/assets/logo.png";
 import SearchInput from "../form/site/search-input";
 import { useAuthStore } from "@/store/authStore";
 import { LogOutIcon, Search, ShoppingCart, X } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import IconWithCount from "../shared/icon-with-count";
 import { Button } from "../ui/button";
 import {
@@ -146,7 +146,9 @@ const Header = () => {
               />
             </Link>
             <div className="hidden lg:flex flex-1">
-              <SearchInput className="max-w-2xl w-full" />
+              <Suspense fallback={<div className="h-11 max-w-2xl w-full bg-muted animate-pulse" />}>
+                <SearchInput className="max-w-2xl w-full" />
+              </Suspense>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -234,7 +236,9 @@ const Header = () => {
           }`}
         >
           <div className="container py-3">
-            <SearchInput className="w-full" />
+            <Suspense fallback={<div className="h-11 w-full bg-muted animate-pulse" />}>
+              <SearchInput className="w-full" />
+            </Suspense>
           </div>
         </div>
       </div>
