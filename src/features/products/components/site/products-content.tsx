@@ -1,15 +1,20 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSearchProductsQuery } from "@/features/products/hooks/useProducts";
+import { useGetPublicProductsQuery } from "@/features/products/hooks/useProducts";
 import Image from "next/image";
 import Link from "next/link";
-import { ISearchBrand, ISearchProduct, ProductStatus } from "../../types/product.types";
-import { ChevronLeft, ChevronRight, Home, Loader2, SearchX, ShoppingCart } from "lucide-react";
+import {
+  IPublicProductCategory,
+  ISearchBrand,
+  ISearchProduct,
+  ProductStatus,
+} from "../../types/product.types";
+import { ChevronLeft, ChevronRight, Home, Loader2, PackageSearch, Search, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ProductFilterSidebar, {
   FilterToggleButton,
   type FilterSectionConfig,
@@ -24,9 +29,9 @@ const stockLabel: Record<ProductStatus, string> = {
   [ProductStatus.COMING_SOON]: "Coming Soon",
 };
 
-// ─── Search Product Card ──────────────────────────────────────────────────────
+// ─── Product Card ─────────────────────────────────────────────────────────────
 
-function SearchProductCard({ product }: { product: ISearchProduct }) {
+function ProductCard({ product }: { product: ISearchProduct }) {
   const { _id: productId, title, slug, badges, subCategoryId, featuredVariant } = product;
   const addItem = useCartStore((s) => s.addItem);
   const { featuredImage, price, regularPrice, status, sku, _id: variantId, attributes } = featuredVariant;
@@ -80,7 +85,7 @@ function SearchProductCard({ product }: { product: ISearchProduct }) {
 
 // ─── Card Skeleton ────────────────────────────────────────────────────────────
 
-function SearchResultSkeleton() {
+function ProductCardSkeleton() {
   return (
     <div className="border border-border bg-card overflow-hidden">
       <div className="aspect-square bg-muted animate-pulse" />
@@ -128,35 +133,43 @@ function Pagination({ page, totalPages, onNavigate }: { page: number; totalPages
 
 const LIMIT_OPTIONS = [12, 20, 40];
 
-export default function SearchResultsContent() {
+export default function ProductsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const query = searchParams.get("query") ?? "";
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
   const limit = parseInt(searchParams.get("limit") ?? "20");
-  const sortBy = (searchParams.get("sortBy") ?? "relevance") as "relevance" | "priceAsc" | "priceDesc" | "newest";
+  const searchParam = searchParams.get("search") ?? "";
+  const sortBy = (searchParams.get("sortBy") ?? "newest") as "newest" | "priceAsc" | "priceDesc" | "popularity";
   const minPriceParam = searchParams.get("minPrice") ?? "";
   const maxPriceParam = searchParams.get("maxPrice") ?? "";
   const availabilityParam = searchParams.get("availability") ?? "";
   const brandParam = searchParams.get("brand") ?? "";
+  const categoryParam = searchParams.get("category") ?? "";
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [localSearch, setLocalSearch] = useState(searchParam);
+
+  useEffect(() => { setLocalSearch(searchParam); }, [searchParam]);
 
   const availability: string[] = availabilityParam ? availabilityParam.split(",") : [];
   const selectedBrands: string[] = brandParam ? brandParam.split(",") : [];
+  const selectedCategories: string[] = categoryParam ? categoryParam.split(",") : [];
 
-  const { data, isLoading, isFetching } = useSearchProductsQuery({
-    query, page, limit,
+  const { data, isLoading, isFetching } = useGetPublicProductsQuery({
+    page, limit,
+    search: searchParam || undefined,
     minPrice: minPriceParam ? parseFloat(minPriceParam) : undefined,
     maxPrice: maxPriceParam ? parseFloat(maxPriceParam) : undefined,
     availability: availability[0] as "inStock" | "outOfStock" | undefined,
     brand: selectedBrands[0],
+    category: selectedCategories[0],
     sortBy,
   });
 
   const results: ISearchProduct[] = data?.data?.products ?? [];
   const brands: ISearchBrand[] = data?.data?.brands ?? [];
+  const categories: IPublicProductCategory[] = data?.data?.categories ?? [];
   const total = data?.meta?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
 
@@ -168,7 +181,7 @@ export default function SearchResultsContent() {
         else params.set(k, v);
       });
       if (!updates.page) params.set("page", "1");
-      router.push(`/search?${params.toString()}`);
+      router.push(`/products?${params.toString()}`);
     },
     [searchParams, router],
   );
@@ -176,22 +189,28 @@ export default function SearchResultsContent() {
   const navigatePage = (nextPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", String(nextPage));
-    router.push(`/search?${params.toString()}`);
+    router.push(`/products?${params.toString()}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleClearAll = () => router.push(`/search?query=${encodeURIComponent(query)}`);
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateParams({ search: localSearch.trim() || undefined });
+  };
+
+  const handleClearAll = () => router.push("/products");
   const handleLimitChange = (val: number) => updateParams({ limit: String(val) });
 
   const hasActiveFilters = !!(
-    minPriceParam || maxPriceParam || availability.length > 0 || selectedBrands.length > 0 || sortBy !== "relevance"
+    searchParam || minPriceParam || maxPriceParam ||
+    availability.length > 0 || selectedBrands.length > 0 || selectedCategories.length > 0 || sortBy !== "newest"
   );
 
   const sortLabels: Record<string, string> = {
-    relevance: "Relevance",
+    newest: "Newest",
     priceAsc: "Price: Low → High",
     priceDesc: "Price: High → Low",
-    newest: "Newest",
+    popularity: "Popularity",
   };
 
   // ── Build filter sections for the reusable sidebar ──
@@ -199,15 +218,15 @@ export default function SearchResultsContent() {
     {
       type: "radio",
       label: "Sort By",
-      radioGroupName: "search-sortBy",
+      radioGroupName: "products-sortBy",
       options: [
-        { value: "relevance", label: "Relevance" },
+        { value: "newest", label: "Newest" },
         { value: "priceAsc", label: "Price: Low → High" },
         { value: "priceDesc", label: "Price: High → Low" },
-        { value: "newest", label: "Newest" },
+        { value: "popularity", label: "Popularity" },
       ],
       value: sortBy,
-      onChange: (val) => updateParams({ sortBy: val === "relevance" ? undefined : val }),
+      onChange: (val) => updateParams({ sortBy: val === "newest" ? undefined : val }),
     },
     {
       type: "priceRange",
@@ -231,6 +250,17 @@ export default function SearchResultsContent() {
     },
     {
       type: "checkbox",
+      label: "Category",
+      options: categories.map((c) => ({ value: c.slug, label: c.title })),
+      selected: selectedCategories,
+      onToggle: (slug) => {
+        const next = selectedCategories.includes(slug) ? selectedCategories.filter((c) => c !== slug) : [...selectedCategories, slug];
+        updateParams({ category: next.join(",") || undefined });
+      },
+      scrollable: true,
+    },
+    {
+      type: "checkbox",
       label: "Brand",
       options: brands.map((b) => ({ value: b.slug, label: b.title })),
       selected: selectedBrands,
@@ -249,113 +279,152 @@ export default function SearchResultsContent() {
         <ol className="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
           <li>
             <Link href="/" className="hover:text-foreground transition-colors flex items-center gap-1">
-              <Home className="size-3.5" />
-              Home
+              <Home className="size-3.5" />Home
             </Link>
           </li>
           <li aria-hidden="true" className="select-none">/</li>
-          <li><Link href="/products" className="hover:text-foreground transition-colors">Products</Link></li>
-          {query && (
-            <>
-              <li aria-hidden="true" className="select-none">/</li>
-              <li className="text-foreground font-medium truncate max-w-[200px]" aria-current="page">
-                Search results for &ldquo;{query}&rdquo;
-              </li>
-            </>
-          )}
+          <li className="text-foreground font-medium" aria-current="page">Products</li>
         </ol>
       </nav>
 
-      {/* ── Query Banner ── */}
-      <div className="mb-6 flex items-center gap-3 flex-wrap">
-        <h1 className="text-xl font-semibold text-foreground">
-          {query ? (<>Search results for <span className="text-tartiary">&ldquo;{query}&rdquo;</span></>) : "Search"}
-        </h1>
-        {isFetching && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
-        {!isLoading && !isFetching && total > 0 && (
-          <span className="text-sm text-muted-foreground">({total} product{total !== 1 ? "s" : ""})</span>
-        )}
+      {/* ── Page header + Search bar ── */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold text-foreground">All Products</h1>
+          {isFetching && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+          {!isLoading && !isFetching && total > 0 && (
+            <span className="text-sm text-muted-foreground">({total} product{total !== 1 ? "s" : ""})</span>
+          )}
+        </div>
+        <form onSubmit={handleSearchSubmit} className="flex items-center sm:ml-auto w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <input
+              id="products-search-input"
+              type="text"
+              placeholder="Search products…"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="w-full h-9 pl-9 pr-3 text-sm border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+          <Button type="submit" size="sm" className="rounded-none h-9 px-4">Search</Button>
+          {searchParam && (
+            <button type="button" onClick={() => { setLocalSearch(""); updateParams({ search: undefined }); }} className="ml-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Clear search">
+              <X className="size-4" />
+            </button>
+          )}
+        </form>
       </div>
 
-      {/* ── No query ── */}
-      {!isLoading && query.trim().length < 2 && (
-        <div className="flex flex-col items-center justify-center gap-3 py-20 text-center text-muted-foreground">
-          <p className="text-sm">Enter at least 2 characters to search for products.</p>
+      {/* ── Active filter chips ── */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap gap-2 mb-5">
+          {searchParam && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Search: <strong>{searchParam}</strong>
+              <button onClick={() => updateParams({ search: undefined })} aria-label="Remove search filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          )}
+          {selectedCategories.map((c) => (
+            <span key={c} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Category: <strong>{categories.find((x) => x.slug === c)?.title ?? c}</strong>
+              <button onClick={() => { const next = selectedCategories.filter((x) => x !== c); updateParams({ category: next.join(",") || undefined }); }} aria-label="Remove category filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          {selectedBrands.map((b) => (
+            <span key={b} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Brand: <strong>{brands.find((x) => x.slug === b)?.title ?? b}</strong>
+              <button onClick={() => { const next = selectedBrands.filter((x) => x !== b); updateParams({ brand: next.join(",") || undefined }); }} aria-label="Remove brand filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          {(minPriceParam || maxPriceParam) && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Price: <strong>৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}</strong>
+              <button onClick={() => updateParams({ minPrice: undefined, maxPrice: undefined })} aria-label="Remove price filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          )}
+          {availability.map((a) => (
+            <span key={a} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              {a === "inStock" ? "In Stock" : "Out of Stock"}
+              <button onClick={() => { const next = availability.filter((x) => x !== a); updateParams({ availability: next.join(",") || undefined }); }} aria-label="Remove availability filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          <button onClick={handleClearAll} className="text-xs text-tartiary hover:underline underline-offset-4 transition-colors ml-1">Clear all</button>
         </div>
       )}
 
       {/* ── Main layout ── */}
-      {query.trim().length >= 2 && (
-        <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
-          {/* Mobile filter toggle */}
-          <FilterToggleButton onClick={() => setDrawerOpen(true)} hasActiveFilters={hasActiveFilters} />
+      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+        {/* Mobile filter toggle */}
+        <FilterToggleButton onClick={() => setDrawerOpen(true)} hasActiveFilters={hasActiveFilters} />
 
-          {/* Reusable sidebar (handles desktop aside + mobile drawer internally) */}
-          <ProductFilterSidebar
-            sections={filterSections}
-            hasActiveFilters={hasActiveFilters}
-            onClearAll={handleClearAll}
-            mobileOpen={drawerOpen}
-            onMobileClose={() => setDrawerOpen(false)}
-          />
+        {/* Reusable sidebar */}
+        <ProductFilterSidebar
+          sections={filterSections}
+          hasActiveFilters={hasActiveFilters}
+          onClearAll={handleClearAll}
+          mobileOpen={drawerOpen}
+          onMobileClose={() => setDrawerOpen(false)}
+        />
 
-          {/* Grid area */}
-          <div className="flex-1 min-w-0 w-full">
-            {/* Toolbar */}
-            {!isLoading && total > 0 && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
-                <p className="text-sm text-muted-foreground">
-                  Sorted by: <span className="font-medium text-foreground">{sortLabels[sortBy] ?? "Relevance"}</span>
+        {/* Grid area */}
+        <div className="flex-1 min-w-0 w-full">
+          {/* Toolbar */}
+          {!isLoading && total > 0 && (
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
+              <p className="text-sm text-muted-foreground">
+                Sorted by: <span className="font-medium text-foreground">{sortLabels[sortBy] ?? "Newest"}</span>
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Show:</span>
+                {LIMIT_OPTIONS.map((opt) => (
+                  <Button key={opt} variant="outline" onClick={() => handleLimitChange(opt)}
+                    className={cn("flex items-center justify-center w-9 h-9 text-sm border transition-colors",
+                      limit === opt ? "bg-primary text-primary-foreground border-primary font-semibold" : "border-border text-foreground")}
+                  >{opt}</Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Loading skeleton */}
+          {isLoading && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: limit }).map((_, i) => <ProductCardSkeleton key={i} />)}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!isLoading && results.length === 0 && (
+            <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+              <PackageSearch className="size-12 text-muted-foreground/50" />
+              <div>
+                <p className="text-base font-medium text-foreground">No products found</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {hasActiveFilters ? "Try adjusting or clearing your filters." : "No products are available right now."}
                 </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Show:</span>
-                  {LIMIT_OPTIONS.map((opt) => (
-                    <Button key={opt} variant="outline" onClick={() => handleLimitChange(opt)}
-                      className={cn("flex items-center justify-center w-9 h-9 text-sm border transition-colors",
-                        limit === opt ? "bg-primary text-primary-foreground border-primary font-semibold" : "border-border text-foreground")}
-                    >{opt}</Button>
-                  ))}
-                </div>
               </div>
-            )}
+              {hasActiveFilters && (
+                <button onClick={handleClearAll} className="text-sm font-medium text-tartiary hover:underline underline-offset-4">Clear all filters</button>
+              )}
+            </div>
+          )}
 
-            {/* Loading skeleton */}
-            {isLoading && (
+          {/* Results grid */}
+          {!isLoading && results.length > 0 && (
+            <>
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                {Array.from({ length: limit }).map((_, i) => <SearchResultSkeleton key={i} />)}
+                {results.map((product) => <ProductCard key={product._id} product={product} />)}
               </div>
-            )}
-
-            {/* Empty state */}
-            {!isLoading && results.length === 0 && query.trim().length >= 2 && (
-              <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-                <SearchX className="size-12 text-muted-foreground/50" />
-                <div>
-                  <p className="text-base font-medium text-foreground">No products found</p>
-                  <p className="text-sm text-muted-foreground mt-1">Try a different search term or adjust your filters.</p>
-                </div>
-                <div className="flex gap-3 flex-wrap justify-center mt-2">
-                  <button onClick={handleClearAll} className="text-sm font-medium text-tartiary hover:underline underline-offset-4">Clear filters</button>
-                  <Link href="/" className="text-sm font-medium text-tartiary hover:underline underline-offset-4">Back to Home</Link>
-                </div>
-              </div>
-            )}
-
-            {/* Results grid */}
-            {!isLoading && results.length > 0 && (
-              <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {results.map((product) => <SearchProductCard key={product._id} product={product} />)}
-                </div>
-                <Pagination page={page} totalPages={totalPages} onNavigate={navigatePage} />
-                {totalPages > 1 && (
-                  <p className="text-xs text-muted-foreground text-center mt-3">Page {page} of {totalPages}</p>
-                )}
-              </>
-            )}
-          </div>
+              <Pagination page={page} totalPages={totalPages} onNavigate={navigatePage} />
+              {totalPages > 1 && (
+                <p className="text-xs text-muted-foreground text-center mt-3">Page {page} of {totalPages}</p>
+              )}
+            </>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -2,26 +2,25 @@
 
 import { useConfigStore } from "@/store/configStore";
 import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
+import { HeroCarouselSkeleton, HeroFixedSkeleton } from "./hero-skeleton";
 
-const HeroFixed = dynamic(() => import("./hero-fixed"), { ssr: false });
-const HeroCarousel = dynamic(() => import("./hero-carousel"), { ssr: false });
+const HeroFixed = dynamic(() => import("./hero-fixed"), {
+  ssr: false,
+  loading: () => <HeroFixedSkeleton />,
+});
 
-const HeroSkeleton = () => (
-  <div className="hero-fixed-grid">
-    <Skeleton className="hero-skeleton-main" />
-    <div className="hero-fixed-stack">
-      <Skeleton className="hero-skeleton-small" />
-      <Skeleton className="hero-skeleton-small" />
-    </div>
-  </div>
-);
+const HeroCarousel = dynamic(() => import("./hero-carousel"), {
+  ssr: false,
+  loading: () => <HeroCarouselSkeleton />,
+});
+
 
 const HeroSection = () => {
   const { config, isLoading } = useConfigStore();
 
-  if (isLoading) return <HeroSkeleton />;
-  if (!config?.hero) return null;
+  if (isLoading || !config?.hero) {
+    return <HeroFixedSkeleton />;
+  }
 
   const { heroType, fixedContent, carouselContent } = config.hero;
 

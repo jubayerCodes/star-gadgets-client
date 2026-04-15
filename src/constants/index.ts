@@ -10,6 +10,7 @@ export const QUERY_KEYS = {
   BRANDS_LIST: "brands-list",
   PRODUCTS: "products",
   PRODUCTS_ADMIN: "products-admin",
+  PRODUCTS_LISTING: "products-listing",
   FEATURED_PRODUCTS: "featured-products",
   PRODUCT_SEARCH: "product-search",
   BADGES: "badges",

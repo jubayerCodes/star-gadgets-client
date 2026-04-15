@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-explicit-any": "error",
       "no-console": "warn",
       "react-hooks/incompatible-library": "off",
+      "react-hooks/set-state-in-effect": "off",
     },
   },
   globalIgnores([

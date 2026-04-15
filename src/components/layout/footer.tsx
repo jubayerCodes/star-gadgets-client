@@ -11,13 +11,7 @@ import { MapPin, Smartphone, Mail, FileText } from "lucide-react";
 
 // For payment icons, since we don't have an exact image, we'll use placeholder text or icons.
 // Assuming "react-icons/fa" can be used if they need exactly those later.
-import {
-  FaCcVisa,
-  FaCcMastercard,
-  FaCcAmex,
-  FaCcPaypal,
-  FaCcDiscover,
-} from "react-icons/fa";
+import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal, FaCcDiscover } from "react-icons/fa";
 import { IconCircleFilled } from "@tabler/icons-react";
 
 const Footer = () => {
@@ -35,10 +29,7 @@ const Footer = () => {
     { label: "Builder", href: "/pc-builder", icon: Wrench },
   ];
 
-  const marqueeItems = [
-    "Thank You For Visiting The Site!!",
-    "Happy Shopping",
-  ];
+  const marqueeItems = ["Thank You For Visiting The Site!!", "Happy Shopping"];
 
   return (
     <footer className="mt-auto">
@@ -59,22 +50,16 @@ const Footer = () => {
       </div>
 
       {/* Main Desktop & Tablet Footer */}
-      <div className="bg-[#181a24] text-white/80 py-12 pb-24 lg:pb-12 text-sm z-40 relative">
+      <div className="bg-[#181a24] text-white/80 py-12 pb-4 lg:pb-12 text-sm z-40 relative">
         <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          
           {/* Column 1 - Logo & About */}
           <div className="flex flex-col gap-4">
             <Link href="/" className="inline-block no-underline">
-              {/* In lack of knowing exactly which logo is the "white" one, we try logo.svg which might be the white one since logo.png is used in the light header */}
-              <Image 
-                src={logo} 
-                alt="Tech Diversity" className="w-[180px] h-auto invert brightness-0" 
-                // "invert brightness-0" forces the logo to be white if it's currently dark. 
-                // This ensures it matches the screenshot visually even if we picked the dark logo.
-              />
+              <Image src={logo} alt="Star Gadgets" className="w-[180px] h-auto invert brightness-0" />
             </Link>
             <p className="text-white/70 leading-relaxed text-[13px] mt-2 max-w-[90%]">
-              We mainly import goods from overseas. If anything crosses your mind feel free to knock us and allow us to make you happy by serving your desired product
+              We mainly import goods from overseas. If anything crosses your mind feel free to knock us and allow us to
+              make you happy by serving your desired product
             </p>
           </div>
 
@@ -82,11 +67,21 @@ const Footer = () => {
           <div className="flex flex-col gap-5">
             <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">USEFUL LINKS</h3>
             <div className="flex flex-col gap-3.5 text-[13px]">
-              <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">Privacy Policy</Link>
-              <Link href="/warranty-policy" className="text-white/70 hover:text-white transition">Warranty Policy</Link>
-              <Link href="/refund-returns" className="text-white/70 hover:text-white transition">Refund and Returns Policy</Link>
-              <Link href="/after-sales" className="text-white/70 hover:text-white transition">After Sales Policy</Link>
-              <Link href="/cookie-policy" className="text-white/70 hover:text-white transition">Cookie Policy</Link>
+              <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">
+                Privacy Policy
+              </Link>
+              <Link href="/warranty-policy" className="text-white/70 hover:text-white transition">
+                Warranty Policy
+              </Link>
+              <Link href="/refund-returns" className="text-white/70 hover:text-white transition">
+                Refund and Returns Policy
+              </Link>
+              <Link href="/after-sales" className="text-white/70 hover:text-white transition">
+                After Sales Policy
+              </Link>
+              <Link href="/cookie-policy" className="text-white/70 hover:text-white transition">
+                Cookie Policy
+              </Link>
             </div>
           </div>
 
@@ -94,12 +89,24 @@ const Footer = () => {
           <div className="flex flex-col gap-5">
             <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">SUPPORT</h3>
             <div className="flex flex-col gap-3.5 text-[13px]">
-              <Link href="/track-order" className="text-white/70 hover:text-white transition">Track Your Order</Link>
-              <Link href="/request-product" className="text-white/70 hover:text-white transition">Request Product</Link>
-              <Link href="/affiliated-brands" className="text-white/70 hover:text-white transition">Affiliated Brands</Link>
-              <Link href="/about-us" className="text-white/70 hover:text-white transition">About Us</Link>
-              <Link href="/delivery" className="text-white/70 hover:text-white transition">Delivery</Link>
-              <Link href="/terms-conditions" className="text-white/70 hover:text-white transition">Terms and Conditions</Link>
+              <Link href="/track-order" className="text-white/70 hover:text-white transition">
+                Track Your Order
+              </Link>
+              <Link href="/request-product" className="text-white/70 hover:text-white transition">
+                Request Product
+              </Link>
+              <Link href="/affiliated-brands" className="text-white/70 hover:text-white transition">
+                Affiliated Brands
+              </Link>
+              <Link href="/about-us" className="text-white/70 hover:text-white transition">
+                About Us
+              </Link>
+              <Link href="/delivery" className="text-white/70 hover:text-white transition">
+                Delivery
+              </Link>
+              <Link href="/terms-conditions" className="text-white/70 hover:text-white transition">
+                Terms and Conditions
+              </Link>
             </div>
           </div>
 
@@ -130,15 +137,17 @@ const Footer = () => {
         {/* Bottom Bar Section */}
         <div className="container mt-8 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-white/60">
           <p className="uppercase tracking-wide text-center md:text-left">
-            ALL RIGHTS RESERVED. <span className="font-bold text-white">TECH DIVERSITY</span> © 2025 CREATED BY <span className="font-bold text-white">DDN</span>.
+            ALL RIGHTS RESERVED. <span className="font-bold text-white">STAR GADGETS</span> © 2025 CREATED BY{" "}
+            <Link href="https://jubayer-codes-portfolio.vercel.app" target="_blank" rel="noopener noreferrer" className="font-bold text-white">
+              Jubayer Hossain
+            </Link>
           </p>
           <div className="flex items-center gap-2">
-             {/* Payment Icons Alternative */}
-             <FaCcVisa className="size-8" />
-             <FaCcMastercard className="size-8" />
-             <FaCcAmex className="size-8" />
-             <FaCcPaypal className="size-8" />
-             <FaCcDiscover className="size-8" />
+            <FaCcVisa className="size-8" />
+            <FaCcMastercard className="size-8" />
+            <FaCcAmex className="size-8" />
+            <FaCcPaypal className="size-8" />
+            <FaCcDiscover className="size-8" />
           </div>
         </div>
       </div>

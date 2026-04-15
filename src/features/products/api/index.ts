@@ -1,7 +1,14 @@
 import { axiosInstance } from "@/lib/axios";
 import { CreateProductFormData, UpdateProductFormData } from "../schemas/product.schema";
 import { ApiResponse } from "@/types";
-import { IFeaturedProduct, IProduct, IProductAdmin, ISearchResultData } from "../types/product.types";
+import {
+  IFeaturedProduct,
+  IProduct,
+  IProductAdmin,
+  IPublicProductsData,
+  ISearchResultData,
+  PublicProductsParams,
+} from "../types/product.types";
 import { parseSearchQuery } from "@/lib/parseSearchQuery";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -92,5 +99,23 @@ export const searchProductsApi = async (params: SearchParams): Promise<ApiRespon
   if (brand) queryParams.brand = brand;
   if (sortBy) queryParams.sortBy = sortBy;
   const res = await axiosInstance.get("/products/search", { params: queryParams });
+  return res.data;
+};
+
+export const getPublicProductsApi = async (
+  params: PublicProductsParams,
+): Promise<ApiResponse<IPublicProductsData>> => {
+  const { page = 1, limit = 20, search, minPrice, maxPrice, availability, brand, category, subCategory, sortBy } =
+    params;
+  const queryParams: Record<string, string | number | undefined> = { page, limit };
+  if (search) queryParams.search = search;
+  if (minPrice !== undefined) queryParams.minPrice = minPrice;
+  if (maxPrice !== undefined) queryParams.maxPrice = maxPrice;
+  if (availability) queryParams.availability = availability;
+  if (brand) queryParams.brand = brand;
+  if (category) queryParams.category = category;
+  if (subCategory) queryParams.subCategory = subCategory;
+  if (sortBy) queryParams.sortBy = sortBy;
+  const res = await axiosInstance.get("/products/listing", { params: queryParams });
   return res.data;
 };

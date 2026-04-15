@@ -63,7 +63,6 @@ export const useSlug = <
       // If the target value is not empty, and doesn't match the auto-generated
       // slug, we assume the user has manually changed the slug field.
       if (targetValue !== generatedFromSource && targetValue !== "" && generatedFromSource !== "") {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsManualOverride(true);
       } else if (targetValue === "" && (!sourceCurrentValue || sourceCurrentValue === "")) {
         // Optionally reset manual override if both fields are blank, resetting state

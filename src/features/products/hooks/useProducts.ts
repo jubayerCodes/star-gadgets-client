@@ -8,12 +8,14 @@ import {
   getProductByIdApi,
   getProductBySlugApi,
   getProductsAdminApi,
+  getPublicProductsApi,
   searchProductsApi,
   SearchParams,
   updateProductApi,
 } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { PublicProductsParams } from "../types/product.types";
 
 export const productsAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
   return {
@@ -103,6 +105,28 @@ export const useSearchProductsQuery = (params: SearchParams) => {
     queryKey: [QUERY_KEYS.PRODUCT_SEARCH, query, page, limit, minPrice, maxPrice, availability, brand, sortBy],
     queryFn: () => searchProductsApi(params),
     enabled: query.trim().length >= 2,
+    staleTime: 30 * 1000,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetPublicProductsQuery = (params: PublicProductsParams) => {
+  const { page, limit, search, minPrice, maxPrice, availability, brand, category, subCategory, sortBy } = params;
+  return useQuery({
+    queryKey: [
+      QUERY_KEYS.PRODUCTS_LISTING,
+      page,
+      limit,
+      search,
+      minPrice,
+      maxPrice,
+      availability,
+      brand,
+      category,
+      subCategory,
+      sortBy,
+    ],
+    queryFn: () => getPublicProductsApi(params),
     staleTime: 30 * 1000,
     placeholderData: keepPreviousData,
   });

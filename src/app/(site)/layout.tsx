@@ -20,7 +20,7 @@ export default async function ClientLayout({ children }: { children: React.React
   });
 
   return (
-    <div className="min-h-screen flex flex-col pb-16 lg:pb-0">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

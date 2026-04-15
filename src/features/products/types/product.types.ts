@@ -142,3 +142,28 @@ export interface ISearchResultData {
   products: ISearchProduct[];
   brands: ISearchBrand[];
 }
+
+export interface IPublicProductCategory {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
+export interface PublicProductsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  availability?: "inStock" | "outOfStock";
+  brand?: string;
+  category?: string;
+  subCategory?: string;
+  sortBy?: "newest" | "priceAsc" | "priceDesc" | "popularity";
+}
+
+export interface IPublicProductsData {
+  products: ISearchProduct[];
+  brands: ISearchBrand[];
+  categories: IPublicProductCategory[];
+}

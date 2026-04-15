@@ -34,7 +34,6 @@ function AddNavLinkModal({ form }: AddNavLinkModalProps) {
   const [selection, setSelection] = useState<{ _id: string; title: string }[]>([]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelection(currentNavLinks.map((link) => ({ _id: link._id, title: link.title })));
   }, [currentNavLinks]);
 
