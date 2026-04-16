@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 export default function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { data, isLoading, isError } = useCurrentUser();
-  const { setError, setIsLoading, setUser } = useAuthStore();
+  const { setError, setUser } = useAuthStore();
 
   const { data: config, isLoading: configLoading, isError: configError } = useGetConfig();
   const { setConfig, setIsLoading: setConfigLoading, setError: setConfigError } = useConfigStore();
@@ -31,11 +31,6 @@ export default function AuthInitializer({ children }: { children: React.ReactNod
   }, [isReady, overlayMounted]);
 
   useEffect(() => {
-    if (isLoading) {
-      setIsLoading(true);
-      return;
-    }
-
     if (data) {
       setUser(data.data);
       setError(null);
@@ -76,4 +71,3 @@ export default function AuthInitializer({ children }: { children: React.ReactNod
     </>
   );
 }
-
