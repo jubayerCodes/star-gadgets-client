@@ -7,7 +7,7 @@ interface LoadingOverlayProps {
 const Loading = ({ hiding = false }: LoadingOverlayProps) => {
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${
+      className={`fixed inset-0 z-9999 flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${
         hiding ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
