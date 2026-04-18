@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingCart, Trash2, ExternalLink, PackageOpen } from "lucide-react";
+import { ShoppingCart, Trash2, ExternalLink, PackageOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IWishlistItem, useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";

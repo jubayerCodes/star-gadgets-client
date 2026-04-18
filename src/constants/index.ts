@@ -31,6 +31,7 @@ export const QUERY_KEYS = {
     HEADER: "header-config",
   },
   GALLERY: "gallery",
+  COUPON: "coupon",
 };
 
 export const PAGINATION = {

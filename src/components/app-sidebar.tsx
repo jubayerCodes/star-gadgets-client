@@ -9,6 +9,7 @@ import {
   IconLayout2,
   IconListDetails,
   IconSettings,
+  IconTicket,
   IconWorld,
 } from "@tabler/icons-react";
 
@@ -105,6 +106,11 @@ const navMain: INavItem[] = [
     icon: IconWorld,
   },
   {
+    title: "Coupons",
+    url: "/dashboard/coupons",
+    icon: IconTicket,
+  },
+  {
     title: "Configurations",
     icon: IconSettings,
     children: [
@@ -115,6 +121,10 @@ const navMain: INavItem[] = [
       {
         title: "Hero",
         url: "/dashboard/configurations/hero",
+      },
+      {
+        title: "Shipping",
+        url: "/dashboard/configurations/shipping",
       },
     ],
   },
