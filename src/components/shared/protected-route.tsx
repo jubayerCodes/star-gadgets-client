@@ -10,7 +10,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStore();
 
   useEffect(() => {
-    console.log(user, isLoading);
     if (!user && !isLoading) {
       router.push("/account/login");
     }

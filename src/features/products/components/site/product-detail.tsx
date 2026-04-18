@@ -125,12 +125,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   // ── Gallery images from selected variant (or fallback to initial if none fully selected) ──
   const displayVariant = selectedVariant ?? initialVariant;
-  const galleryImages = useMemo(() => {
+  const galleryImages = (() => {
     const variantImages = displayVariant?.images ?? [];
     const featured = displayVariant?.featuredImage ?? productFeaturedImage ?? "";
-    const unique = [featured, ...variantImages.filter((img) => img !== featured)].filter(Boolean);
-    return unique;
-  }, [displayVariant, productFeaturedImage]);
+    return [featured, ...variantImages.filter((img) => img !== featured)].filter(Boolean);
+  })();
 
   // ── Attribute groups across all variants ──
   const attributeGroups = useMemo(() => {

@@ -24,3 +24,12 @@ export const updateHeroConfigApi = async (
   const res = await axiosInstance.patch(`/config/hero/${id}`, data);
   return res.data;
 };
+
+export const updateShippingConfigApi = async (
+  id: string,
+  data: { shippingMethods: { name: string; cost: number }[] },
+): Promise<ApiResponse<IConfigResponse>> => {
+  const res = await axiosInstance.patch(`/config/shipping/${id}`, data);
+  return res.data;
+};
+
