@@ -1,19 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSearchProductsQuery } from "@/features/products/hooks/useProducts";
+import { useSearchProductsQuery, useGetSearchFiltersQuery } from "@/features/products/hooks/useProducts";
 import Image from "next/image";
 import Link from "next/link";
-import { ISearchBrand, ISearchProduct, ProductStatus } from "../../types/product.types";
-import { ChevronLeft, ChevronRight, Home, Loader2, SearchX, ShoppingCart } from "lucide-react";
+import { ICategorySubCategory, ISearchBrand, ISearchProduct, ProductStatus } from "../../types/product.types";
+import { ChevronLeft, ChevronRight, Loader2, SearchX, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
+import { PRODUCT_LISTING } from "@/constants";
 import ProductFilterSidebar, {
   FilterToggleButton,
   type FilterSectionConfig,
 } from "@/components/filters/product-filter-sidebar";
+import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -126,25 +128,26 @@ function Pagination({ page, totalPages, onNavigate }: { page: number; totalPages
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-const LIMIT_OPTIONS = [12, 20, 40];
 
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const query = searchParams.get("query") ?? "";
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
-  const limit = parseInt(searchParams.get("limit") ?? "20");
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? String(PRODUCT_LISTING.DEFAULT_PAGE)));
+  const limit = parseInt(searchParams.get("limit") ?? String(PRODUCT_LISTING.DEFAULT_LIMIT));
   const sortBy = (searchParams.get("sortBy") ?? "relevance") as "relevance" | "priceAsc" | "priceDesc" | "newest";
   const minPriceParam = searchParams.get("minPrice") ?? "";
   const maxPriceParam = searchParams.get("maxPrice") ?? "";
   const availabilityParam = searchParams.get("availability") ?? "";
   const brandParam = searchParams.get("brand") ?? "";
+  const subCategoryParam = searchParams.get("subCategory") ?? "";
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const availability: string[] = availabilityParam ? availabilityParam.split(",") : [];
   const selectedBrands: string[] = brandParam ? brandParam.split(",") : [];
+  const selectedSubCategories: string[] = subCategoryParam ? subCategoryParam.split(",") : [];
 
   const { data, isLoading, isFetching } = useSearchProductsQuery({
     query, page, limit,
@@ -152,11 +155,15 @@ export default function SearchResultsContent() {
     maxPrice: maxPriceParam ? parseFloat(maxPriceParam) : undefined,
     availability: availability[0] as "inStock" | "outOfStock" | undefined,
     brand: selectedBrands[0],
+    subCategory: selectedSubCategories[0],
     sortBy,
   });
 
+  const { data: filtersData } = useGetSearchFiltersQuery(query);
+
   const results: ISearchProduct[] = data?.data?.products ?? [];
-  const brands: ISearchBrand[] = data?.data?.brands ?? [];
+  const brands: ISearchBrand[] = filtersData?.data?.brands ?? [];
+  const subCategories: ICategorySubCategory[] = filtersData?.data?.subCategories ?? [];
   const total = data?.meta?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
 
@@ -184,7 +191,7 @@ export default function SearchResultsContent() {
   const handleLimitChange = (val: number) => updateParams({ limit: String(val) });
 
   const hasActiveFilters = !!(
-    minPriceParam || maxPriceParam || availability.length > 0 || selectedBrands.length > 0 || sortBy !== "relevance"
+    minPriceParam || maxPriceParam || availability.length > 0 || selectedBrands.length > 0 || selectedSubCategories.length > 0 || sortBy !== "relevance"
   );
 
   const sortLabels: Record<string, string> = {
@@ -224,47 +231,39 @@ export default function SearchResultsContent() {
         { value: "outOfStock", label: "Out of Stock" },
       ],
       selected: availability,
-      onToggle: (val) => {
-        const next = availability.includes(val) ? availability.filter((a) => a !== val) : [...availability, val];
-        updateParams({ availability: next.join(",") || undefined });
-      },
+      onChange: (next) => updateParams({ availability: next.join(",") || undefined }),
+      singleSelect: true,
+    },
+    {
+      type: "checkbox",
+      label: "Sub-category",
+      options: subCategories.map((sc) => ({ value: sc.slug, label: sc.title })),
+      selected: selectedSubCategories,
+      onChange: (next) => updateParams({ subCategory: next.join(",") || undefined }),
+      scrollable: true,
+      singleSelect: true,
     },
     {
       type: "checkbox",
       label: "Brand",
       options: brands.map((b) => ({ value: b.slug, label: b.title })),
       selected: selectedBrands,
-      onToggle: (slug) => {
-        const next = selectedBrands.includes(slug) ? selectedBrands.filter((b) => b !== slug) : [...selectedBrands, slug];
-        updateParams({ brand: next.join(",") || undefined });
-      },
+      onChange: (next) => updateParams({ brand: next.join(",") || undefined }),
       scrollable: true,
+      singleSelect: true,
     },
   ];
 
   return (
     <div className="container py-8 min-h-[60vh] overflow-x-hidden">
       {/* ── Breadcrumb ── */}
-      <nav aria-label="Breadcrumb" className="mb-5">
-        <ol className="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
-          <li>
-            <Link href="/" className="hover:text-foreground transition-colors flex items-center gap-1">
-              <Home className="size-3.5" />
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true" className="select-none">/</li>
-          <li><Link href="/products" className="hover:text-foreground transition-colors">Products</Link></li>
-          {query && (
-            <>
-              <li aria-hidden="true" className="select-none">/</li>
-              <li className="text-foreground font-medium truncate max-w-[200px]" aria-current="page">
-                Search results for &ldquo;{query}&rdquo;
-              </li>
-            </>
-          )}
-        </ol>
-      </nav>
+      <SiteBreadcrumb
+        className="mb-5"
+        items={[
+          { label: "Products", href: "/products" },
+          ...(query ? [{ label: `Search results for "${query}"` }] : []),
+        ]}
+      />
 
       {/* ── Query Banner ── */}
       <div className="mb-6 flex items-center gap-3 flex-wrap">
@@ -281,6 +280,37 @@ export default function SearchResultsContent() {
       {!isLoading && query.trim().length < 2 && (
         <div className="flex flex-col items-center justify-center gap-3 py-20 text-center text-muted-foreground">
           <p className="text-sm">Enter at least 2 characters to search for products.</p>
+        </div>
+      )}
+
+      {/* ── Active filter chips ── */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap gap-2 mb-5">
+          {selectedSubCategories.map((s) => (
+            <span key={s} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Sub-cat: <strong>{subCategories.find((x) => x.slug === s)?.title ?? s}</strong>
+              <button onClick={() => { const next = selectedSubCategories.filter((x) => x !== s); updateParams({ subCategory: next.join(",") || undefined }); }} aria-label="Remove sub-category filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          {selectedBrands.map((b) => (
+            <span key={b} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Brand: <strong>{brands.find((x) => x.slug === b)?.title ?? b}</strong>
+              <button onClick={() => { const next = selectedBrands.filter((x) => x !== b); updateParams({ brand: next.join(",") || undefined }); }} aria-label="Remove brand filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          {(minPriceParam || maxPriceParam) && (
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              Price: <strong>৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}</strong>
+              <button onClick={() => updateParams({ minPrice: undefined, maxPrice: undefined })} aria-label="Remove price filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          )}
+          {availability.map((a) => (
+            <span key={a} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+              {a === "inStock" ? "In Stock" : "Out of Stock"}
+              <button onClick={() => { const next = availability.filter((x) => x !== a); updateParams({ availability: next.join(",") || undefined }); }} aria-label="Remove availability filter"><X className="size-3 ml-0.5" /></button>
+            </span>
+          ))}
+          <button onClick={handleClearAll} className="text-xs text-tartiary hover:underline underline-offset-4 transition-colors ml-1">Clear all</button>
         </div>
       )}
 
@@ -309,7 +339,7 @@ export default function SearchResultsContent() {
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Show:</span>
-                  {LIMIT_OPTIONS.map((opt) => (
+                  {PRODUCT_LISTING.LIMIT_OPTIONS.map((opt) => (
                     <Button key={opt} variant="outline" onClick={() => handleLimitChange(opt)}
                       className={cn("flex items-center justify-center w-9 h-9 text-sm border transition-colors",
                         limit === opt ? "bg-primary text-primary-foreground border-primary font-semibold" : "border-border text-foreground")}

@@ -140,7 +140,11 @@ export interface ISearchBrand {
 
 export interface ISearchResultData {
   products: ISearchProduct[];
+}
+
+export interface ISearchFiltersData {
   brands: ISearchBrand[];
+  subCategories: ICategorySubCategory[];
 }
 
 export interface IPublicProductCategory {
@@ -164,6 +168,80 @@ export interface PublicProductsParams {
 
 export interface IPublicProductsData {
   products: ISearchProduct[];
+}
+
+export interface IListingFiltersData {
   brands: ISearchBrand[];
   categories: IPublicProductCategory[];
+}
+
+// ─── Category products (by-category endpoint) ─────────────────────────────────
+
+export interface ICategoryMeta {
+  _id: string;
+  title: string;
+  slug: string;
+  image: string;
+}
+
+export interface ICategorySubCategory {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
+export interface ICategoryProductsData {
+  category: ICategoryMeta;
+  products: ISearchProduct[];
+}
+
+export interface ICategoryFiltersData {
+  category: ICategoryMeta;
+  brands: ISearchBrand[];
+  subCategories: ICategorySubCategory[];
+}
+
+export interface CategoryProductsParams {
+  /** The category slug — required */
+  categorySlug: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  availability?: "inStock" | "outOfStock";
+  /** brand slug */
+  brand?: string;
+  /** sub-category slug */
+  subCategory?: string;
+  sortBy?: "newest" | "priceAsc" | "priceDesc" | "popularity";
+}
+
+// ─── Sub-Category products (by-sub-category endpoint) ─────────────────────────
+
+export interface ISubCategoryMeta {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
+export interface ISubCategoryProductsData {
+  subCategory: ISubCategoryMeta;
+  products: ISearchProduct[];
+}
+
+export interface ISubCategoryFiltersData {
+  brands: ISearchBrand[];
+}
+
+export interface SubCategoryProductsParams {
+  subCategorySlug: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  availability?: "inStock" | "outOfStock";
+  brand?: string;
+  sortBy?: "newest" | "priceAsc" | "priceDesc" | "popularity";
 }

@@ -4,18 +4,24 @@ import { toast } from "sonner";
 import {
   createProductApi,
   deleteProductApi,
+  getCategoryProductsApi,
+  getCategoryFiltersApi,
   getFeaturedProductsApi,
   getProductByIdApi,
   getProductBySlugApi,
   getProductsAdminApi,
   getPublicProductsApi,
+  getListingFiltersApi,
   searchProductsApi,
+  getSearchFiltersApi,
+  getSubCategoryProductsApi,
+  getSubCategoryFiltersApi,
   SearchParams,
   updateProductApi,
 } from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { PublicProductsParams } from "../types/product.types";
+import { CategoryProductsParams, PublicProductsParams, SubCategoryProductsParams } from "../types/product.types";
 
 export const productsAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
   return {
@@ -100,13 +106,22 @@ export const useGetProductBySlugQuery = (slug: string) => {
 };
 
 export const useSearchProductsQuery = (params: SearchParams) => {
-  const { query, page = 1, limit = 20, minPrice, maxPrice, availability, brand, sortBy } = params;
+  const { query, page = 1, limit = 20, minPrice, maxPrice, availability, brand, subCategory, sortBy } = params;
   return useQuery({
-    queryKey: [QUERY_KEYS.PRODUCT_SEARCH, query, page, limit, minPrice, maxPrice, availability, brand, sortBy],
+    queryKey: [QUERY_KEYS.PRODUCT_SEARCH, query, page, limit, minPrice, maxPrice, availability, brand, subCategory, sortBy],
     queryFn: () => searchProductsApi(params),
     enabled: query.trim().length >= 2,
     staleTime: 30 * 1000,
     placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetSearchFiltersQuery = (query: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCT_SEARCH_FILTERS, query],
+    queryFn: () => getSearchFiltersApi(query),
+    enabled: query.trim().length >= 2,
+    staleTime: 5 * 60 * 1000, // 5 mins cache
   });
 };
 
@@ -129,5 +144,76 @@ export const useGetPublicProductsQuery = (params: PublicProductsParams) => {
     queryFn: () => getPublicProductsApi(params),
     staleTime: 30 * 1000,
     placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetListingFiltersQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.PRODUCTS_LISTING_FILTERS],
+    queryFn: getListingFiltersApi,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useGetCategoryProductsQuery = (params: CategoryProductsParams) => {
+  const { categorySlug, page, limit, search, minPrice, maxPrice, availability, brand, subCategory, sortBy } = params;
+  return useQuery({
+    queryKey: [
+      QUERY_KEYS.CATEGORY_PRODUCTS,
+      categorySlug,
+      page,
+      limit,
+      search,
+      minPrice,
+      maxPrice,
+      availability,
+      brand,
+      subCategory,
+      sortBy,
+    ],
+    queryFn: () => getCategoryProductsApi(params),
+    enabled: !!categorySlug,
+    staleTime: 30 * 1000,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetCategoryFiltersQuery = (categorySlug: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.CATEGORY_PRODUCTS_FILTERS, categorySlug],
+    queryFn: () => getCategoryFiltersApi(categorySlug),
+    enabled: !!categorySlug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useGetSubCategoryProductsQuery = (params: SubCategoryProductsParams) => {
+  const { subCategorySlug, page, limit, search, minPrice, maxPrice, availability, brand, sortBy } = params;
+  return useQuery({
+    queryKey: [
+      QUERY_KEYS.SUB_CATEGORY_PRODUCTS,
+      subCategorySlug,
+      page,
+      limit,
+      search,
+      minPrice,
+      maxPrice,
+      availability,
+      brand,
+      sortBy,
+    ],
+    queryFn: () => getSubCategoryProductsApi(params),
+    enabled: !!subCategorySlug,
+    staleTime: 30 * 1000,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetSubCategoryFiltersQuery = (subCategorySlug: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.SUB_CATEGORY_PRODUCTS_FILTERS, subCategorySlug],
+    queryFn: () => getSubCategoryFiltersApi(subCategorySlug),
+    enabled: !!subCategorySlug,
+    staleTime: 5 * 60 * 1000,
   });
 };

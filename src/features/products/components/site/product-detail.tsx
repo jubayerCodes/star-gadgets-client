@@ -3,11 +3,13 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Heart, Minus, Plus, ShoppingCart, Zap, Package } from "lucide-react";
+import { Heart, Minus, Plus, ShoppingCart, Zap, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RichTextRenderer } from "@/components/ui/rich-text-editor";
 import { IProduct, ProductStatus } from "../../types/product.types";
 import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -85,6 +87,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   } = product;
 
   const addItem = useCartStore((s) => s.addItem);
+  const { toggleItem: toggleWishlist, isWishlisted } = useWishlistStore();
 
   // ── Initial variant (prefer featured, fallback to first) ──
   const initialVariant = useMemo(() => variants.find((v) => v.featured) ?? variants[0], [variants]);
@@ -95,8 +98,23 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   );
   const [quantity, setQuantity] = useState(1);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState<"specifications" | "description">("specifications");
+
+  const wishlisted = productId ? isWishlisted(productId) : false;
+
+  const handleToggleWishlist = () => {
+    if (!productId) return;
+    toggleWishlist({
+      productId,
+      slug,
+      title,
+      image: displayVariant?.featuredImage ?? productFeaturedImage ?? "",
+      price: actualPrice,
+      regularPrice,
+      category: categoryId?.title,
+      brand: brandId?.title,
+    });
+  };
 
   // ── Derive selected variant from attribute state ──
   const selectedVariant = useMemo(() => {
@@ -241,30 +259,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
           {/* ── Right: Product Info ── */}
           <div className="flex flex-col gap-5">
-            <nav className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
-              <Link href="/" className="hover:text-foreground transition-colors">
-                Home
-              </Link>
-              <ChevronRight size={12} className="shrink-0" />
-              {categoryId && (
-                <>
-                  <Link href={`/categories/${categoryId.slug}`} className="hover:text-foreground transition-colors">
-                    {categoryId.title}
-                  </Link>
-                  <ChevronRight size={12} className="shrink-0" />
-                </>
-              )}
-              {subCategoryId && (
-                <>
-                  <Link
-                    href={`/sub-categories/${subCategoryId.slug}`}
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {subCategoryId.title}
-                  </Link>
-                </>
-              )}
-            </nav>
+            <SiteBreadcrumb
+              items={[
+                ...(categoryId ? [{ label: categoryId.title, href: `/categories/${categoryId.slug}` }] : []),
+                ...(subCategoryId
+                  ? [{ label: subCategoryId.title, href: `/sub-categories/${subCategoryId.slug}` }]
+                  : []),
+              ]}
+            />
             {/* Title */}
             <div>
               <h1 className="text-2xl font-bold leading-tight text-foreground mb-3">{title}</h1>
@@ -414,14 +416,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Wishlist */}
             <button
-              onClick={() => setIsWishlisted((w) => !w)}
+              onClick={handleToggleWishlist}
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit group cursor-pointer"
             >
               <Heart
                 size={16}
-                className={`transition-colors ${isWishlisted ? "fill-accent text-accent" : "group-hover:text-accent"}`}
+                className={`transition-colors ${wishlisted ? "fill-accent text-accent" : "group-hover:text-accent"}`}
               />
-              {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+              {wishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
             </button>
           </div>
         </div>
