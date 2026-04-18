@@ -135,7 +135,9 @@ export function DataTable<TData, TValue>({ columns, data, meta }: DataTableProps
                             <span
                               className={cn(
                                 "transition-colors",
-                                isActiveSort ? "text-foreground" : "text-muted-foreground/40 group-hover:text-muted-foreground",
+                                isActiveSort
+                                  ? "text-foreground"
+                                  : "text-muted-foreground/40 group-hover:text-muted-foreground",
                               )}
                             >
                               {isActiveSort && currentSortOrder === "asc" ? (

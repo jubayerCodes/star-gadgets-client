@@ -29,7 +29,8 @@ export interface CheckboxFilterConfig {
   label: string;
   options: { value: string; label: string }[];
   selected: string[];
-  onToggle: (val: string) => void;
+  onChange: (nextSelected: string[]) => void;
+  singleSelect?: boolean;
   /** Limit the list height and add a scrollbar when there are many options */
   scrollable?: boolean;
 }
@@ -89,6 +90,19 @@ function RadioSection({ section }: { section: RadioFilterConfig }) {
 
 function CheckboxSection({ section }: { section: CheckboxFilterConfig }) {
   if (section.options.length === 0) return null;
+
+  const handleToggle = (val: string) => {
+    if (section.singleSelect) {
+      const next = section.selected.includes(val) ? [] : [val];
+      section.onChange(next);
+    } else {
+      const next = section.selected.includes(val)
+        ? section.selected.filter((v) => v !== val)
+        : [...section.selected, val];
+      section.onChange(next);
+    }
+  };
+
   return (
     <div className="border border-border p-4 flex flex-col gap-3">
       <p className="text-xs font-semibold text-foreground uppercase tracking-wide">{section.label}</p>
@@ -104,7 +118,7 @@ function CheckboxSection({ section }: { section: CheckboxFilterConfig }) {
             <input
               type="checkbox"
               checked={section.selected.includes(opt.value)}
-              onChange={() => section.onToggle(opt.value)}
+              onChange={() => handleToggle(opt.value)}
               className="accent-foreground"
             />
             <span className="text-sm text-foreground group-hover:text-tartiary transition-colors truncate">

@@ -23,8 +23,14 @@ export interface IHeroConfigResponse {
   carouselContent: IHeroCarouselItem[];
 }
 
+export interface IShippingMethod {
+  name: string;
+  cost: number;
+}
+
 export interface IConfigResponse {
   _id: string;
   header: IHeaderConfigResponse;
   hero: IHeroConfigResponse;
+  shippingMethods: IShippingMethod[];
 }

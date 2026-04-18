@@ -81,6 +81,10 @@ const Header = () => {
       label: "Order History",
       href: "/account/orders",
     },
+    {
+      label: "Wishlist",
+      href: "/account/wishlist",
+    },
   ];
 
   return (

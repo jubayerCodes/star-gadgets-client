@@ -13,6 +13,12 @@ export const QUERY_KEYS = {
   PRODUCTS_LISTING: "products-listing",
   FEATURED_PRODUCTS: "featured-products",
   PRODUCT_SEARCH: "product-search",
+  PRODUCT_SEARCH_FILTERS: "product-search-filters",
+  CATEGORY_PRODUCTS: "category-products",
+  CATEGORY_PRODUCTS_FILTERS: "category-products-filters",
+  SUB_CATEGORY_PRODUCTS: "sub-category-products",
+  SUB_CATEGORY_PRODUCTS_FILTERS: "sub-category-products-filters",
+  PRODUCTS_LISTING_FILTERS: "products-listing-filters",
   BADGES: "badges",
   BADGES_ADMIN: "badges-admin",
   CART: "cart",
@@ -25,9 +31,17 @@ export const QUERY_KEYS = {
     HEADER: "header-config",
   },
   GALLERY: "gallery",
+  COUPON: "coupon",
 };
 
 export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_LIMIT: 10,
 };
+
+export const PRODUCT_LISTING = {
+  DEFAULT_PAGE: 1,
+  DEFAULT_LIMIT: 20,
+  LIMIT_OPTIONS: [12, 20, 40],
+};
+
