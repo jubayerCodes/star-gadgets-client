@@ -11,6 +11,7 @@ export const checkoutSchema = z.object({
   district: z.string({ message: "District is required" }).min(2, "District is required"),
   postcode: z.string().optional(),
   phone: PhoneNumberSchema,
+  email: z.string({ message: "Email is required" }).email("Please enter a valid email"),
   orderNotes: z.string().optional(),
   shippingMethod: z.string({ message: "Please select a shipping method" }),
   paymentMethod: z.enum(["cod", "online"], {

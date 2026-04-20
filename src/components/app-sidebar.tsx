@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Icon,
+  IconCash,
   IconDashboard,
   IconDeviceLaptop,
   IconHome,
@@ -106,9 +107,28 @@ const navMain: INavItem[] = [
     icon: IconWorld,
   },
   {
-    title: "Coupons",
-    url: "/dashboard/coupons",
+    title: "Sales",
+    icon: IconCash,
+    children: [
+      {
+        title: "Orders",
+        url: "/dashboard/orders",
+      },
+      {
+        title: "Invoices",
+        url: "/dashboard/invoices",
+      },
+    ],
+  },
+  {
+    title: "Offers",
     icon: IconTicket,
+    children: [
+      {
+        title: "Coupons",
+        url: "/dashboard/coupons",
+      },
+    ],
   },
   {
     title: "Configurations",

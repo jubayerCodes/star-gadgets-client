@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { useConfigStore } from "@/store/configStore";
+import { useBuyNowStore } from "@/store/buyNowStore";
 import { checkoutSchema, CheckoutFormValues } from "../schema";
 import { IAppliedCoupon } from "../types";
 import CouponSection from "./coupon-section";
@@ -14,17 +16,32 @@ import OrderSummary from "./order-summary";
 import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { useCreateOrderMutation } from "../hooks/useOrders";
 
 export default function CheckoutContent() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const { config } = useConfigStore();
-  const items = useCartStore((s) => s.items);
+  const cartItems = useCartStore((s) => s.items);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const { item: buyNowItem, clearBuyNow } = useBuyNowStore();
+
+  const [isBuyNow, setIsBuyNow] = useState(false);
+
+  useEffect(() => {
+    const source = new URLSearchParams(window.location.search).get("source");
+    if (source === "buy_now") {
+      setIsBuyNow(true);
+    }
+  }, []);
+
+  const items = isBuyNow && buyNowItem ? [buyNowItem] : cartItems;
 
   const shippingMethods = config?.shippingMethods ?? [];
 
-  const [appliedCoupon, setAppliedCoupon] = useState<IAppliedCoupon | null>(
-    null
-  );
+  const [appliedCoupon, setAppliedCoupon] = useState<IAppliedCoupon | null>(null);
+
+  const { mutateAsync: createOrder } = useCreateOrderMutation();
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -36,6 +53,7 @@ export default function CheckoutContent() {
       district: "",
       postcode: "",
       phone: user?.phone ?? "",
+      email: user?.email ?? "",
       orderNotes: "",
       shippingMethod: shippingMethods[0]?.name ?? "",
       paymentMethod: "cod",
@@ -62,15 +80,15 @@ export default function CheckoutContent() {
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
   const selectedShipping = watch("shippingMethod");
 
-  const onSubmit = (values: CheckoutFormValues) => {
-    const shippingCost =
-      shippingMethods.find((m) => m.name === values.shippingMethod)?.cost ?? 0;
+  const onSubmit = async (values: CheckoutFormValues) => {
+    const shippingCost = shippingMethods.find((m) => m.name === values.shippingMethod)?.cost ?? 0;
     const discount = appliedCoupon?.discountAmount ?? 0;
 
     const orderPayload = {
       billingDetails: {
         firstName: values.firstName,
         lastName: values.lastName,
+        email: values.email,
         streetAddress: values.streetAddress,
         city: values.city,
         district: values.district,
@@ -86,17 +104,24 @@ export default function CheckoutContent() {
       shippingMethod: values.shippingMethod,
       shippingCost,
       paymentMethod: values.paymentMethod,
-      coupon: appliedCoupon
-        ? { couponId: appliedCoupon.couponId, code: appliedCoupon.code }
-        : null,
+      coupon: appliedCoupon ? { couponId: appliedCoupon.couponId, code: appliedCoupon.code } : null,
       subtotal,
       discount,
       total: subtotal + shippingCost - discount,
       orderNotes: values.orderNotes,
     };
 
-    // eslint-disable-next-line no-console
-    console.log("Order payload:", orderPayload);
+    const res = await createOrder(orderPayload);
+
+    if (res?.success && res.data?._id) {
+      // Clear cart or buy-now session
+      if (isBuyNow) {
+        clearBuyNow();
+      } else {
+        clearCart();
+      }
+      router.push(`/orders/${res.data._id}/success`);
+    }
   };
 
   return (
@@ -135,9 +160,7 @@ export default function CheckoutContent() {
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <ShoppingBag className="size-12 text-muted-foreground" />
             <p className="text-lg font-semibold mt-3">Your cart is empty</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add some items before checking out.
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">Add some items before checking out.</p>
             <Link href="/" className="text-tartiary font-medium hover:underline transition mt-4 inline-block">
               Continue Shopping
             </Link>
@@ -153,11 +176,7 @@ export default function CheckoutContent() {
             className="grid gap-8 grid-cols-1 lg:grid-cols-[58fr_42fr] lg:items-start"
           >
             {/* Left: billing */}
-            <BillingForm
-              form={form}
-              shippingMethods={shippingMethods}
-              isLoggedIn={!!user}
-            />
+            <BillingForm form={form} shippingMethods={shippingMethods} isLoggedIn={!!user} />
 
             {/* Right: order summary */}
             <OrderSummary
