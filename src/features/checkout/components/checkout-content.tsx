@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { useConfigStore } from "@/store/configStore";
+import { useBuyNowStore } from "@/store/buyNowStore";
 import { checkoutSchema, CheckoutFormValues } from "../schema";
 import { IAppliedCoupon } from "../types";
 import CouponSection from "./coupon-section";
@@ -18,13 +19,23 @@ import { ShoppingBag } from "lucide-react";
 export default function CheckoutContent() {
   const { user } = useAuthStore();
   const { config } = useConfigStore();
-  const items = useCartStore((s) => s.items);
+  const cartItems = useCartStore((s) => s.items);
+  const { item: buyNowItem } = useBuyNowStore();
+
+  const [isBuyNow, setIsBuyNow] = useState(false);
+
+  useEffect(() => {
+    const source = new URLSearchParams(window.location.search).get("source");
+    if (source === "buy_now") {
+      setIsBuyNow(true);
+    }
+  }, []);
+
+  const items = isBuyNow && buyNowItem ? [buyNowItem] : cartItems;
 
   const shippingMethods = config?.shippingMethods ?? [];
 
-  const [appliedCoupon, setAppliedCoupon] = useState<IAppliedCoupon | null>(
-    null
-  );
+  const [appliedCoupon, setAppliedCoupon] = useState<IAppliedCoupon | null>(null);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -63,8 +74,7 @@ export default function CheckoutContent() {
   const selectedShipping = watch("shippingMethod");
 
   const onSubmit = (values: CheckoutFormValues) => {
-    const shippingCost =
-      shippingMethods.find((m) => m.name === values.shippingMethod)?.cost ?? 0;
+    const shippingCost = shippingMethods.find((m) => m.name === values.shippingMethod)?.cost ?? 0;
     const discount = appliedCoupon?.discountAmount ?? 0;
 
     const orderPayload = {
@@ -86,9 +96,7 @@ export default function CheckoutContent() {
       shippingMethod: values.shippingMethod,
       shippingCost,
       paymentMethod: values.paymentMethod,
-      coupon: appliedCoupon
-        ? { couponId: appliedCoupon.couponId, code: appliedCoupon.code }
-        : null,
+      coupon: appliedCoupon ? { couponId: appliedCoupon.couponId, code: appliedCoupon.code } : null,
       subtotal,
       discount,
       total: subtotal + shippingCost - discount,
@@ -135,9 +143,7 @@ export default function CheckoutContent() {
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <ShoppingBag className="size-12 text-muted-foreground" />
             <p className="text-lg font-semibold mt-3">Your cart is empty</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add some items before checking out.
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">Add some items before checking out.</p>
             <Link href="/" className="text-tartiary font-medium hover:underline transition mt-4 inline-block">
               Continue Shopping
             </Link>
@@ -153,11 +159,7 @@ export default function CheckoutContent() {
             className="grid gap-8 grid-cols-1 lg:grid-cols-[58fr_42fr] lg:items-start"
           >
             {/* Left: billing */}
-            <BillingForm
-              form={form}
-              shippingMethods={shippingMethods}
-              isLoggedIn={!!user}
-            />
+            <BillingForm form={form} shippingMethods={shippingMethods} isLoggedIn={!!user} />
 
             {/* Right: order summary */}
             <OrderSummary

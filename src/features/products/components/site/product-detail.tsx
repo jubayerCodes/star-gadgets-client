@@ -3,12 +3,14 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Heart, Minus, Plus, ShoppingCart, Zap, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RichTextRenderer } from "@/components/ui/rich-text-editor";
 import { IProduct, ProductStatus } from "../../types/product.types";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useBuyNowStore } from "@/store/buyNowStore";
 import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 
 // Swiper
@@ -88,6 +90,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   const addItem = useCartStore((s) => s.addItem);
   const { toggleItem: toggleWishlist, isWishlisted } = useWishlistStore();
+  const setBuyNow = useBuyNowStore((s) => s.setBuyNow);
+  const router = useRouter();
 
   // ── Initial variant (prefer featured, fallback to first) ──
   const initialVariant = useMemo(() => variants.find((v) => v.featured) ?? variants[0], [variants]);
@@ -179,6 +183,23 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         attributes: selectedVariant.attributes,
       });
     }
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedVariant || !productId) return;
+    setBuyNow({
+      productId,
+      slug,
+      title,
+      image: selectedVariant.featuredImage ?? productFeaturedImage ?? "",
+      variantId: selectedVariant._id ?? selectedVariant.sku,
+      sku: selectedVariant.sku,
+      price: actualPrice,
+      regularPrice,
+      quantity,
+      attributes: selectedVariant.attributes,
+    });
+    router.push("/checkout?source=buy_now");
   };
 
   return (
@@ -405,6 +426,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               {/* Buy Now */}
               <Button
                 variant="outline"
+                onClick={handleBuyNow}
                 disabled={!selectedVariant || status === ProductStatus.OUT_OF_STOCK}
                 className="flex-1 min-w-[100px] rounded-none gap-2 h-10 border-foreground font-semibold hover:bg-foreground hover:text-background transition-colors"
               >
