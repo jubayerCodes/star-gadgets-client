@@ -3,7 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ICoupon } from "../../types";
 import { couponsAdminQueryOptions, useDeleteCouponMutation } from "../../hooks/useCoupons";
-import { IconCircleCheckFilled, IconTrash } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconPencil, IconTrash } from "@tabler/icons-react";
+import { useUpdateCouponStore } from "../../store/updateCouponStore";
 import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { useDeleteModalStore } from "@/store/deleteModalStore";
 import { DataTable } from "@/components/data-table";
@@ -89,6 +90,14 @@ const CouponsTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const actions: DataTableOption[] = [
+          {
+            label: "Edit",
+            icon: IconPencil,
+            onClick: () => {
+              const { openModal } = useUpdateCouponStore.getState();
+              openModal({ coupon: row.original });
+            },
+          },
           {
             label: "Delete",
             icon: IconTrash,

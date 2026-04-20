@@ -61,6 +61,10 @@ export default function BillingForm({
         {/* Phone */}
         <InputField form={form} name="phone" label="Phone" required />
 
+        {/* Email */}
+        <InputField form={form} name="email" label="Email address" required />
+
+
         {/* Create account — only for guests */}
         {!isLoggedIn && (
           <div className="col-span-2 max-sm:col-span-1">
