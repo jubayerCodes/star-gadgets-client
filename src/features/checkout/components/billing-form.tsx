@@ -62,7 +62,7 @@ export default function BillingForm({
         <InputField form={form} name="phone" label="Phone" required />
 
         {/* Email */}
-        <InputField form={form} name="email" label="Email address" type="email" required />
+        <InputField form={form} name="email" label="Email address" required />
 
 
         {/* Create account — only for guests */}
