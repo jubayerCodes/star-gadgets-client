@@ -1,6 +1,7 @@
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import Loading from "@/components/layout/loading";
 import CreateCouponModal from "@/features/coupons/components/modals/create-coupon-modal";
+import UpdateCouponModal from "@/features/coupons/components/modals/update-coupon-modal";
 import CouponsFilter from "@/features/coupons/components/table/coupons-filter";
 import CouponsTable from "@/features/coupons/components/table/coupons-table";
 import { Suspense } from "react";
@@ -15,6 +16,7 @@ const CouponsPage = () => {
       <Suspense fallback={<Loading />}>
         <CouponsTable />
       </Suspense>
+      <UpdateCouponModal />
     </div>
   );
 };

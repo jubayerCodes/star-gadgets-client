@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { useConfigStore } from "@/store/configStore";
@@ -15,12 +16,15 @@ import OrderSummary from "./order-summary";
 import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { useCreateOrderMutation } from "../hooks/useOrders";
 
 export default function CheckoutContent() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const { config } = useConfigStore();
   const cartItems = useCartStore((s) => s.items);
-  const { item: buyNowItem } = useBuyNowStore();
+  const clearCart = useCartStore((s) => s.clearCart);
+  const { item: buyNowItem, clearBuyNow } = useBuyNowStore();
 
   const [isBuyNow, setIsBuyNow] = useState(false);
 
@@ -37,6 +41,8 @@ export default function CheckoutContent() {
 
   const [appliedCoupon, setAppliedCoupon] = useState<IAppliedCoupon | null>(null);
 
+  const { mutateAsync: createOrder } = useCreateOrderMutation();
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -47,6 +53,7 @@ export default function CheckoutContent() {
       district: "",
       postcode: "",
       phone: user?.phone ?? "",
+      email: user?.email ?? "",
       orderNotes: "",
       shippingMethod: shippingMethods[0]?.name ?? "",
       paymentMethod: "cod",
@@ -73,7 +80,7 @@ export default function CheckoutContent() {
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
   const selectedShipping = watch("shippingMethod");
 
-  const onSubmit = (values: CheckoutFormValues) => {
+  const onSubmit = async (values: CheckoutFormValues) => {
     const shippingCost = shippingMethods.find((m) => m.name === values.shippingMethod)?.cost ?? 0;
     const discount = appliedCoupon?.discountAmount ?? 0;
 
@@ -81,6 +88,7 @@ export default function CheckoutContent() {
       billingDetails: {
         firstName: values.firstName,
         lastName: values.lastName,
+        email: values.email,
         streetAddress: values.streetAddress,
         city: values.city,
         district: values.district,
@@ -103,8 +111,17 @@ export default function CheckoutContent() {
       orderNotes: values.orderNotes,
     };
 
-    // eslint-disable-next-line no-console
-    console.log("Order payload:", orderPayload);
+    const res = await createOrder(orderPayload);
+
+    if (res?.success && res.data?._id) {
+      // Clear cart or buy-now session
+      if (isBuyNow) {
+        clearBuyNow();
+      } else {
+        clearCart();
+      }
+      router.push(`/orders/${res.data._id}/success`);
+    }
   };
 
   return (

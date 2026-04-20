@@ -38,3 +38,7 @@ export const createCouponZodSchema = z
 
 export type CreateCouponFormInput = z.input<typeof createCouponZodSchema>;
 export type CreateCouponFormData = z.infer<typeof createCouponZodSchema>;
+
+export const updateCouponZodSchema = createCouponZodSchema;
+export type UpdateCouponFormInput = CreateCouponFormInput;
+export type UpdateCouponFormData = CreateCouponFormData;

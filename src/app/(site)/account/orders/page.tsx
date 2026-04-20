@@ -1,0 +1,120 @@
+"use client";
+
+import { useState } from "react";
+import { useMyOrdersQuery } from "@/features/checkout/hooks/useOrders";
+import { IOrder, OrderStatus } from "@/features/checkout/types";
+import Link from "next/link";
+import { Package } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import ProtectedRoute from "@/components/shared/protected-route";
+
+const STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructive" | "outline"> = {
+  PENDING: "secondary",
+  CONFIRMED: "default",
+  PROCESSING: "default",
+  SHIPPED: "outline",
+  DELIVERED: "default",
+  CANCELLED: "destructive",
+};
+
+function MyOrdersContent() {
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useMyOrdersQuery(page);
+
+  const orders: IOrder[] = data?.data ?? [];
+  const meta = data?.meta;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="size-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <Package className="size-12 text-muted-foreground mb-4" />
+        <p className="text-lg font-semibold">No orders yet</p>
+        <p className="text-sm text-muted-foreground mt-1">Start shopping to see your orders here.</p>
+        <Link
+          href="/"
+          className="mt-5 inline-flex items-center px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition"
+        >
+          Browse Products
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex flex-col divide-y divide-border border border-border">
+        {orders.map((order) => (
+          <div key={order._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4">
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-sm">{order.orderNumber}</span>
+                <Badge variant={STATUS_VARIANTS[order.orderStatus]} className="text-xs capitalize">
+                  {order.orderStatus.toLowerCase()}
+                </Badge>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {new Date(order.createdAt).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 sm:text-right">
+              <span className="font-bold text-sm">৳{order.total.toLocaleString()}</span>
+              <Link
+                href={`/account/orders/${order._id}`}
+                className="text-xs font-medium text-primary border border-primary px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition"
+              >
+                View
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      {meta && meta.total > meta.limit && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-4 py-2 text-sm border border-border hover:bg-muted disabled:opacity-40 transition"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-muted-foreground">Page {page}</span>
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={orders.length < meta.limit}
+            className="px-4 py-2 text-sm border border-border hover:bg-muted disabled:opacity-40 transition"
+          >
+            Next
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function MyOrdersPage() {
+  return (
+    <ProtectedRoute>
+      <div className="container py-10 max-w-3xl">
+        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+        <MyOrdersContent />
+      </div>
+    </ProtectedRoute>
+  );
+}
