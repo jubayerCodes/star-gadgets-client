@@ -1,5 +1,7 @@
 export type PaymentMethod = "cod" | "online";
 
+export type PaymentStatus = "UNPAID" | "PAID" | "FAILED" | "CANCELLED";
+
 export interface ICheckoutFormValues {
   firstName: string;
   lastName: string;
@@ -50,18 +52,13 @@ export interface ICreateOrderPayload {
     price: number;
   }[];
   shippingMethod: string;
-  paymentMethod: "cod" | "online";
+  /** Sent at order time to initialise the linked Payment document */
+  paymentMethod: PaymentMethod;
   coupon?: { couponId: string; code: string } | null;
   orderNotes?: string;
 }
 
-export type OrderStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
+export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 
 export interface IOrderItem {
   productId: string;
@@ -72,6 +69,22 @@ export interface IOrderItem {
   quantity: number;
   price: number;
   subtotal: number;
+}
+
+export interface IPayment {
+  _id: string;
+  orderId: string;
+  amount: number;
+  /** Amount paid so far (supports partial / advance payments) */
+  totalPaid: number;
+  /** Remaining balance due (amount - totalPaid) */
+  dueAmount: number;
+  paymentMethod: PaymentMethod;
+  status: PaymentStatus;
+  transactionId?: string;
+  paymentGatewayData?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IOrder {
@@ -86,10 +99,14 @@ export interface IOrder {
   coupon?: { couponId: string; code: string; discountAmount: number };
   discount: number;
   total: number;
-  paymentMethod: "cod" | "online";
-  paymentStatus: "UNPAID" | "PAID";
   orderStatus: OrderStatus;
   orderNotes?: string;
+  paymentId?: IPayment;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IOrderResponse {
+  paymentUrl?: string;
+  order: IOrder;
 }

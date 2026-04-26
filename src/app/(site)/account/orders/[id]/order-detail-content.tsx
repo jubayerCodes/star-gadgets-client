@@ -16,13 +16,7 @@ const STATUS_ICON: Record<OrderStatus, React.ReactNode> = {
   CANCELLED: <XCircle className="size-5 text-destructive" />,
 };
 
-const STATUS_STEPS: OrderStatus[] = [
-  "PENDING",
-  "CONFIRMED",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-];
+const STATUS_STEPS: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
 
 function OrderDetailInner({ id }: { id: string }) {
   const { data } = useOrderByIdQuery(id);
@@ -39,7 +33,7 @@ function OrderDetailInner({ id }: { id: string }) {
     shippingCost,
     discount,
     total,
-    paymentMethod,
+    paymentId,
     coupon,
     createdAt,
   } = order;
@@ -192,12 +186,10 @@ function OrderDetailInner({ id }: { id: string }) {
             <h3 className="font-semibold text-sm">Payment</h3>
           </div>
           <p className="text-sm font-medium">
-            {paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
+            {paymentId?.paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            {paymentMethod === "cod"
-              ? "Pay upon delivery."
-              : "Paid online."}
+            {paymentId?.paymentMethod === "cod" ? "Pay upon delivery." : "Paid online."}
           </p>
         </div>
       </div>

@@ -22,6 +22,13 @@ const STATUS_VARIANTS: Record<
   CANCELLED: "destructive",
 };
 
+const PAYMENT_STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  UNPAID: "secondary",
+  PAID: "default",
+  FAILED: "destructive",
+  CANCELLED: "outline",
+};
+
 const OrdersTable = () => {
   const searchParams = useSearchParams();
   const query = Object.fromEntries(searchParams.entries());
@@ -74,13 +81,26 @@ const OrdersTable = () => {
       ),
     },
     {
-      accessorKey: "paymentMethod",
+      accessorKey: "paymentId",
       header: "Payment",
-      cell: ({ row }) => (
-        <Badge variant="outline" className="capitalize text-xs">
-          {row.original.paymentMethod === "cod" ? "COD" : "Online"}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const payment = row.original.paymentId;
+        return (
+          <div className="flex flex-col gap-1">
+            <Badge variant="outline" className="capitalize text-xs w-fit">
+              {payment?.paymentMethod === "cod" ? "COD" : payment?.paymentMethod === "online" ? "Online" : "—"}
+            </Badge>
+            {payment && (
+              <Badge
+                variant={PAYMENT_STATUS_VARIANTS[payment.status] ?? "outline"}
+                className="capitalize text-xs w-fit"
+              >
+                {payment.status.toLowerCase()}
+              </Badge>
+            )}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "orderStatus",

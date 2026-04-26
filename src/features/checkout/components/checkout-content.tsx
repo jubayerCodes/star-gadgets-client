@@ -113,15 +113,17 @@ export default function CheckoutContent() {
 
     const res = await createOrder(orderPayload);
 
-    if (res?.success && res.data?._id) {
-      // Clear cart or buy-now session
-      if (isBuyNow) {
-        clearBuyNow();
-      } else {
-        clearCart();
+    if (res.data.paymentUrl) router.replace(res.data.paymentUrl);
+
+    if (res.data)
+      if (res?.success && res.data.order?._id) {
+        // Clear cart or buy-now session
+        if (isBuyNow) {
+          clearBuyNow();
+        } else {
+          clearCart();
+        }
       }
-      router.push(`/orders/${res.data._id}/success`);
-    }
   };
 
   return (
