@@ -1,11 +1,12 @@
 "use client";
 
-import { useOrderByIdQuery } from "@/features/checkout/hooks/useOrders";
+import { useOrderByIdQuery, useInitiatePaymentMutation } from "@/features/checkout/hooks/useOrders";
 import { CheckCircle, Clock, Package, MapPin, CreditCard, Truck, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { OrderStatus } from "@/features/checkout/types";
 import ProtectedRoute from "@/components/shared/protected-route";
+import { Button } from "@/components/ui/button";
 
 const STATUS_ICON: Record<OrderStatus, React.ReactNode> = {
   PENDING: <Clock className="size-5 text-yellow-500" />,
@@ -14,6 +15,7 @@ const STATUS_ICON: Record<OrderStatus, React.ReactNode> = {
   SHIPPED: <Truck className="size-5 text-indigo-500" />,
   DELIVERED: <CheckCircle className="size-5 text-green-700" />,
   CANCELLED: <XCircle className="size-5 text-destructive" />,
+  FAILED: <XCircle className="size-5 text-destructive" />,
 };
 
 const STATUS_STEPS: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
@@ -21,6 +23,8 @@ const STATUS_STEPS: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIP
 function OrderDetailInner({ id }: { id: string }) {
   const { data } = useOrderByIdQuery(id);
   const order = data?.data;
+
+  const { mutate: initiatePayment, isPending: isInitiatingPayment } = useInitiatePaymentMutation();
 
   if (!order) return null;
 
@@ -40,6 +44,7 @@ function OrderDetailInner({ id }: { id: string }) {
 
   const isCancelled = orderStatus === "CANCELLED";
   const currentStep = isCancelled ? -1 : STATUS_STEPS.indexOf(orderStatus);
+  const canPay = paymentId?.paymentMethod === "online" && paymentId?.status !== "PAID";
 
   return (
     <div className="container py-10 max-w-3xl">
@@ -189,8 +194,25 @@ function OrderDetailInner({ id }: { id: string }) {
             {paymentId?.paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            {paymentId?.paymentMethod === "cod" ? "Pay upon delivery." : "Paid online."}
+            {paymentId?.paymentMethod === "cod"
+              ? "Pay upon delivery."
+              : paymentId?.status === "PAID"
+                ? "Paid online."
+                : paymentId?.status === "FAILED"
+                  ? "Payment failed."
+                  : "Pending"}
           </p>
+          {canPay && (
+            <Button
+              onClick={() => initiatePayment(order._id)}
+              disabled={isInitiatingPayment}
+              size="sm"
+              className="mt-3"
+            >
+              <CreditCard className="size-4 mr-2" />
+              {isInitiatingPayment ? "Redirecting..." : "Pay Now"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

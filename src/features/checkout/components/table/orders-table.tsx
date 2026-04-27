@@ -10,16 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import { IconPencil } from "@tabler/icons-react";
 import { useSearchParams } from "next/navigation";
 
-const STATUS_VARIANTS: Record<
-  OrderStatus,
-  "default" | "secondary" | "destructive" | "outline"
-> = {
+const STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructive" | "outline"> = {
   PENDING: "secondary",
   CONFIRMED: "default",
   PROCESSING: "default",
   SHIPPED: "outline",
   DELIVERED: "default",
   CANCELLED: "destructive",
+  FAILED: "destructive",
 };
 
 const PAYMENT_STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -38,9 +36,7 @@ const OrdersTable = () => {
     {
       accessorKey: "orderNumber",
       header: "Order #",
-      cell: ({ row }) => (
-        <span className="font-mono font-semibold text-xs">{row.original.orderNumber}</span>
-      ),
+      cell: ({ row }) => <span className="font-mono font-semibold text-xs">{row.original.orderNumber}</span>,
     },
     {
       accessorKey: "billingDetails",
@@ -76,29 +72,33 @@ const OrdersTable = () => {
     {
       accessorKey: "total",
       header: "Total",
-      cell: ({ row }) => (
-        <span className="font-semibold">৳{row.original.total.toLocaleString()}</span>
-      ),
+      cell: ({ row }) => <span className="font-semibold">৳{row.original.total.toLocaleString()}</span>,
+    },
+    {
+      accessorKey: "paymentId",
+      header: "Payment Method",
+      meta: { align: "center", headerAlign: "center" },
+      cell: ({ row }) => {
+        const payment = row.original.paymentId;
+        return (
+          <Badge variant="outline" className="capitalize text-xs">
+            {payment?.paymentMethod === "cod" ? "COD" : payment?.paymentMethod === "online" ? "Online" : "—"}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: "paymentId",
       header: "Payment",
+      meta: { align: "center", headerAlign: "center" },
       cell: ({ row }) => {
         const payment = row.original.paymentId;
         return (
-          <div className="flex flex-col gap-1">
-            <Badge variant="outline" className="capitalize text-xs w-fit">
-              {payment?.paymentMethod === "cod" ? "COD" : payment?.paymentMethod === "online" ? "Online" : "—"}
+          payment && (
+            <Badge variant={PAYMENT_STATUS_VARIANTS[payment.status] ?? "outline"} className="capitalize text-xs w-fit">
+              {payment.status.toLowerCase()}
             </Badge>
-            {payment && (
-              <Badge
-                variant={PAYMENT_STATUS_VARIANTS[payment.status] ?? "outline"}
-                className="capitalize text-xs w-fit"
-              >
-                {payment.status.toLowerCase()}
-              </Badge>
-            )}
-          </div>
+          )
         );
       },
     },
@@ -106,10 +106,7 @@ const OrdersTable = () => {
       accessorKey: "orderStatus",
       header: "Status",
       cell: ({ row }) => (
-        <Badge
-          variant={STATUS_VARIANTS[row.original.orderStatus]}
-          className="capitalize text-xs"
-        >
+        <Badge variant={STATUS_VARIANTS[row.original.orderStatus]} className="capitalize text-xs">
           {row.original.orderStatus.toLowerCase()}
         </Badge>
       ),

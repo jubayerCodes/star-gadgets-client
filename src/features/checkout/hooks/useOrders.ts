@@ -7,6 +7,8 @@ import {
   getMyOrdersApi,
   getOrderByIdApi,
   getPaymentByOrderIdApi,
+  getPaymentByTransactionIdApi,
+  initiatePaymentApi,
   updateOrderStatusApi,
   updatePaymentStatusApi,
 } from "../api";
@@ -75,6 +77,13 @@ export const usePaymentByOrderIdQuery = (orderId: string) =>
     enabled: !!orderId,
   });
 
+export const usePaymentByTransactionIdQuery = (transactionId: string | null) =>
+  useQuery({
+    queryKey: [QUERY_KEYS.ORDERS, "payment", "tx", transactionId],
+    queryFn: () => getPaymentByTransactionIdApi(transactionId!),
+    enabled: !!transactionId,
+  });
+
 export const useUpdatePaymentStatusMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -88,3 +97,15 @@ export const useUpdatePaymentStatusMutation = () => {
     },
   });
 };
+
+export const useInitiatePaymentMutation = () =>
+  useMutation({
+    mutationFn: initiatePaymentApi,
+    onSuccess: (data) => {
+      const url = data.data?.GatewayPageURL;
+      if (url) window.location.href = url;
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
+    },
+  });

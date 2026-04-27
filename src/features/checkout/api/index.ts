@@ -54,6 +54,16 @@ export const getPaymentByOrderIdApi = async (orderId: string): Promise<ApiRespon
   return res.data;
 };
 
+export const getPaymentByTransactionIdApi = async (transactionId: string): Promise<ApiResponse<IPayment>> => {
+  const res = await axiosInstance.get(`/payments/transaction/${transactionId}`);
+  return res.data;
+};
+
+export const initiatePaymentApi = async (orderId: string): Promise<ApiResponse<{ GatewayPageURL: string }>> => {
+  const res = await axiosInstance.post(`/payments/initiate/${orderId}`);
+  return res.data;
+};
+
 export const updatePaymentStatusApi = async ({
   id,
   status,

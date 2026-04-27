@@ -58,7 +58,7 @@ export interface ICreateOrderPayload {
   orderNotes?: string;
 }
 
-export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "FAILED";
 
 export interface IOrderItem {
   productId: string;
@@ -108,5 +108,5 @@ export interface IOrder {
 
 export interface IOrderResponse {
   paymentUrl?: string;
-  order: IOrder;
+  orderPayload: IOrder;
 }
