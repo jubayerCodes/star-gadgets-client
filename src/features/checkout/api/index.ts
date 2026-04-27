@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types";
-import { ICreateOrderPayload, IOrder, IValidateCouponPayload, IValidateCouponResponse } from "../types";
+import { ICreateOrderPayload, IOrder, IOrderResponse, IPayment, IValidateCouponPayload, IValidateCouponResponse } from "../types";
 
 export const validateCouponApi = async (
   data: IValidateCouponPayload
@@ -11,7 +11,7 @@ export const validateCouponApi = async (
 
 export const createOrderApi = async (
   data: ICreateOrderPayload
-): Promise<ApiResponse<IOrder>> => {
+): Promise<ApiResponse<IOrderResponse>> => {
   const res = await axiosInstance.post("/orders", data);
   return res.data;
 };
@@ -39,5 +39,38 @@ export const updateOrderStatusApi = async ({
 
 export const getAllOrdersApi = async (query: Record<string, string>): Promise<ApiResponse<IOrder[]>> => {
   const res = await axiosInstance.get("/orders", { params: query });
+  return res.data;
+};
+
+export const cancelOrderApi = async (id: string): Promise<ApiResponse<IOrder>> => {
+  const res = await axiosInstance.patch(`/orders/${id}/cancel`);
+  return res.data;
+};
+
+// ── Payment APIs ─────────────────────────────────────────────────────────────
+
+export const getPaymentByOrderIdApi = async (orderId: string): Promise<ApiResponse<IPayment>> => {
+  const res = await axiosInstance.get(`/payments/order/${orderId}`);
+  return res.data;
+};
+
+export const getPaymentByTransactionIdApi = async (transactionId: string): Promise<ApiResponse<IPayment>> => {
+  const res = await axiosInstance.get(`/payments/transaction/${transactionId}`);
+  return res.data;
+};
+
+export const initiatePaymentApi = async (orderId: string): Promise<ApiResponse<{ GatewayPageURL: string }>> => {
+  const res = await axiosInstance.post(`/payments/initiate/${orderId}`);
+  return res.data;
+};
+
+export const updatePaymentStatusApi = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}): Promise<ApiResponse<IPayment>> => {
+  const res = await axiosInstance.patch(`/payments/${id}/status`, { status });
   return res.data;
 };

@@ -11,7 +11,8 @@ export default function OrderSuccessContent({ id }: { id: string }) {
 
   if (!order) return null;
 
-  const { billingDetails, items, subtotal, shippingCost, discount, total, orderNumber, paymentMethod, coupon } = order;
+  const { billingDetails, items, subtotal, shippingCost, discount, total, orderNumber, coupon, paymentId } = order;
+  const payment = paymentId;
 
   return (
     <div className="container py-12 max-w-3xl">
@@ -100,16 +101,28 @@ export default function OrderSuccessContent({ id }: { id: string }) {
         <div className="border border-border p-5">
           <div className="flex items-center gap-2 mb-3">
             <CreditCard className="size-4 text-muted-foreground" />
-            <h3 className="font-semibold text-sm">Payment Method</h3>
+            <h3 className="font-semibold text-sm">Payment</h3>
           </div>
-          <p className="text-sm font-medium capitalize">
-            {paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            {paymentMethod === "cod"
-              ? "You will pay when the order is delivered."
-              : "Payment has been processed online."}
-          </p>
+          {payment ? (
+            <>
+              <p className="text-sm font-medium capitalize">
+                {payment.paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {payment.paymentMethod === "cod"
+                  ? "You will pay when the order is delivered."
+                  : "Payment will be processed online."}
+              </p>
+              <p className="text-xs mt-2">
+                Status:{" "}
+                <span className={`font-semibold ${payment.status === "PAID" ? "text-green-600" : "text-amber-600"}`}>
+                  {payment.status}
+                </span>
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">Payment info unavailable</p>
+          )}
         </div>
       </div>
 

@@ -2,20 +2,11 @@
 
 import { useState } from "react";
 import { useMyOrdersQuery } from "@/features/checkout/hooks/useOrders";
-import { IOrder, OrderStatus } from "@/features/checkout/types";
+import { IOrder } from "@/features/checkout/types";
 import Link from "next/link";
 import { Package } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import ProtectedRoute from "@/components/shared/protected-route";
-
-const STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructive" | "outline"> = {
-  PENDING: "secondary",
-  CONFIRMED: "default",
-  PROCESSING: "default",
-  SHIPPED: "outline",
-  DELIVERED: "default",
-  CANCELLED: "destructive",
-};
+import OrderCard from "./order-card";
 
 function MyOrdersContent() {
   const [page, setPage] = useState(1);
@@ -52,35 +43,7 @@ function MyOrdersContent() {
     <div>
       <div className="flex flex-col divide-y divide-border border border-border">
         {orders.map((order) => (
-          <div key={order._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4">
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm">{order.orderNumber}</span>
-                <Badge variant={STATUS_VARIANTS[order.orderStatus]} className="text-xs capitalize">
-                  {order.orderStatus.toLowerCase()}
-                </Badge>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {new Date(order.createdAt).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {order.items.length} item{order.items.length !== 1 ? "s" : ""}
-              </span>
-            </div>
-            <div className="flex items-center gap-4 sm:text-right">
-              <span className="font-bold text-sm">৳{order.total.toLocaleString()}</span>
-              <Link
-                href={`/account/orders/${order._id}`}
-                className="text-xs font-medium text-primary border border-primary px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition"
-              >
-                View
-              </Link>
-            </div>
-          </div>
+          <OrderCard key={order._id} order={order} />
         ))}
       </div>
 
