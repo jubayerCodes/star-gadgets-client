@@ -26,10 +26,10 @@ const WishlistContent = () => {
   const { items, removeItem, clearWishlist } = useWishlistStore();
 
   return (
-    <div className="min-h-[70vh] bg-background">
-      <div className="container py-10">
+    <div className="bg-background">
+      <div>
         {/* Page header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div>
               <h1 className="text-2xl font-bold text-foreground leading-tight">My Wishlist</h1>
