@@ -4,15 +4,40 @@ import { useOrderByIdQuery } from "@/features/checkout/hooks/useOrders";
 import { CheckCircle, Package, MapPin, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import NotFoundMessage from "@/components/shared/not-found-message";
+import Loading from "@/components/layout/loading";
 
 export default function OrderSuccessContent({ id }: { id: string }) {
-  const { data } = useOrderByIdQuery(id);
+  const { data, isLoading, isError } = useOrderByIdQuery(id);
   const order = data?.data;
 
-  if (!order) return null;
+  if (isLoading) return <Loading />;
 
-  const { billingDetails, items, subtotal, shippingCost, discount, total, orderNumber, coupon, paymentId } = order;
-  const payment = paymentId;
+  if (isError || !order)
+    return (
+      <NotFoundMessage
+        title="Order Not Found"
+        description="We couldn't locate this order. The link may be incorrect or the order may no longer exist."
+        backLabel="Continue Shopping"
+        backHref="/"
+      />
+    );
+
+  const {
+    billingDetails,
+    shippingDetails,
+    items,
+    subtotal,
+    shippingCost,
+    discount,
+    total,
+    orderNumber,
+    coupon,
+    paymentId: payment,
+  } = order;
+
+  // Show shipping address if the customer shipped to a different address, otherwise billing
+  const deliveryAddress = shippingDetails ?? billingDetails;
 
   return (
     <div className="container py-12 max-w-3xl">
@@ -87,15 +112,15 @@ export default function OrderSuccessContent({ id }: { id: string }) {
             <h3 className="font-semibold text-sm">Delivery Address</h3>
           </div>
           <p className="text-sm text-foreground font-medium">
-            {billingDetails.firstName} {billingDetails.lastName}
+            {deliveryAddress.firstName} {deliveryAddress.lastName}
           </p>
-          <p className="text-sm text-muted-foreground">{billingDetails.streetAddress}</p>
+          <p className="text-sm text-muted-foreground">{deliveryAddress.streetAddress}</p>
           <p className="text-sm text-muted-foreground">
-            {billingDetails.city}, {billingDetails.district}
-            {billingDetails.postcode ? ` - ${billingDetails.postcode}` : ""}
+            {deliveryAddress.city}, {deliveryAddress.district}
+            {deliveryAddress.postcode ? ` - ${deliveryAddress.postcode}` : ""}
           </p>
-          <p className="text-sm text-muted-foreground">{billingDetails.phone}</p>
-          <p className="text-sm text-muted-foreground">{billingDetails.email}</p>
+          <p className="text-sm text-muted-foreground">{deliveryAddress.phone}</p>
+          {deliveryAddress.email && <p className="text-sm text-muted-foreground">{deliveryAddress.email}</p>}
         </div>
 
         <div className="border border-border p-5">

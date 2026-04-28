@@ -23,10 +23,12 @@ export default function BillingForm({
     formState: { errors },
     watch,
     setValue,
+    register,
   } = form;
 
   const selectedShipping = watch("shippingMethod");
   const selectedPayment = watch("paymentMethod");
+  const shipToDifferentAddress = watch("shipToDifferentAddress");
 
   return (
     <div className="bg-card border border-border p-6 lg:p-8 flex flex-col gap-6 shadow-sm">
@@ -64,7 +66,6 @@ export default function BillingForm({
         {/* Email */}
         <InputField form={form} name="email" label="Email address" required />
 
-
         {/* Create account — only for guests */}
         {!isLoggedIn && (
           <div className="col-span-2 max-sm:col-span-1">
@@ -89,7 +90,47 @@ export default function BillingForm({
             rows={4}
           />
         </div>
+
+        {/* ── Ship to a different address toggle ── */}
+        <div className="col-span-2 max-sm:col-span-1">
+          <label className="flex items-center gap-3 cursor-pointer select-none group">
+            <input
+              type="checkbox"
+              className="size-4 shrink-0 accent-primary cursor-pointer"
+              {...register("shipToDifferentAddress")}
+            />
+            <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+              Ship to a different address?
+            </span>
+          </label>
+        </div>
       </div>
+
+      {/* ── Shipping Address Section (conditional) ── */}
+      {shipToDifferentAddress && (
+        <div className="flex flex-col gap-4 border border-dashed border-primary/40 bg-primary/5 p-5 rounded-sm">
+          <h3 className="text-base font-semibold text-foreground">Shipping Address</h3>
+          <div className="grid gap-4 grid-cols-2 max-sm:grid-cols-1">
+            <InputField form={form} name="shipping_firstName" label="First name" required />
+            <InputField form={form} name="shipping_lastName" label="Last name" required />
+
+            <div className="col-span-2 max-sm:col-span-1">
+              <InputField
+                form={form}
+                name="shipping_streetAddress"
+                label="Street address"
+                placeholder="House number and street name"
+                required
+              />
+            </div>
+
+            <InputField form={form} name="shipping_city" label="Town / City" required />
+            <InputField form={form} name="shipping_district" label="District" required />
+            <InputField form={form} name="shipping_postcode" label="Postcode / ZIP" />
+            <InputField form={form} name="shipping_phone" label="Phone" required />
+          </div>
+        </div>
+      )}
 
       {/* ── Shipping Method ──────────────────── */}
       <div className="flex flex-col gap-2">

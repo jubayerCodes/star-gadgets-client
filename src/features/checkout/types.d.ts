@@ -11,6 +11,14 @@ export interface ICheckoutFormValues {
   postcode?: string;
   phone: string;
   email: string;
+  shipToDifferentAddress?: boolean;
+  shipping_firstName?: string;
+  shipping_lastName?: string;
+  shipping_streetAddress?: string;
+  shipping_city?: string;
+  shipping_district?: string;
+  shipping_postcode?: string;
+  shipping_phone?: string;
   orderNotes?: string;
   shippingMethod: string;
   paymentMethod: PaymentMethod;
@@ -39,6 +47,17 @@ export interface ICreateOrderPayload {
     firstName: string;
     lastName: string;
     email: string;
+    streetAddress: string;
+    city: string;
+    district: string;
+    postcode?: string;
+    phone: string;
+  };
+  /** Only included when "Ship To A Different Address" is checked */
+  shippingDetails?: {
+    firstName: string;
+    lastName: string;
+    email?: string;
     streetAddress: string;
     city: string;
     district: string;
@@ -92,6 +111,8 @@ export interface IOrder {
   orderNumber: string;
   userId?: string;
   billingDetails: ICreateOrderPayload["billingDetails"];
+  /** Only present when customer ships to a different address */
+  shippingDetails?: ICreateOrderPayload["shippingDetails"];
   items: IOrderItem[];
   subtotal: number;
   shippingMethod: string;

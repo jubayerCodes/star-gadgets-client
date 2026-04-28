@@ -7,6 +7,8 @@ import Image from "next/image";
 import { OrderStatus } from "@/features/checkout/types";
 import ProtectedRoute from "@/components/shared/protected-route";
 import { Button } from "@/components/ui/button";
+import NotFoundMessage from "@/components/shared/not-found-message";
+import Loading from "@/components/layout/loading";
 
 const STATUS_ICON: Record<OrderStatus, React.ReactNode> = {
   PENDING: <Clock className="size-5 text-yellow-500" />,
@@ -21,12 +23,22 @@ const STATUS_ICON: Record<OrderStatus, React.ReactNode> = {
 const STATUS_STEPS: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
 
 function OrderDetailInner({ id }: { id: string }) {
-  const { data } = useOrderByIdQuery(id);
+  const { data, isLoading, isError } = useOrderByIdQuery(id);
   const order = data?.data;
 
   const { mutate: initiatePayment, isPending: isInitiatingPayment } = useInitiatePaymentMutation();
 
-  if (!order) return null;
+  if (isLoading) return <Loading />;
+
+  if (isError || !order)
+    return (
+      <NotFoundMessage
+        title="Order Not Found"
+        description="We couldn't find this order. It may have been removed or the link is invalid."
+        backLabel="Back to My Orders"
+        backHref="/account/orders"
+      />
+    );
 
   const {
     orderNumber,

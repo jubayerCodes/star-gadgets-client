@@ -33,12 +33,31 @@ const Login = () => {
     }
   };
 
+  const fillAdminCredentials = () => {
+    form.setValue("email", "admin@gmail.com");
+    form.setValue("password", "Admin#1112");
+  };
+
   return (
     <section className="py-10">
       <div className="container max-w-6xl!">
         <div className="flex flex-col gap-5 max-w-lg mx-auto">
           <div className="flex flex-col gap-8">
             <h2>Login</h2>
+
+            {/* Admin credential hint for portfolio reviewers */}
+            <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4 flex flex-col gap-3">
+              <p className="text-sm font-semibold text-primary">🔑 Demo Admin Credentials</p>
+              <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">Email:</span>
+                <span>admin@gmail.com</span>
+                <span className="font-medium text-foreground">Password:</span>
+                <span>Admin#1112</span>
+              </div>
+              <Button type="button" variant="outline" size="sm" className="w-fit text-xs" onClick={fillAdminCredentials}>
+                Auto Fill
+              </Button>
+            </div>
 
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               <FieldGroup className="gap-4">

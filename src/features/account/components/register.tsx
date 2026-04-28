@@ -9,7 +9,7 @@ import InputField from "@/components/form/site/input-field";
 import PasswordField from "@/components/form/site/password-field";
 import { Button } from "@/components/ui/button";
 import SeparatorText from "@/components/shared/separator-text";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 const Register = () => {
   const router = useRouter();
