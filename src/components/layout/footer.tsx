@@ -116,19 +116,19 @@ const Footer = () => {
             <div className="flex flex-col gap-4 text-[13px] text-white/70">
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="shrink-0 mt-0.5 text-white/50" />
-                <span className="leading-snug">Address: Bari / DAG-1142, Road-5/a Dollpara, Turag, Dhaka-1230</span>
+                <span className="leading-snug">Address: Shop No-2, Level-7, Eastern Star Tech Park, Durgapur, Savar, Dhaka-1340</span>
               </div>
               <div className="flex items-start gap-3">
                 <Smartphone size={18} className="shrink-0 mt-0 text-white/50" />
-                <span>Phone: (880) 1830267638</span>
+                <span>Phone: (880) 1762278148</span>
               </div>
               <div className="flex items-start gap-3">
                 <Mail size={18} className="shrink-0 mt-0 text-white/50" />
-                <span>Email: info@techdiversitybd.com</span>
+                <span>Email: info@stargadgets.com</span>
               </div>
               <div className="flex items-start gap-3">
                 <FileText size={18} className="shrink-0 mt-0 text-white/50" />
-                <span>Tin Certificate Number: 472722415210</span>
+                <span>Tin Certificate Number: 123456789101112</span>
               </div>
             </div>
           </div>

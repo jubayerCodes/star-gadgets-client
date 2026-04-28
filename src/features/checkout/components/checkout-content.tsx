@@ -17,6 +17,7 @@ import SiteBreadcrumb from "@/components/shared/site-breadcrumb";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useCreateOrderMutation } from "../hooks/useOrders";
+import Loading from "@/components/layout/loading";
 
 export default function CheckoutContent() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function CheckoutContent() {
   const { item: buyNowItem, clearBuyNow } = useBuyNowStore();
 
   const [isBuyNow, setIsBuyNow] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const source = new URLSearchParams(window.location.search).get("source");
@@ -58,6 +60,14 @@ export default function CheckoutContent() {
       shippingMethod: shippingMethods[0]?.name ?? "",
       paymentMethod: "cod",
       agreeToTerms: undefined,
+      shipToDifferentAddress: false,
+      shipping_firstName: "",
+      shipping_lastName: "",
+      shipping_streetAddress: "",
+      shipping_city: "",
+      shipping_district: "",
+      shipping_postcode: "",
+      shipping_phone: "",
     },
   });
 
@@ -95,6 +105,18 @@ export default function CheckoutContent() {
         postcode: values.postcode,
         phone: values.phone,
       },
+      // Include shippingDetails only when ship-to-different-address is checked
+      ...(values.shipToDifferentAddress && {
+        shippingDetails: {
+          firstName: values.shipping_firstName!,
+          lastName: values.shipping_lastName!,
+          streetAddress: values.shipping_streetAddress!,
+          city: values.shipping_city!,
+          district: values.shipping_district!,
+          postcode: values.shipping_postcode,
+          phone: values.shipping_phone!,
+        },
+      }),
       items: items.map((i) => ({
         productId: i.productId,
         variantId: i.variantId,
@@ -113,22 +135,27 @@ export default function CheckoutContent() {
 
     const res = await createOrder(orderPayload);
 
-    if (res.data)
-      if (res?.success && res.data.orderPayload?._id) {
-        // Clear cart or buy-now session
-        if (isBuyNow) {
-          clearBuyNow();
-        } else {
-          clearCart();
-        }
+    if (res?.success && res.data?.orderPayload?._id) {
+      // Show the loader immediately so the emptied cart/buy-now state
+      // never flashes before navigation completes
+      setIsRedirecting(true);
 
-        if (values.paymentMethod === "online") {
-          if (res.data.paymentUrl) router.replace(res.data.paymentUrl);
-        } else if (values.paymentMethod === "cod") {
-          router.push(`/orders/${res.data.orderPayload._id}/success`);
-        }
+      if (isBuyNow) {
+        clearBuyNow();
+      } else {
+        clearCart();
       }
+
+      if (values.paymentMethod === "online") {
+        if (res.data.paymentUrl) router.replace(res.data.paymentUrl);
+      } else if (values.paymentMethod === "cod") {
+        router.push(`/orders/${res.data.orderPayload._id}/success`);
+      }
+    }
   };
+
+  // Show loader while redirecting — prevents the cart-cleared empty-state flash
+  if (isRedirecting) return <Loading />;
 
   return (
     <div className="pb-16">

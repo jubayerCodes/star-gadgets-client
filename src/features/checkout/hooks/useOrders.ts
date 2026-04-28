@@ -24,9 +24,11 @@ export const useCreateOrderMutation = () =>
   });
 
 export const useOrderByIdQuery = (id: string) =>
-  useSuspenseQuery({
+  useQuery({
     queryKey: [QUERY_KEYS.ORDERS, id],
     queryFn: () => getOrderByIdApi(id),
+    enabled: !!id,
+    retry: false,
   });
 
 export const useMyOrdersQuery = (page = 1) =>
