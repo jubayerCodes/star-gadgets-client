@@ -1,5 +1,12 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createUserApi, getCurrentUserApi, loginUserApi, logoutUserApi } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createUserApi,
+  getCurrentUserApi,
+  loginUserApi,
+  logoutUserApi,
+  updateProfileApi,
+  changePasswordApi,
+} from "../api";
 import { extractErrorMessage } from "@/lib/extract-error-message";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
@@ -60,6 +67,35 @@ export const useLogoutUser = () => {
 
     onError: (err) => {
       setError(err?.message);
+      toast.error(extractErrorMessage(err));
+    },
+  });
+};
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  const { setUser } = useAuthStore();
+
+  return useMutation({
+    mutationFn: updateProfileApi,
+    onSuccess: (data) => {
+      setUser(data.data);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PROFILE] });
+      toast.success("Profile updated successfully!");
+    },
+    onError: (err) => {
+      toast.error(extractErrorMessage(err));
+    },
+  });
+};
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: changePasswordApi,
+    onSuccess: () => {
+      toast.success("Password changed successfully!");
+    },
+    onError: (err) => {
       toast.error(extractErrorMessage(err));
     },
   });

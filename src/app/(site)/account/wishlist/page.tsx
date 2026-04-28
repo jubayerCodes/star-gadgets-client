@@ -1,13 +1,13 @@
 "use client";
 
-import ProtectedRoute from "@/components/shared/protected-route";
+import AccountLayout from "@/features/account/components/account-layout";
 import WishlistContent from "@/features/account/components/wishlist-content";
 
 const WishlistPage = () => {
   return (
-    <ProtectedRoute>
+    <AccountLayout title="My Account">
       <WishlistContent />
-    </ProtectedRoute>
+    </AccountLayout>
   );
 };
 

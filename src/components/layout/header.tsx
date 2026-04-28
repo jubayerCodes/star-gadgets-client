@@ -69,22 +69,12 @@ const Header = () => {
   ];
 
   const accountLinks = [
-    {
-      label: "My Account",
-      href: "/account",
-    },
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      label: "Order History",
-      href: "/account/orders",
-    },
-    {
-      label: "Wishlist",
-      href: "/account/wishlist",
-    },
+    { label: "My Account", href: "/account" },
+    { label: "Order History", href: "/account/orders" },
+    { label: "Wishlist", href: "/account/wishlist" },
+    { label: "Billing Address", href: "/account/billing-address" },
+    { label: "Shipping Address", href: "/account/shipping-address" },
+    { label: "Change Password", href: "/account/change-password" },
   ];
 
   return (
@@ -121,7 +111,7 @@ const Header = () => {
               ))}
             </div>
             <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
-            <Link href="/contact-us" className="text-xs hover:text-primary-foreground/80 transition flex items-center">
+            <Link href="/contact" className="text-xs hover:text-primary-foreground/80 transition flex items-center">
               Contact
             </Link>
             <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
