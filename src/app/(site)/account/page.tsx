@@ -1,13 +1,14 @@
 "use client";
 
-import ProtectedRoute from "@/components/shared/protected-route";
+import AccountLayout from "@/features/account/components/account-layout";
+import ProfileInfo from "@/features/account/components/profile-info";
 
-const Account = () => {
+const AccountPage = () => {
   return (
-    <ProtectedRoute>
-      <div>Account</div>
-    </ProtectedRoute>
+    <AccountLayout title="My Account">
+      <ProfileInfo />
+    </AccountLayout>
   );
 };
 
-export default Account;
+export default AccountPage;

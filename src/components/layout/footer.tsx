@@ -6,11 +6,8 @@ import { Home, User, ShoppingCart, Wrench } from "lucide-react";
 import Link from "next/link";
 import Marquee from "react-fast-marquee";
 import Image from "next/image";
-import logo from "@/assets/logo-dark.svg"; // Fallback, since dark implies logo on dark bg or logo with dark color. If the image has white text, logo.svg might be it. I'll test logo.svg since the header uses logo.png. But let's use the SVG variants for sharper display. Actually I'll use logo.svg which is standard and has white variants for dark themes usually, or let's use logo-dark.svg if that's the transparent white one. If not, we can adjust.
+import logo from "@/assets/logo-dark.svg";
 import { MapPin, Smartphone, Mail, FileText } from "lucide-react";
-
-// For payment icons, since we don't have an exact image, we'll use placeholder text or icons.
-// Assuming "react-icons/fa" can be used if they need exactly those later.
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal, FaCcDiscover } from "react-icons/fa";
 import { IconCircleFilled } from "@tabler/icons-react";
 
@@ -59,25 +56,19 @@ const Footer = () => {
             </Link>
             <p className="text-white/70 leading-relaxed text-[13px] mt-2 max-w-[90%]">
               We mainly import goods from overseas. If anything crosses your mind feel free to knock us and allow us to
-              make you happy by serving your desired product
+              make you happy by serving your desired product.
             </p>
           </div>
 
-          {/* Column 2 - Useful Links */}
+          {/* Column 2 - Legal Links */}
           <div className="flex flex-col gap-5">
-            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">USEFUL LINKS</h3>
+            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">Legal</h3>
             <div className="flex flex-col gap-3.5 text-[13px]">
               <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">
                 Privacy Policy
               </Link>
-              <Link href="/warranty-policy" className="text-white/70 hover:text-white transition">
-                Warranty Policy
-              </Link>
-              <Link href="/refund-returns" className="text-white/70 hover:text-white transition">
-                Refund and Returns Policy
-              </Link>
-              <Link href="/after-sales" className="text-white/70 hover:text-white transition">
-                After Sales Policy
+              <Link href="/terms" className="text-white/70 hover:text-white transition">
+                Terms &amp; Conditions
               </Link>
               <Link href="/cookie-policy" className="text-white/70 hover:text-white transition">
                 Cookie Policy
@@ -85,38 +76,32 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 3 - Support */}
+          {/* Column 3 - Company */}
           <div className="flex flex-col gap-5">
-            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">SUPPORT</h3>
+            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">Company</h3>
             <div className="flex flex-col gap-3.5 text-[13px]">
-              <Link href="/track-order" className="text-white/70 hover:text-white transition">
-                Track Your Order
-              </Link>
-              <Link href="/request-product" className="text-white/70 hover:text-white transition">
-                Request Product
-              </Link>
-              <Link href="/affiliated-brands" className="text-white/70 hover:text-white transition">
-                Affiliated Brands
-              </Link>
-              <Link href="/about-us" className="text-white/70 hover:text-white transition">
+              <Link href="/about" className="text-white/70 hover:text-white transition">
                 About Us
               </Link>
-              <Link href="/delivery" className="text-white/70 hover:text-white transition">
-                Delivery
+              <Link href="/contact" className="text-white/70 hover:text-white transition">
+                Contact Us
               </Link>
-              <Link href="/terms-conditions" className="text-white/70 hover:text-white transition">
-                Terms and Conditions
+              <Link href="/account/orders" className="text-white/70 hover:text-white transition">
+                My Orders
+              </Link>
+              <Link href="/pc-builder" className="text-white/70 hover:text-white transition">
+                PC Builder
               </Link>
             </div>
           </div>
 
           {/* Column 4 - Contact Information */}
           <div className="flex flex-col gap-5">
-            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">CONTACT INFORMATION</h3>
+            <h3 className="font-bold text-white tracking-wider text-[13px] uppercase">Contact Information</h3>
             <div className="flex flex-col gap-4 text-[13px] text-white/70">
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="shrink-0 mt-0.5 text-white/50" />
-                <span className="leading-snug">Address: Shop No-2, Level-7, Eastern Star Tech Park, Durgapur, Savar, Dhaka-1340</span>
+                <span className="leading-snug">Shop No-2, Level-7, Eastern Star Tech Park, Durgapur, Savar, Dhaka-1340</span>
               </div>
               <div className="flex items-start gap-3">
                 <Smartphone size={18} className="shrink-0 mt-0 text-white/50" />

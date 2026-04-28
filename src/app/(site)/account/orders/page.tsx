@@ -5,8 +5,8 @@ import { useMyOrdersQuery } from "@/features/checkout/hooks/useOrders";
 import { IOrder } from "@/features/checkout/types";
 import Link from "next/link";
 import { Package } from "lucide-react";
-import ProtectedRoute from "@/components/shared/protected-route";
 import OrderCard from "./order-card";
+import AccountLayout from "@/features/account/components/account-layout";
 
 function MyOrdersContent() {
   const [page, setPage] = useState(1);
@@ -73,11 +73,11 @@ function MyOrdersContent() {
 
 export default function MyOrdersPage() {
   return (
-    <ProtectedRoute>
-      <div className="container py-10 max-w-3xl">
-        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+    <AccountLayout title="My Account">
+      <div>
+        <h2 className="text-lg font-semibold mb-5">Order History</h2>
         <MyOrdersContent />
       </div>
-    </ProtectedRoute>
+    </AccountLayout>
   );
 }
