@@ -1,7 +1,7 @@
 "use client";
 
-import { useOrderByIdQuery, useInitiatePaymentMutation } from "@/features/checkout/hooks/useOrders";
-import { CheckCircle, Clock, Package, MapPin, CreditCard, Truck, XCircle } from "lucide-react";
+import { useOrderByIdQuery, useInitiatePaymentMutation, useDownloadInvoiceMutation } from "@/features/checkout/hooks/useOrders";
+import { CheckCircle, Clock, FileDown, Package, MapPin, CreditCard, Truck, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { OrderStatus } from "@/features/checkout/types";
@@ -27,6 +27,7 @@ function OrderDetailInner({ id }: { id: string }) {
   const order = data?.data;
 
   const { mutate: initiatePayment, isPending: isInitiatingPayment } = useInitiatePaymentMutation();
+  const { mutate: downloadInvoice, isPending: isDownloading } = useDownloadInvoiceMutation();
 
   if (isLoading) return <Loading />;
 
@@ -81,9 +82,21 @@ function OrderDetailInner({ id }: { id: string }) {
             })}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {STATUS_ICON[orderStatus]}
-          <span className="text-sm font-semibold capitalize">{orderStatus.toLowerCase()}</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {STATUS_ICON[orderStatus]}
+            <span className="text-sm font-semibold capitalize">{orderStatus.toLowerCase()}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => downloadInvoice(order)}
+            disabled={isDownloading}
+            className="gap-1.5"
+          >
+            <FileDown className="size-4" />
+            {isDownloading ? "Generating..." : "Invoice"}
+          </Button>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import {
 } from "../api";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/lib/extract-error-message";
+import { IOrder } from "../types";
 
 export const useCreateOrderMutation = () =>
   useMutation({
@@ -106,6 +107,37 @@ export const useInitiatePaymentMutation = () =>
     onSuccess: (data) => {
       const url = data.data?.GatewayPageURL;
       if (url) window.location.href = url;
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error));
+    },
+  });
+
+/**
+ * Generates an invoice PDF client-side via @react-pdf/renderer and triggers a browser download.
+ * Accepts the full IOrder object — no server round-trip needed.
+ */
+export const useDownloadInvoiceMutation = () =>
+  useMutation({
+    mutationFn: async (order: IOrder) => {
+      const { pdf } = await import("@react-pdf/renderer");
+      const { default: InvoicePDF } = await import("../components/invoice-pdf");
+      const { createElement } = await import("react");
+      type DocProps = import("@react-pdf/renderer").DocumentProps;
+      const element = createElement(InvoicePDF, { order }) as import("react").ReactElement<DocProps>;
+      const blob = await pdf(element).toBlob();
+      return { blob, orderNumber: order.orderNumber };
+    },
+    onSuccess: ({ blob, orderNumber }) => {
+      const safeNum = orderNumber.replace(/^SG-/, "");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `StarGadgets_INV_${safeNum}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     },
     onError: (error) => {
       toast.error(extractErrorMessage(error));

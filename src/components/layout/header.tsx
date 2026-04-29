@@ -68,8 +68,12 @@ const Header = () => {
     },
   ];
 
+  const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN"];
+  const isAdmin = !!user && ADMIN_ROLES.includes(user.role);
+
   const accountLinks = [
     { label: "My Account", href: "/account" },
+    ...(isAdmin ? [{ label: "Dashboard", href: "/dashboard" }] : []),
     { label: "Order History", href: "/account/orders" },
     { label: "Wishlist", href: "/account/wishlist" },
     { label: "Billing Address", href: "/account/billing-address" },
@@ -81,196 +85,196 @@ const Header = () => {
     <>
       <header>
         <div className="bg-primary text-primary-foreground hidden lg:block">
-        <div className="container flex items-center justify-between">
-          <div className="flex items-stretch">
-            {contactInfo.map((item, index) => (
-              <div key={index} className="flex items-center">
-                <Link
-                  href={item.link}
-                  className="flex items-center gap-1.5 text-xs hover:text-primary-foreground/80 transition"
-                >
-                  <item.icon className="size-3.5" />
-                  <span>{item.text}</span>
-                </Link>
-                {index !== contactInfo.length - 1 && (
-                  <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="flex items-stretch">
-            <div className="flex items-stretch gap-2">
-              {socialLinks.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.link}
-                  className="flex items-center gap-1.5 text-xs hover:text-primary-foreground/80 transition"
-                >
-                  <item.icon className="size-4" />
-                </Link>
+          <div className="container flex items-center justify-between">
+            <div className="flex items-stretch">
+              {contactInfo.map((item, index) => (
+                <div key={index} className="flex items-center">
+                  <Link
+                    href={item.link}
+                    className="flex items-center gap-1.5 text-xs hover:text-primary-foreground/80 transition"
+                  >
+                    <item.icon className="size-3.5" />
+                    <span>{item.text}</span>
+                  </Link>
+                  {index !== contactInfo.length - 1 && (
+                    <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
+                  )}
+                </div>
               ))}
             </div>
-            <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
-            <Link href="/contact" className="text-xs hover:text-primary-foreground/80 transition flex items-center">
-              Contact
-            </Link>
-            <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
-            <Link
-              href="/privacy-policy"
-              className="text-xs hover:text-primary-foreground/80 transition flex items-center"
-            >
-              Privacy Policy
-            </Link>
-            <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! ml-3" />
+            <div className="flex items-stretch">
+              <div className="flex items-stretch gap-2">
+                {socialLinks.map((item, index) => (
+                  <Link
+                    key={index}
+                    href={item.link}
+                    className="flex items-center gap-1.5 text-xs hover:text-primary-foreground/80 transition"
+                  >
+                    <item.icon className="size-4" />
+                  </Link>
+                ))}
+              </div>
+              <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
+              <Link href="/contact" className="text-xs hover:text-primary-foreground/80 transition flex items-center">
+                Contact
+              </Link>
+              <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! mx-3" />
+              <Link
+                href="/privacy-policy"
+                className="text-xs hover:text-primary-foreground/80 transition flex items-center"
+              >
+                Privacy Policy
+              </Link>
+              <Separator orientation="vertical" className="h-10! bg-primary-foreground/30! ml-3" />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="py-4 border-b">
-        <div className="container flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 flex-1">
-            <MobileMenu />
-            <Link href="/">
-              <Image
-                src={logo}
-                alt="Star Gadgets"
-                loading="eager"
-                width={500}
-                height={100}
-                className="w-auto! h-8! lg:h-10! aspect-auto"
-              />
-            </Link>
-            <div className="hidden lg:flex flex-1">
-              <Suspense fallback={<div className="h-11 max-w-2xl w-full bg-muted animate-pulse" />}>
-                <SearchInput className="max-w-2xl w-full" />
+        <div className="py-4 border-b">
+          <div className="container flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 flex-1">
+              <MobileMenu />
+              <Link href="/">
+                <Image
+                  src={logo}
+                  alt="Star Gadgets"
+                  loading="eager"
+                  width={500}
+                  height={100}
+                  className="w-auto! h-8! lg:h-10! aspect-auto"
+                />
+              </Link>
+              <div className="hidden lg:flex flex-1">
+                <Suspense fallback={<div className="h-11 max-w-2xl w-full bg-muted animate-pulse" />}>
+                  <SearchInput className="max-w-2xl w-full" />
+                </Suspense>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="hidden lg:flex items-center gap-2">
+                {user ? (
+                  <NavigationMenu align="end">
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger className="text-sm font-semibold hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! cursor-pointer aria-expanded:text-accent-hover!">
+                          My Account
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent className="w-[200px]! p-4 flex flex-col gap-2 border-t-4 border-t-accent">
+                          {accountLinks.map((link, index) => (
+                            <NavigationMenuLink
+                              key={index}
+                              className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline"
+                              href={link.href}
+                            >
+                              {link.label}
+                            </NavigationMenuLink>
+                          ))}
+                          <NavigationMenuLink
+                            className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm cursor-pointer hover:underline"
+                            onClick={() => {
+                              openModal({
+                                icon: LogOutIcon,
+                                title: "Logout",
+                                description: "Are you sure you want to logout?",
+                                confirmText: "Logout",
+                                onConfirm: async () => {
+                                  await logoutUser();
+                                },
+                              });
+                            }}
+                          >
+                            Logout
+                          </NavigationMenuLink>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                ) : (
+                  <>
+                    <Link href={"/account/login"} className="font-semibold text-sm hover:text-foreground/80 transition">
+                      Login
+                    </Link>{" "}
+                    /{" "}
+                    <Link
+                      href={"/account/register"}
+                      className="font-semibold text-sm hover:text-foreground/80 transition"
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-2 sm:gap-4">
+                {/* Mobile search toggle button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden shrink-0 hover:bg-accent/10"
+                  onClick={() => setSearchOpen((prev) => !prev)}
+                  aria-label="Toggle search"
+                >
+                  {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
+                </Button>
+
+                <button onClick={openCart} aria-label="Open cart" className="cursor-pointer">
+                  <IconWithCount icon={ShoppingCart} count={cartCount} />
+                </button>
+              </div>
+              <Link href="/pc-builder" className="hidden lg:block">
+                <Button variant={"outline"} className="ml-2">
+                  PC Builder
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile slide-down search panel */}
+          <div
+            className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+              searchOpen ? "max-h-20 border-t" : "max-h-0"
+            }`}
+          >
+            <div className="container py-3">
+              <Suspense fallback={<div className="h-11 w-full bg-muted animate-pulse" />}>
+                <SearchInput className="w-full" />
               </Suspense>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden lg:flex items-center gap-2">
-              {user ? (
-                <NavigationMenu align="end">
-                  <NavigationMenuList>
-                    <NavigationMenuItem>
-                      <NavigationMenuTrigger className="text-sm font-semibold hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! cursor-pointer aria-expanded:text-accent-hover!">
-                        My Account
+        </div>
+        <div className="border-b hidden lg:block">
+          <div className="container py-2">
+            <NavigationMenu align="start" className="max-w-full!">
+              <NavigationMenuList className="justify-between">
+                {categories?.map((category) => (
+                  <NavigationMenuItem key={category?._id}>
+                    <Link href={`/categories/${category?.slug}`}>
+                      <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! *:hidden!">
+                        {category?.title}
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent className="w-[150px]! p-4 flex flex-col gap-2 border-t-4 border-t-accent">
-                        {accountLinks.map((link, index) => (
+                    </Link>
+                    {category?.subCategories?.length > 0 && (
+                      <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
+                        {category?.subCategories?.map((subCategory) => (
                           <NavigationMenuLink
-                            key={index}
-                            className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline"
-                            href={link.href}
+                            key={subCategory?._id}
+                            className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline "
+                            href={`/sub-categories/${subCategory?.slug}`}
                           >
-                            {link.label}
+                            {subCategory?.title}
                           </NavigationMenuLink>
                         ))}
-                        <NavigationMenuLink
-                          className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm cursor-pointer hover:underline"
-                          onClick={() => {
-                            openModal({
-                              icon: LogOutIcon,
-                              title: "Logout",
-                              description: "Are you sure you want to logout?",
-                              confirmText: "Logout",
-                              onConfirm: async () => {
-                                await logoutUser();
-                              },
-                            });
-                          }}
-                        >
-                          Logout
-                        </NavigationMenuLink>
                       </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-                </NavigationMenu>
-              ) : (
-                <>
-                  <Link href={"/account/login"} className="font-semibold text-sm hover:text-foreground/80 transition">
-                    Login
-                  </Link>{" "}
-                  /{" "}
-                  <Link
-                    href={"/account/register"}
-                    className="font-semibold text-sm hover:text-foreground/80 transition"
-                  >
-                    Register
-                  </Link>
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4">
-              {/* Mobile search toggle button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden shrink-0 hover:bg-accent/10"
-                onClick={() => setSearchOpen((prev) => !prev)}
-                aria-label="Toggle search"
-              >
-                {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
-              </Button>
-
-              <button onClick={openCart} aria-label="Open cart" className="cursor-pointer">
-                <IconWithCount icon={ShoppingCart} count={cartCount} />
-              </button>
-            </div>
-            <Link href="/pc-builder" className="hidden lg:block">
-              <Button variant={"outline"} className="ml-2">
-                PC Builder
-              </Button>
-            </Link>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
         </div>
+      </header>
 
-        {/* Mobile slide-down search panel */}
-        <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            searchOpen ? "max-h-20 border-t" : "max-h-0"
-          }`}
-        >
-          <div className="container py-3">
-            <Suspense fallback={<div className="h-11 w-full bg-muted animate-pulse" />}>
-              <SearchInput className="w-full" />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-      <div className="border-b hidden lg:block">
-        <div className="container py-2">
-          <NavigationMenu align="start" className="max-w-full!">
-            <NavigationMenuList className="justify-between">
-              {categories?.map((category) => (
-                <NavigationMenuItem key={category?._id}>
-                  <Link href={`/categories/${category?.slug}`}>
-                    <NavigationMenuTrigger className="text-sm font-medium hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! p-0! cursor-pointer aria-expanded:text-accent-hover! *:hidden!">
-                      {category?.title}
-                    </NavigationMenuTrigger>
-                  </Link>
-                  {category?.subCategories?.length > 0 && (
-                    <NavigationMenuContent className="w-[150px]! rounded-none! p-3 flex flex-col gap-2 border-t-4 border-t-accent">
-                      {category?.subCategories?.map((subCategory) => (
-                        <NavigationMenuLink
-                          key={subCategory?._id}
-                          className="hover:bg-transparent! hover:text-foreground! transition bg-transparent! text-foreground! *:hidden! p-0! font-medium text-sm hover:underline "
-                          href={`/sub-categories/${subCategory?.slug}`}
-                        >
-                          {subCategory?.title}
-                        </NavigationMenuLink>
-                      ))}
-                    </NavigationMenuContent>
-                  )}
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-      </div>
-    </header>
-
-    {/* Cart drawer — uses a Portal, safe to render anywhere */}
-    <CartDrawer />
-  </>
+      {/* Cart drawer — uses a Portal, safe to render anywhere */}
+      <CartDrawer />
+    </>
   );
 };
 

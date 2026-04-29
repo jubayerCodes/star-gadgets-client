@@ -8,6 +8,12 @@ export interface IAddress {
   zipCode?: string;
 }
 
+export enum Role {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  SUPER_ADMIN = "SUPER_ADMIN",
+}
+
 export interface IUser {
   _id: string;
   name: string;
@@ -15,7 +21,7 @@ export interface IUser {
   avatar?: string;
   isDeleted: boolean;
   phone: string;
-  role: string;
+  role: Role;
   billingAddress?: IAddress;
   shippingAddress?: IAddress;
   auths?: IAuthProvider[];
