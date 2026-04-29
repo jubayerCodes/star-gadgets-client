@@ -163,11 +163,15 @@ export default function CartDrawer() {
               Shipping and taxes calculated at checkout.
             </p>
             <Separator />
+            <Button
+              variant="outline"
+              className="w-full h-10"
+              onClick={() => { closeCart(); router.push("/cart"); }}
+            >
+              View Cart
+            </Button>
             <Button className="w-full h-11 font-semibold" onClick={handleCheckout}>
               Proceed to Checkout
-            </Button>
-            <Button variant="outline" className="w-full h-10" onClick={closeCart}>
-              Continue Shopping
             </Button>
           </div>
         )}
