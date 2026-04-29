@@ -1,16 +1,17 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { IOrder, OrderStatus } from "@/features/checkout/types";
-import { useAllOrdersQuery } from "@/features/checkout/hooks/useOrders";
-import { useUpdateOrderStatusStore } from "@/features/checkout/store/updateOrderStatusStore";
+import { IOrder, OrderStatus, PaymentStatus } from "@/features/checkout/types";
+import { useAllOrdersQuery, useDownloadInvoiceMutation } from "@/features/checkout/hooks/useOrders";
 import { DataTable } from "@/components/data-table";
-import { DataTableAction, DataTableOption } from "@/components/data-table-action";
 import { Badge } from "@/components/ui/badge";
-import { IconPencil } from "@tabler/icons-react";
+import { FileDown } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import DashboardButton from "@/components/dashboard/dashboard-button";
 
-const STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructive" | "outline"> = {
+// ── Badge helpers ─────────────────────────────────────────────────────────────
+
+const ORDER_STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructive" | "outline"> = {
   PENDING: "secondary",
   CONFIRMED: "default",
   PROCESSING: "default",
@@ -20,23 +21,27 @@ const STATUS_VARIANTS: Record<OrderStatus, "default" | "secondary" | "destructiv
   FAILED: "destructive",
 };
 
-const PAYMENT_STATUS_VARIANTS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const PAYMENT_STATUS_VARIANTS: Record<PaymentStatus, "default" | "secondary" | "destructive" | "outline"> = {
   UNPAID: "secondary",
   PAID: "default",
   FAILED: "destructive",
   CANCELLED: "outline",
 };
 
-const OrdersTable = () => {
+// ── Component ─────────────────────────────────────────────────────────────────
+
+export default function InvoicesContent() {
   const searchParams = useSearchParams();
   const query = Object.fromEntries(searchParams.entries());
   const { data } = useAllOrdersQuery(query);
 
+  const { mutate: downloadSingle, isPending: isDownloading } = useDownloadInvoiceMutation();
+
   const columns: ColumnDef<IOrder>[] = [
     {
       accessorKey: "orderNumber",
-      header: "Order #",
-      cell: ({ row }) => <span className="font-mono font-semibold text-xs">{row.original.orderNumber}</span>,
+      header: "Invoice #",
+      cell: ({ row }) => <span className="font-mono font-semibold text-xs">INV_{row.original.orderNumber}</span>,
     },
     {
       accessorKey: "billingDetails",
@@ -75,62 +80,46 @@ const OrdersTable = () => {
       cell: ({ row }) => <span className="font-semibold">৳{row.original.total.toLocaleString()}</span>,
     },
     {
-      accessorKey: "",
-      header: "Payment Method",
-      meta: { align: "center", headerAlign: "center" },
-      cell: ({ row }) => {
-        const payment = row.original.paymentId;
-        return (
-          <Badge variant="outline" className="capitalize text-xs">
-            {payment?.paymentMethod === "cod" ? "COD" : payment?.paymentMethod === "online" ? "Online" : "—"}
-          </Badge>
-        );
-      },
-    },
-    {
       accessorKey: "paymentId",
       header: "Payment",
       meta: { align: "center", headerAlign: "center" },
       cell: ({ row }) => {
         const payment = row.original.paymentId;
-        return (
-          payment && (
-            <Badge variant={PAYMENT_STATUS_VARIANTS[payment.status] ?? "outline"} className="capitalize text-xs w-fit">
-              {payment.status.toLowerCase()}
-            </Badge>
-          )
-        );
+        return payment ? (
+          <Badge variant={PAYMENT_STATUS_VARIANTS[payment.status] ?? "outline"} className="capitalize text-xs">
+            {payment.status.toLowerCase()}
+          </Badge>
+        ) : null;
       },
     },
     {
       accessorKey: "orderStatus",
-      header: "Status",
+      header: "Order Status",
+      meta: { align: "center", headerAlign: "center" },
       cell: ({ row }) => (
-        <Badge variant={STATUS_VARIANTS[row.original.orderStatus]} className="capitalize text-xs">
+        <Badge variant={ORDER_STATUS_VARIANTS[row.original.orderStatus]} className="capitalize text-xs">
           {row.original.orderStatus.toLowerCase()}
         </Badge>
       ),
     },
     {
-      accessorKey: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const actions: DataTableOption[] = [
-          {
-            label: "Update Status",
-            icon: IconPencil,
-            onClick: () => {
-              const { openModal } = useUpdateOrderStatusStore.getState();
-              openModal({ order: row.original });
-            },
-          },
-        ];
-        return <DataTableAction options={actions} />;
-      },
+      accessorKey: "_id",
+      header: "Invoice",
+      cell: ({ row }) => (
+        <DashboardButton
+          variant="ghost"
+          size="sm"
+          onClick={() => downloadSingle(row.original)}
+          disabled={isDownloading}
+          className="gap-1.5 text-xs h-7"
+          id={`download-invoice-${row.original._id}`}
+        >
+          <FileDown className="size-3.5" />
+          PDF
+        </DashboardButton>
+      ),
     },
   ];
 
   return <DataTable columns={columns} data={data?.data ?? []} meta={data?.meta} />;
-};
-
-export default OrdersTable;
+}
