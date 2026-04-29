@@ -19,7 +19,8 @@
 
 ### 🛍️ Customer
 - Browse and search gadgets by category
-- Add to cart or use "Buy Now" for instant checkout
+- Add to cart, view the full cart page, or use "Buy Now" for instant checkout
+- Billing & shipping address auto-filled from saved account details when logged in
 - Apply discount coupons with usage-limit validation
 - Place orders with Cash on Delivery or Online Payment (SSLCommerz)
 - Track orders and cancel unshipped orders
@@ -119,7 +120,7 @@ pnpm install
 
 # 3. Configure environment variables
 cp .env.example .env
-# Set NEXT_PUBLIC_API_URL to your server URL
+# Set NEXT_PUBLIC_BASE_URL to your backend API base URL
 
 # 4. Start development server
 pnpm dev
@@ -131,7 +132,7 @@ The client runs on `http://localhost:8000` by default.
 
 ### 🔑 Environment Variables (Server)
 
-Create a `.env` file in the server root with the following keys:
+Create a `.env` file in the **server root** with the following keys:
 
 ```env
 PORT=5000
@@ -159,7 +160,7 @@ SSL_STORE_ID=
 SSL_STORE_PASS=
 SSL_PAYMENT_API=
 SSL_VALIDATION_API=
-SSL_IPN_URL=
+SSL_IPN_URL=                   # IPN URL called by SSLCommerz for server-to-server payment verification
 
 # SSL Redirect URLs (Backend)
 SSL_SUCCESS_BACKEND_URL=
@@ -170,6 +171,14 @@ SSL_CANCEL_BACKEND_URL=
 SSL_SUCCESS_FRONTEND_URL=
 SSL_FAIL_FRONTEND_URL=
 SSL_CANCEL_FRONTEND_URL=
+```
+
+### 🔑 Environment Variables (Client)
+
+Create a `.env` file in the **client root** with the following key:
+
+```env
+NEXT_PUBLIC_BASE_URL=          # Backend API base URL (e.g. http://localhost:5000/api/v1)
 ```
 
 ---
