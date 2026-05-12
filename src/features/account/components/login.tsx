@@ -10,6 +10,7 @@ import PasswordField from "@/components/form/site/password-field";
 import { Button } from "@/components/ui/button";
 import SeparatorText from "@/components/shared/separator-text";
 import Link from "next/link";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Login = () => {
   const router = useRouter();
@@ -76,6 +77,8 @@ const Login = () => {
               </Button>
             </form>
           </div>
+          <div className="divider">or</div>
+          <GoogleLoginButton />
           <SeparatorText text="Don't have an account?" />
           <Button type="submit" disabled={form.formState.isSubmitting} className="w-full" variant="outline" asChild>
             <Link href="/account/register">REGISTER</Link>

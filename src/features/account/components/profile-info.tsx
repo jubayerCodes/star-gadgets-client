@@ -9,6 +9,7 @@ import InputField from "@/components/form/site/input-field";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { Mail, Calendar, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 const ProfileInfo = () => {
   const { data, isLoading } = useCurrentUser();
@@ -48,9 +49,19 @@ const ProfileInfo = () => {
     <div className="flex flex-col gap-6">
       {/* Account meta info */}
       <div className="border border-border bg-card p-5 flex flex-col sm:flex-row gap-4 sm:items-center">
-        <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl shrink-0">
-          {user?.name?.charAt(0).toUpperCase()}
-        </div>
+        {user?.avatar ? (
+          <Image
+            src={user?.avatar}
+            width={64}
+            height={64}
+            alt={"Profile Image"}
+            className="size-16 rounded-full shrink-0 object-cover"
+          />
+        ) : (
+          <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl shrink-0">
+            {user?.name?.charAt(0).toUpperCase()}
+          </div>
+        )}
         <div className="flex flex-col gap-1.5">
           <p className="font-semibold text-lg text-foreground">{user?.name}</p>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
