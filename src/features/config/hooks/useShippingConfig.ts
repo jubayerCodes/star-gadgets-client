@@ -7,13 +7,8 @@ import { extractErrorMessage } from "@/lib/extract-error-message";
 export const useUpdateShippingConfig = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: { shippingMethods: { name: string; cost: number }[] };
-    }) => updateShippingConfigApi(id, data),
+    mutationFn: ({ id, data }: { id: string; data: { shippingMethods: { name: string; cost: number }[] } }) =>
+      updateShippingConfigApi(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CONFIG] });
       toast.success(data.message);

@@ -19,11 +19,7 @@ const CheckboxField = ({ form, name, label }: CheckboxFieldProps) => {
       render={({ field, fieldState }) => (
         <Field>
           <label className="flex items-start gap-2 cursor-pointer">
-            <Checkbox
-              id={name}
-              checked={!!field.value}
-              onCheckedChange={field.onChange}
-            />
+            <Checkbox id={name} checked={!!field.value} onCheckedChange={field.onChange} />
             <span className="text-sm leading-snug">{label}</span>
           </label>
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

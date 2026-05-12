@@ -18,8 +18,7 @@ const SubCategoryFilterSelect = ({ selectedSlug, onSelect, categoryId, className
   categoryIdRef.current = categoryId;
 
   // Named with "use" prefix so the linter recognises it as a hook
-  const useSubCategoriesSearch = (search: string) =>
-    useSubCategoriesListInfinityQuery(search, categoryIdRef.current);
+  const useSubCategoriesSearch = (search: string) => useSubCategoriesListInfinityQuery(search, categoryIdRef.current);
 
   return (
     <InfinityFilterSelect

@@ -79,27 +79,23 @@ export default function AboutPage() {
                 </h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Star Gadgets was founded with a simple mission: to make premium international gadgets accessible
-                to everyone in Bangladesh. We noticed that many of the best tech products available globally
-                were either unavailable locally or sold at inflated prices through unofficial channels.
+                Star Gadgets was founded with a simple mission: to make premium international gadgets accessible to
+                everyone in Bangladesh. We noticed that many of the best tech products available globally were either
+                unavailable locally or sold at inflated prices through unofficial channels.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                We established direct import relationships with certified suppliers across Asia, Europe, and
-                North America — enabling us to offer authentic products at fair prices. Today, we operate from
-                our flagship location in Savar, Dhaka and serve customers across the entire country through
-                our online platform.
+                We established direct import relationships with certified suppliers across Asia, Europe, and North
+                America — enabling us to offer authentic products at fair prices. Today, we operate from our flagship
+                location in Savar, Dhaka and serve customers across the entire country through our online platform.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                We mainly import goods from overseas. If anything crosses your mind, feel free to knock us —
-                we&apos;d love to make you happy by serving your desired product.
+                We mainly import goods from overseas. If anything crosses your mind, feel free to knock us — we&apos;d
+                love to make you happy by serving your desired product.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {stats.map((stat, i) => (
-                <div
-                  key={i}
-                  className="border border-border bg-card p-6 text-center flex flex-col gap-1"
-                >
+                <div key={i} className="border border-border bg-card p-6 text-center flex flex-col gap-1">
                   <p className="text-3xl font-bold text-primary">{stat.value}</p>
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
                 </div>

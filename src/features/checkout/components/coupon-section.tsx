@@ -47,12 +47,7 @@ export default function CouponSection({
             Coupon <span className="font-bold">{appliedCoupon.code}</span> applied — you save ৳
             {appliedCoupon.discountAmount.toLocaleString()}
           </span>
-          <Button
-            onClick={handleRemove}
-            aria-label="Remove coupon"
-            size="icon-sm"
-            variant="ghost"
-          >
+          <Button onClick={handleRemove} aria-label="Remove coupon" size="icon-sm" variant="ghost">
             <X className="size-4" />
           </Button>
         </div>
@@ -66,9 +61,7 @@ export default function CouponSection({
             <Tag className="size-4 text-tartiary" />
             <span>
               Have a coupon?{" "}
-              <span className="text-tartiary font-semibold hover:underline">
-                Click here to enter your code
-              </span>
+              <span className="text-tartiary font-semibold hover:underline">Click here to enter your code</span>
             </span>
             <ChevronDown
               className={`size-4 text-muted-foreground ml-auto transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
@@ -90,17 +83,8 @@ export default function CouponSection({
                 disabled={isPending}
                 autoComplete="off"
               />
-              <Button
-                id="apply-coupon-btn"
-                onClick={handleApply}
-                disabled={isPending || !code.trim()}
-                size="default"
-              >
-                {isPending ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  "Apply Coupon"
-                )}
+              <Button id="apply-coupon-btn" onClick={handleApply} disabled={isPending || !code.trim()} size="default">
+                {isPending ? <Loader2 className="size-4 animate-spin" /> : "Apply Coupon"}
               </Button>
             </div>
           </div>

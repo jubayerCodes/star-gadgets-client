@@ -5,7 +5,7 @@ interface UseSlugProps<
   TFieldValues extends FieldValues,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TContext = any,
-  TTransformedValues extends FieldValues | undefined = undefined
+  TTransformedValues extends FieldValues | undefined = undefined,
 > {
   form: UseFormReturn<TFieldValues, TContext, TTransformedValues>;
   sourceName: Path<TFieldValues>;
@@ -16,7 +16,7 @@ export const useSlug = <
   TFieldValues extends FieldValues,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TContext = any,
-  TTransformedValues extends FieldValues | undefined = undefined
+  TTransformedValues extends FieldValues | undefined = undefined,
 >({
   form,
   sourceName,

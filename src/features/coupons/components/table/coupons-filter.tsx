@@ -63,12 +63,7 @@ const CouponsFilter = () => {
 
   return (
     <div className="flex items-center justify-between gap-2 mb-4">
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Search by code…"
-        className="flex-1 max-w-sm"
-      />
+      <SearchInput value={search} onChange={setSearch} placeholder="Search by code…" className="flex-1 max-w-sm" />
 
       <div className="flex items-center gap-2">
         <FilterSelect

@@ -23,9 +23,6 @@ export const HeroFixedSkeleton = () => (
 // Skeleton for the full-width carousel hero layout
 export const HeroCarouselSkeleton = () => (
   <div className="w-full animate-pulse">
-    <div
-      className="w-full bg-foreground/6"
-      style={{ aspectRatio: "16 / 5.5" }}
-    />
+    <div className="w-full bg-foreground/6" style={{ aspectRatio: "16 / 5.5" }} />
   </div>
 );

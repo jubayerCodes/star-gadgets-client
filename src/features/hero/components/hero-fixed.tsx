@@ -29,13 +29,9 @@ const HeroFixed = ({ items }: HeroFixedProps) => {
     <section className="container py-4">
       {/* Outer grid: left large + right stack */}
       <div className="flex flex-col md:grid md:grid-cols-[5fr_2fr] gap-4">
-
         {/* ── Main large banner ── */}
         {main && (
-          <Link
-            href={main.link || "#"}
-            className="relative overflow-hidden rounded-xl group aspect-video"
-          >
+          <Link href={main.link || "#"} className="relative overflow-hidden rounded-xl group aspect-video">
             <ImageShimmer loaded={mainLoaded} />
             <Image
               src={main.image}
@@ -51,7 +47,6 @@ const HeroFixed = ({ items }: HeroFixedProps) => {
 
         {/* ── Right column: 2 banners stacked ── */}
         <div className="flex flex-col gap-4">
-
           {top && (
             <Link
               href={top.link || "#"}
@@ -87,7 +82,6 @@ const HeroFixed = ({ items }: HeroFixedProps) => {
               />
             </Link>
           )}
-
         </div>
       </div>
     </section>
@@ -95,5 +89,3 @@ const HeroFixed = ({ items }: HeroFixedProps) => {
 };
 
 export default HeroFixed;
-
-

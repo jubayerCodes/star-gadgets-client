@@ -87,7 +87,11 @@ export function GalleryImagePicker(props: GalleryImagePickerProps) {
           onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
         >
           <ImageUpIcon className="size-4" />
-          <span>{value.length > 0 ? `${value.length} image(s) selected — click to edit` : "Click to select images from gallery"}</span>
+          <span>
+            {value.length > 0
+              ? `${value.length} image(s) selected — click to edit`
+              : "Click to select images from gallery"}
+          </span>
           <Input type="hidden" aria-hidden="true" value={value.join(",")} required={props.required} />
         </div>
 
@@ -247,10 +251,7 @@ function GalleryImagePickerModal({
           {/* Multi-select footer confirm button */}
           {multiple && (
             <DialogFooter className="pt-4 border-t">
-              <DashboardButton
-                type="button"
-                onClick={() => onConfirm(selection)}
-              >
+              <DashboardButton type="button" onClick={() => onConfirm(selection)}>
                 Confirm Selection ({selection.length})
               </DashboardButton>
             </DialogFooter>

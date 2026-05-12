@@ -43,12 +43,7 @@ const BadgesFilter = () => {
 
   return (
     <div className="flex items-center justify-between gap-2 mb-4">
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder="Search by title…"
-        className="flex-1 max-w-sm"
-      />
+      <SearchInput value={search} onChange={setSearch} placeholder="Search by title…" className="flex-1 max-w-sm" />
 
       {hasFilters && (
         <DashboardButton variant="ghost" onClick={clearFilters} className="gap-1 text-muted-foreground h-9">

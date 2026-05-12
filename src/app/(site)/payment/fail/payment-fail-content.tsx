@@ -24,8 +24,8 @@ export default function PaymentFailContent() {
         <div className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-bold">Payment Failed</h1>
           <p className="text-sm text-muted-foreground">
-            Something went wrong while processing your payment. Your order has not been confirmed.
-            You can retry the payment from your order details page.
+            Something went wrong while processing your payment. Your order has not been confirmed. You can retry the
+            payment from your order details page.
           </p>
         </div>
 

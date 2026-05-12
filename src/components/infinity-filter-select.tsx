@@ -52,7 +52,7 @@ const InfinityFilterSelect = ({
       })),
     ) ?? [];
 
-  const selectedLabel = selectedSlug ? items.find((i) => i.value === selectedSlug)?.label ?? selectedSlug : null;
+  const selectedLabel = selectedSlug ? (items.find((i) => i.value === selectedSlug)?.label ?? selectedSlug) : null;
 
   const handleSelect = (slug: string) => {
     if (slug === selectedSlug) {
@@ -65,7 +65,13 @@ const InfinityFilterSelect = ({
 
   return (
     <div className={cn("relative inline-flex items-center", className)}>
-      <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearchValue(""); }}>
+      <Popover
+        open={open}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o) setSearchValue("");
+        }}
+      >
         <PopoverTrigger asChild>
           <Button
             variant="outline"

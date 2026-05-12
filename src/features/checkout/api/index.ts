@@ -1,17 +1,22 @@
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types";
-import { ICreateOrderPayload, IOrder, IOrderResponse, IPayment, IValidateCouponPayload, IValidateCouponResponse } from "../types";
+import {
+  ICreateOrderPayload,
+  IOrder,
+  IOrderResponse,
+  IPayment,
+  IValidateCouponPayload,
+  IValidateCouponResponse,
+} from "../types";
 
 export const validateCouponApi = async (
-  data: IValidateCouponPayload
+  data: IValidateCouponPayload,
 ): Promise<ApiResponse<IValidateCouponResponse>> => {
   const res = await axiosInstance.post("/coupons/validate", data);
   return res.data;
 };
 
-export const createOrderApi = async (
-  data: ICreateOrderPayload
-): Promise<ApiResponse<IOrderResponse>> => {
+export const createOrderApi = async (data: ICreateOrderPayload): Promise<ApiResponse<IOrderResponse>> => {
   const res = await axiosInstance.post("/orders", data);
   return res.data;
 };

@@ -1,12 +1,5 @@
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
@@ -25,7 +18,14 @@ interface SelectFieldProps {
   required?: boolean;
 }
 
-const DashboardSelectField = ({ form, name, label, options, placeholder = "Select an option", required }: SelectFieldProps) => {
+const DashboardSelectField = ({
+  form,
+  name,
+  label,
+  options,
+  placeholder = "Select an option",
+  required,
+}: SelectFieldProps) => {
   return (
     <Controller
       control={form.control}

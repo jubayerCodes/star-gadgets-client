@@ -11,9 +11,7 @@ export const getAllCouponsApi = async (query: ReadonlyURLSearchParams): Promise<
   return res.data;
 };
 
-export const createCouponApi = async (
-  data: CreateCouponFormData,
-): Promise<ApiResponse<ICoupon>> => {
+export const createCouponApi = async (data: CreateCouponFormData): Promise<ApiResponse<ICoupon>> => {
   const res = await axiosInstance.post("/coupons", {
     ...data,
     expiryDate: new Date(data.expiryDate).toISOString(),

@@ -95,9 +95,16 @@ export const UpdateProductForm = ({ productId }: UpdateProductFormProps) => {
         slug: p.slug ?? "",
         featuredImage: p.featuredImage ?? "",
         // The API returns populated objects; extract the _id string for the form
-        categoryId: typeof p.categoryId === "object" ? (p.categoryId as { _id?: string })?._id ?? "" : (p.categoryId as string) ?? "",
-        subCategoryId: typeof p.subCategoryId === "object" ? (p.subCategoryId as { _id?: string })?._id ?? "" : (p.subCategoryId as string) ?? "",
-        brandId: typeof p.brandId === "object" ? (p.brandId as { _id?: string })?._id ?? "" : (p.brandId as string) ?? "",
+        categoryId:
+          typeof p.categoryId === "object"
+            ? ((p.categoryId as { _id?: string })?._id ?? "")
+            : ((p.categoryId as string) ?? ""),
+        subCategoryId:
+          typeof p.subCategoryId === "object"
+            ? ((p.subCategoryId as { _id?: string })?._id ?? "")
+            : ((p.subCategoryId as string) ?? ""),
+        brandId:
+          typeof p.brandId === "object" ? ((p.brandId as { _id?: string })?._id ?? "") : ((p.brandId as string) ?? ""),
         productCode: p.productCode ?? "",
         keyFeatures: p.keyFeatures ?? "",
         description: p.description ?? "",

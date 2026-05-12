@@ -7,7 +7,7 @@ import { createBadgeApi, deleteBadgeApi, getBadgesAdminApi, updateBadgeApi } fro
 
 export const badgesAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) => {
   return {
-    queryKey: [QUERY_KEYS.BADGES_ADMIN, searchParams.toString()],
+    queryKey: [QUERY_KEYS.BADGES_ADMIN, QUERY_KEYS.BADGES, searchParams.toString()],
     queryFn: () => getBadgesAdminApi(searchParams),
     placeholderData: keepPreviousData,
     keepPreviousData: true,
@@ -16,7 +16,7 @@ export const badgesAdminQueryOptions = (searchParams: ReadonlyURLSearchParams) =
 
 export const useAllBadgesQuery = () => {
   return useQuery({
-    queryKey: [QUERY_KEYS.BADGES],
+    queryKey: [QUERY_KEYS.BADGES, QUERY_KEYS.BADGES_ADMIN],
     queryFn: () => getBadgesAdminApi(new URLSearchParams("limit=200") as unknown as ReadonlyURLSearchParams),
     staleTime: 1000 * 60 * 5, // 5 min
   });

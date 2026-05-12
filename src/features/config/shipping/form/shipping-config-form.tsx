@@ -31,9 +31,7 @@ export function ShippingConfigForm() {
   const form = useForm<ShippingConfigFormInput, unknown, ShippingConfigFormData>({
     resolver: zodResolver(shippingConfigFormSchema),
     defaultValues: {
-      shippingMethods: [
-        { name: "Inside Dhaka", cost: 60 },
-      ],
+      shippingMethods: [{ name: "Inside Dhaka", cost: 60 }],
     },
   });
 
@@ -69,41 +67,27 @@ export function ShippingConfigForm() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium">Shipping Methods</h3>
-              <p className="text-sm text-muted-foreground">
-                Add shipping areas and set the cost for each.
-              </p>
+              <p className="text-sm text-muted-foreground">Add shipping areas and set the cost for each.</p>
             </div>
-            <DashboardButton
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => append({ name: "", cost: 0 })}
-            >
+            <DashboardButton type="button" variant="outline" size="sm" onClick={() => append({ name: "", cost: 0 })}>
               <Plus className="size-4" />
               Add Method
             </DashboardButton>
           </div>
 
           {form.formState.errors.shippingMethods?.message && (
-            <p className="text-sm font-medium text-destructive">
-              {form.formState.errors.shippingMethods.message}
-            </p>
+            <p className="text-sm font-medium text-destructive">{form.formState.errors.shippingMethods.message}</p>
           )}
 
           {fields.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-input py-12 text-center">
               <p className="text-sm font-medium text-muted-foreground">No shipping methods yet</p>
-              <p className="text-xs text-muted-foreground/70">
-                Click &quot;Add Method&quot; to get started
-              </p>
+              <p className="text-xs text-muted-foreground/70">Click &quot;Add Method&quot; to get started</p>
             </div>
           ) : (
             <div className="space-y-3">
               {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="grid grid-cols-[1fr_160px_auto] gap-3 items-end"
-                >
+                <div key={field.id} className="grid grid-cols-[1fr_160px_auto] gap-3 items-end">
                   <DashboardInputField
                     form={form}
                     name={`shippingMethods.${index}.name`}

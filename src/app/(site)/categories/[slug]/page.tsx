@@ -5,8 +5,7 @@ import { Suspense } from "react";
 // a generateMetadata() function and call the API from the server.
 export const metadata = {
   title: "Category Products — Star Gadgets",
-  description:
-    "Browse products by category at Star Gadgets. Filter by sub-category, brand, price and availability.",
+  description: "Browse products by category at Star Gadgets. Filter by sub-category, brand, price and availability.",
 };
 
 interface Props {
@@ -61,11 +60,7 @@ function CategoryPageSkeleton() {
             <div key={i} className="border border-border p-4 flex flex-col gap-3">
               <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
               {Array.from({ length: rows }).map((_, j) => (
-                <div
-                  key={j}
-                  className="h-4 bg-muted animate-pulse rounded"
-                  style={{ width: `${85 - j * 10}%` }}
-                />
+                <div key={j} className="h-4 bg-muted animate-pulse rounded" style={{ width: `${85 - j * 10}%` }} />
               ))}
             </div>
           ))}

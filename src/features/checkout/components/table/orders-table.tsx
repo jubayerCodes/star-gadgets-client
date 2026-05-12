@@ -56,6 +56,9 @@ const OrdersTable = () => {
     {
       accessorKey: "createdAt",
       header: "Date",
+      meta: {
+        sortable: true,
+      },
       cell: ({ row }) =>
         new Date(row.original.createdAt).toLocaleDateString("en-GB", {
           day: "2-digit",
@@ -66,12 +69,15 @@ const OrdersTable = () => {
     {
       accessorKey: "items",
       header: "Items",
-      meta: { align: "center", headerAlign: "center" },
+      meta: { align: "center", headerAlign: "center", sortable: true },
       cell: ({ row }) => <span>{row.original.items.length}</span>,
     },
     {
       accessorKey: "total",
       header: "Total",
+      meta: {
+        sortable: true,
+      },
       cell: ({ row }) => <span className="font-semibold">৳{row.original.total.toLocaleString()}</span>,
     },
     {

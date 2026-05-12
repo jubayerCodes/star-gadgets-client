@@ -97,9 +97,7 @@ export const GalleryGrid = () => {
             </div>
           ))
         ) : (
-          <div className="col-span-full py-12 text-center text-muted-foreground">
-            No images found in the gallery.
-          </div>
+          <div className="col-span-full py-12 text-center text-muted-foreground">No images found in the gallery.</div>
         )}
       </div>
 

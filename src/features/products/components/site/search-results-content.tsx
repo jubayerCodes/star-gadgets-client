@@ -37,43 +37,88 @@ function SearchProductCard({ product }: { product: ISearchProduct }) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addItem({ productId, slug, title, image: featuredImage, variantId: variantId ?? sku, sku, price: actualPrice, regularPrice, attributes });
+    addItem({
+      productId,
+      slug,
+      title,
+      image: featuredImage,
+      variantId: variantId ?? sku,
+      sku,
+      price: actualPrice,
+      regularPrice,
+      attributes,
+    });
   };
 
   return (
     <article className="group flex flex-col border border-border bg-card overflow-hidden transition-shadow duration-300 hover:shadow-md">
       <div className="relative w-full aspect-square bg-muted overflow-hidden">
         <Link href={`/products/${slug}`} className="absolute inset-0 z-0" aria-label={title}>
-          <Image src={featuredImage || "/placeholder.png"} alt={title} fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
+          <Image
+            src={featuredImage || "/placeholder.png"}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+          />
         </Link>
         {badges && badges.length > 0 && (
           <div className="absolute top-2 left-2 z-10 flex flex-col gap-2">
             {badges.map((badge, i) => (
-              <span key={i} className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium uppercase tracking-wide bg-foreground text-background leading-tight">{badge.title}</span>
+              <span
+                key={i}
+                className="inline-flex items-center justify-center px-2 py-1 text-xs font-medium uppercase tracking-wide bg-foreground text-background leading-tight"
+              >
+                {badge.title}
+              </span>
             ))}
           </div>
         )}
         {status !== ProductStatus.IN_STOCK && (
-          <span className="absolute top-2 right-2 z-10 inline-flex items-center justify-center px-2 py-1 text-xs font-medium uppercase tracking-wide bg-foreground text-background leading-tight">{stockLabel[status]}</span>
+          <span className="absolute top-2 right-2 z-10 inline-flex items-center justify-center px-2 py-1 text-xs font-medium uppercase tracking-wide bg-foreground text-background leading-tight">
+            {stockLabel[status]}
+          </span>
         )}
         <div className="absolute bottom-0 left-0 right-0 z-10 opacity-0 translate-y-full transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
           {status !== ProductStatus.IN_STOCK ? (
-            <Button asChild className="w-full rounded-none"><Link href={`/products/${slug}`}>Details</Link></Button>
+            <Button asChild className="w-full rounded-none">
+              <Link href={`/products/${slug}`}>Details</Link>
+            </Button>
           ) : (
-            <Button className="w-full rounded-none" onClick={handleAddToCart}><ShoppingCart size={13} />Add to Cart</Button>
+            <Button className="w-full rounded-none" onClick={handleAddToCart}>
+              <ShoppingCart size={13} />
+              Add to Cart
+            </Button>
           )}
         </div>
       </div>
       <div className="flex flex-col items-center gap-1 px-3 pt-3 pb-4 border-t border-border">
-        <Link href={`/products/${slug}`} className="text-base font-semibold text-center leading-snug text-foreground line-clamp-2 hover:text-tartiary transition-colors duration-200">{title}</Link>
+        <Link
+          href={`/products/${slug}`}
+          className="text-base font-semibold text-center leading-snug text-foreground line-clamp-2 hover:text-tartiary transition-colors duration-200"
+        >
+          {title}
+        </Link>
         {subCategoryId?.slug ? (
-          <Link href={`/sub-categories/${subCategoryId.slug}`} className="text-xs text-center text-muted-foreground leading-relaxed hover:text-tartiary transition-colors duration-200" onClick={(e) => e.stopPropagation()}>{subCategoryId.title}</Link>
+          <Link
+            href={`/sub-categories/${subCategoryId.slug}`}
+            className="text-xs text-center text-muted-foreground leading-relaxed hover:text-tartiary transition-colors duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {subCategoryId.title}
+          </Link>
         ) : (
           <p className="text-xs text-center text-muted-foreground leading-relaxed">{subCategoryId?.title}</p>
         )}
         <div className="flex items-baseline justify-center gap-2 mt-1">
-          <span className="text-base font-bold text-foreground">৳{actualPrice.toLocaleString("en-BD", { minimumFractionDigits: 2 })}</span>
-          {hasDiscount && <span className="text-sm text-muted-foreground line-through">৳{regularPrice.toLocaleString("en-BD", { minimumFractionDigits: 2 })}</span>}
+          <span className="text-base font-bold text-foreground">
+            ৳{actualPrice.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
+          </span>
+          {hasDiscount && (
+            <span className="text-sm text-muted-foreground line-through">
+              ৳{regularPrice.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
+            </span>
+          )}
         </div>
       </div>
     </article>
@@ -98,7 +143,15 @@ function SearchResultSkeleton() {
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
 
-function Pagination({ page, totalPages, onNavigate }: { page: number; totalPages: number; onNavigate: (page: number) => void }) {
+function Pagination({
+  page,
+  totalPages,
+  onNavigate,
+}: {
+  page: number;
+  totalPages: number;
+  onNavigate: (page: number) => void;
+}) {
   if (totalPages <= 1) return null;
 
   const getPages = (): (number | "…")[] => {
@@ -113,21 +166,51 @@ function Pagination({ page, totalPages, onNavigate }: { page: number; totalPages
 
   return (
     <div className="flex items-center justify-center gap-1 mt-8">
-      <button onClick={() => onNavigate(page - 1)} disabled={page <= 1} className="flex items-center justify-center w-9 h-9 border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors" aria-label="Previous page"><ChevronLeft className="size-4" /></button>
+      <button
+        onClick={() => onNavigate(page - 1)}
+        disabled={page <= 1}
+        className="flex items-center justify-center w-9 h-9 border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="size-4" />
+      </button>
       {getPages().map((p, i) =>
         p === "…" ? (
-          <span key={`e-${i}`} className="flex items-center justify-center w-9 h-9 text-sm text-muted-foreground select-none">…</span>
+          <span
+            key={`e-${i}`}
+            className="flex items-center justify-center w-9 h-9 text-sm text-muted-foreground select-none"
+          >
+            …
+          </span>
         ) : (
-          <button key={p} onClick={() => onNavigate(p as number)} className={cn("flex items-center justify-center w-9 h-9 text-sm border transition-colors", p === page ? "bg-primary text-primary-foreground border-primary font-semibold" : "border-border text-foreground hover:bg-muted")} aria-current={p === page ? "page" : undefined}>{p}</button>
+          <button
+            key={p}
+            onClick={() => onNavigate(p as number)}
+            className={cn(
+              "flex items-center justify-center w-9 h-9 text-sm border transition-colors",
+              p === page
+                ? "bg-primary text-primary-foreground border-primary font-semibold"
+                : "border-border text-foreground hover:bg-muted",
+            )}
+            aria-current={p === page ? "page" : undefined}
+          >
+            {p}
+          </button>
         ),
       )}
-      <button onClick={() => onNavigate(page + 1)} disabled={page >= totalPages} className="flex items-center justify-center w-9 h-9 border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors" aria-label="Next page"><ChevronRight className="size-4" /></button>
+      <button
+        onClick={() => onNavigate(page + 1)}
+        disabled={page >= totalPages}
+        className="flex items-center justify-center w-9 h-9 border border-border text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        aria-label="Next page"
+      >
+        <ChevronRight className="size-4" />
+      </button>
     </div>
   );
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-
 
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -150,7 +233,9 @@ export default function SearchResultsContent() {
   const selectedSubCategories: string[] = subCategoryParam ? subCategoryParam.split(",") : [];
 
   const { data, isLoading, isFetching } = useSearchProductsQuery({
-    query, page, limit,
+    query,
+    page,
+    limit,
     minPrice: minPriceParam ? parseFloat(minPriceParam) : undefined,
     maxPrice: maxPriceParam ? parseFloat(maxPriceParam) : undefined,
     availability: availability[0] as "inStock" | "outOfStock" | undefined,
@@ -191,7 +276,12 @@ export default function SearchResultsContent() {
   const handleLimitChange = (val: number) => updateParams({ limit: String(val) });
 
   const hasActiveFilters = !!(
-    minPriceParam || maxPriceParam || availability.length > 0 || selectedBrands.length > 0 || selectedSubCategories.length > 0 || sortBy !== "relevance"
+    minPriceParam ||
+    maxPriceParam ||
+    availability.length > 0 ||
+    selectedBrands.length > 0 ||
+    selectedSubCategories.length > 0 ||
+    sortBy !== "relevance"
   );
 
   const sortLabels: Record<string, string> = {
@@ -268,11 +358,19 @@ export default function SearchResultsContent() {
       {/* ── Query Banner ── */}
       <div className="mb-6 flex items-center gap-3 flex-wrap">
         <h1 className="text-xl font-semibold text-foreground">
-          {query ? (<>Search results for <span className="text-tartiary">&ldquo;{query}&rdquo;</span></>) : "Search"}
+          {query ? (
+            <>
+              Search results for <span className="text-tartiary">&ldquo;{query}&rdquo;</span>
+            </>
+          ) : (
+            "Search"
+          )}
         </h1>
         {isFetching && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
         {!isLoading && !isFetching && total > 0 && (
-          <span className="text-sm text-muted-foreground">({total} product{total !== 1 ? "s" : ""})</span>
+          <span className="text-sm text-muted-foreground">
+            ({total} product{total !== 1 ? "s" : ""})
+          </span>
         )}
       </div>
 
@@ -287,30 +385,76 @@ export default function SearchResultsContent() {
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2 mb-5">
           {selectedSubCategories.map((s) => (
-            <span key={s} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+            <span
+              key={s}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground"
+            >
               Sub-cat: <strong>{subCategories.find((x) => x.slug === s)?.title ?? s}</strong>
-              <button onClick={() => { const next = selectedSubCategories.filter((x) => x !== s); updateParams({ subCategory: next.join(",") || undefined }); }} aria-label="Remove sub-category filter"><X className="size-3 ml-0.5" /></button>
+              <button
+                onClick={() => {
+                  const next = selectedSubCategories.filter((x) => x !== s);
+                  updateParams({ subCategory: next.join(",") || undefined });
+                }}
+                aria-label="Remove sub-category filter"
+              >
+                <X className="size-3 ml-0.5" />
+              </button>
             </span>
           ))}
           {selectedBrands.map((b) => (
-            <span key={b} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+            <span
+              key={b}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground"
+            >
               Brand: <strong>{brands.find((x) => x.slug === b)?.title ?? b}</strong>
-              <button onClick={() => { const next = selectedBrands.filter((x) => x !== b); updateParams({ brand: next.join(",") || undefined }); }} aria-label="Remove brand filter"><X className="size-3 ml-0.5" /></button>
+              <button
+                onClick={() => {
+                  const next = selectedBrands.filter((x) => x !== b);
+                  updateParams({ brand: next.join(",") || undefined });
+                }}
+                aria-label="Remove brand filter"
+              >
+                <X className="size-3 ml-0.5" />
+              </button>
             </span>
           ))}
           {(minPriceParam || maxPriceParam) && (
             <span className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
-              Price: <strong>৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}</strong>
-              <button onClick={() => updateParams({ minPrice: undefined, maxPrice: undefined })} aria-label="Remove price filter"><X className="size-3 ml-0.5" /></button>
+              Price:{" "}
+              <strong>
+                ৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}
+              </strong>
+              <button
+                onClick={() => updateParams({ minPrice: undefined, maxPrice: undefined })}
+                aria-label="Remove price filter"
+              >
+                <X className="size-3 ml-0.5" />
+              </button>
             </span>
           )}
           {availability.map((a) => (
-            <span key={a} className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
+            <span
+              key={a}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground"
+            >
               {a === "inStock" ? "In Stock" : "Out of Stock"}
-              <button onClick={() => { const next = availability.filter((x) => x !== a); updateParams({ availability: next.join(",") || undefined }); }} aria-label="Remove availability filter"><X className="size-3 ml-0.5" /></button>
+              <button
+                onClick={() => {
+                  const next = availability.filter((x) => x !== a);
+                  updateParams({ availability: next.join(",") || undefined });
+                }}
+                aria-label="Remove availability filter"
+              >
+                <X className="size-3 ml-0.5" />
+              </button>
             </span>
           ))}
-          <button onClick={handleClearAll} className="text-xs text-tartiary hover:underline underline-offset-4 transition-colors ml-1">Clear all</button>
+          <button
+            onClick={handleClearAll}
+            className="text-xs text-tartiary hover:underline underline-offset-4 transition-colors ml-1"
+          >
+            Clear all
+          </button>
         </div>
       )}
 
@@ -340,10 +484,19 @@ export default function SearchResultsContent() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">Show:</span>
                   {PRODUCT_LISTING.LIMIT_OPTIONS.map((opt) => (
-                    <Button key={opt} variant="outline" onClick={() => handleLimitChange(opt)}
-                      className={cn("flex items-center justify-center w-9 h-9 text-sm border transition-colors",
-                        limit === opt ? "bg-primary text-primary-foreground border-primary font-semibold" : "border-border text-foreground")}
-                    >{opt}</Button>
+                    <Button
+                      key={opt}
+                      variant="outline"
+                      onClick={() => handleLimitChange(opt)}
+                      className={cn(
+                        "flex items-center justify-center w-9 h-9 text-sm border transition-colors",
+                        limit === opt
+                          ? "bg-primary text-primary-foreground border-primary font-semibold"
+                          : "border-border text-foreground",
+                      )}
+                    >
+                      {opt}
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -352,7 +505,9 @@ export default function SearchResultsContent() {
             {/* Loading skeleton */}
             {isLoading && (
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                {Array.from({ length: limit }).map((_, i) => <SearchResultSkeleton key={i} />)}
+                {Array.from({ length: limit }).map((_, i) => (
+                  <SearchResultSkeleton key={i} />
+                ))}
               </div>
             )}
 
@@ -362,11 +517,20 @@ export default function SearchResultsContent() {
                 <SearchX className="size-12 text-muted-foreground/50" />
                 <div>
                   <p className="text-base font-medium text-foreground">No products found</p>
-                  <p className="text-sm text-muted-foreground mt-1">Try a different search term or adjust your filters.</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Try a different search term or adjust your filters.
+                  </p>
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center mt-2">
-                  <button onClick={handleClearAll} className="text-sm font-medium text-tartiary hover:underline underline-offset-4">Clear filters</button>
-                  <Link href="/" className="text-sm font-medium text-tartiary hover:underline underline-offset-4">Back to Home</Link>
+                  <button
+                    onClick={handleClearAll}
+                    className="text-sm font-medium text-tartiary hover:underline underline-offset-4"
+                  >
+                    Clear filters
+                  </button>
+                  <Link href="/" className="text-sm font-medium text-tartiary hover:underline underline-offset-4">
+                    Back to Home
+                  </Link>
                 </div>
               </div>
             )}
@@ -375,11 +539,15 @@ export default function SearchResultsContent() {
             {!isLoading && results.length > 0 && (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {results.map((product) => <SearchProductCard key={product._id} product={product} />)}
+                  {results.map((product) => (
+                    <SearchProductCard key={product._id} product={product} />
+                  ))}
                 </div>
                 <Pagination page={page} totalPages={totalPages} onNavigate={navigatePage} />
                 {totalPages > 1 && (
-                  <p className="text-xs text-muted-foreground text-center mt-3">Page {page} of {totalPages}</p>
+                  <p className="text-xs text-muted-foreground text-center mt-3">
+                    Page {page} of {totalPages}
+                  </p>
                 )}
               </>
             )}

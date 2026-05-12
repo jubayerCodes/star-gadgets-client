@@ -172,12 +172,7 @@ export function HeroConfigForm() {
               </p>
             </div>
             {canAddMore && (
-              <DashboardButton
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddItem}
-              >
+              <DashboardButton type="button" variant="outline" size="sm" onClick={handleAddItem}>
                 <Plus className="size-4" />
                 Add Item
               </DashboardButton>
@@ -185,9 +180,9 @@ export function HeroConfigForm() {
           </div>
 
           {form.formState.errors.hero?.[arrayName]?.message && (
-             <p className="text-sm font-medium text-destructive">
-               {form.formState.errors.hero[arrayName]?.message as string}
-             </p>
+            <p className="text-sm font-medium text-destructive">
+              {form.formState.errors.hero[arrayName]?.message as string}
+            </p>
           )}
 
           {fields.length === 0 ? (
@@ -198,9 +193,7 @@ export function HeroConfigForm() {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">No hero items yet</p>
-                <p className="text-xs text-muted-foreground/70 mt-0.5">
-                  Click &quot;Add Item&quot; to get started
-                </p>
+                <p className="text-xs text-muted-foreground/70 mt-0.5">Click &quot;Add Item&quot; to get started</p>
               </div>
             </div>
           ) : (

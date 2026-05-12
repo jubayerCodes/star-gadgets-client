@@ -42,8 +42,7 @@ const SubCategoriesFilter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
-  const hasFilters =
-    !!searchParams.get("search") || !!searchParams.get("category") || !!searchParams.get("featured");
+  const hasFilters = !!searchParams.get("search") || !!searchParams.get("category") || !!searchParams.get("featured");
 
   const clearFilters = () => {
     setSearch("");

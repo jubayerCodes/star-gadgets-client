@@ -27,7 +27,10 @@ function SubCategoryComboboxField<T extends FieldValues, TPath extends FieldPath
   label: string;
   categoryId?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  infinityFunction: (search: string, categoryId?: string) => UseInfiniteQueryResult<InfiniteData<ApiResponse<any>>, unknown>;
+  infinityFunction: (
+    search: string,
+    categoryId?: string,
+  ) => UseInfiniteQueryResult<InfiniteData<ApiResponse<any>>, unknown>;
 }) {
   const id = useId();
   const [open, setOpen] = useState<boolean>(false);
@@ -90,10 +93,7 @@ function SubCategoryComboboxField<T extends FieldValues, TPath extends FieldPath
                     <ChevronDownIcon aria-hidden="true" className="shrink-0 text-muted-foreground/80" size={16} />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent
-                  align="start"
-                  className="w-full min-w-(--radix-popper-anchor-width) border-input p-0"
-                >
+                <PopoverContent align="start" className="w-full min-w-(--radix-popper-anchor-width) border-input p-0">
                   <Command shouldFilter={false}>
                     <CommandInput
                       placeholder={`Search ${label.toLowerCase()}...`}
