@@ -72,9 +72,7 @@ const ProductBadgesField = ({ control, register }: ProductBadgesFieldProps) => {
         const isEditable = selectedBadge?.editable ?? false;
 
         // Available for this row = unused + currently selected
-        const rowAvailable = allBadges.filter(
-          (b) => !usedTitles.has(b.title) || b.title === field.title,
-        );
+        const rowAvailable = allBadges.filter((b) => !usedTitles.has(b.title) || b.title === field.title);
 
         return (
           <div key={field.id} className="flex items-center gap-2">
@@ -88,9 +86,7 @@ const ProductBadgesField = ({ control, register }: ProductBadgesFieldProps) => {
                   {rowAvailable.map((b) => (
                     <SelectItem key={b._id} value={b.title}>
                       {b.title}
-                      {b.editable && (
-                        <span className="ml-1.5 text-xs text-muted-foreground">(requires value)</span>
-                      )}
+                      {b.editable && <span className="ml-1.5 text-xs text-muted-foreground">(requires value)</span>}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -99,11 +95,7 @@ const ProductBadgesField = ({ control, register }: ProductBadgesFieldProps) => {
 
             {/* Value input — only shown when editable */}
             {isEditable && (
-              <Input
-                className="flex-1 h-9 text-sm"
-                placeholder="Enter value…"
-                {...register(`badges.${index}.value`)}
-              />
+              <Input className="flex-1 h-9 text-sm" placeholder="Enter value…" {...register(`badges.${index}.value`)} />
             )}
 
             {/* Remove */}

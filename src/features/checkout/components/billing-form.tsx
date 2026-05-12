@@ -14,11 +14,7 @@ interface BillingFormProps {
   isLoggedIn: boolean;
 }
 
-export default function BillingForm({
-  form,
-  shippingMethods,
-  isLoggedIn,
-}: BillingFormProps) {
+export default function BillingForm({ form, shippingMethods, isLoggedIn }: BillingFormProps) {
   const {
     formState: { errors },
     watch,
@@ -70,10 +66,7 @@ export default function BillingForm({
         {!isLoggedIn && (
           <div className="col-span-2 max-sm:col-span-1">
             <label className="flex items-start gap-2.5 cursor-pointer text-sm text-foreground">
-              <input
-                type="checkbox"
-                className="mt-0.5 size-4 shrink-0 accent-primary cursor-pointer"
-              />
+              <input type="checkbox" className="mt-0.5 size-4 shrink-0 accent-primary cursor-pointer" />
               Create an account?
             </label>
           </div>
@@ -136,18 +129,14 @@ export default function BillingForm({
       <div className="flex flex-col gap-2">
         <h3 className="text-base font-semibold text-foreground mb-1">Shipping Method</h3>
         {shippingMethods.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No shipping methods available.
-          </p>
+          <p className="text-sm text-muted-foreground">No shipping methods available.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {shippingMethods.map((method) => (
               <label
                 key={method.name}
                 className={`flex items-center gap-3 px-4 py-3 border cursor-pointer transition-colors duration-200 hover:bg-muted/40 select-none ${
-                  selectedShipping === method.name
-                    ? "border-primary bg-primary/5"
-                    : "border-border"
+                  selectedShipping === method.name ? "border-primary bg-primary/5" : "border-border"
                 }`}
               >
                 <input
@@ -170,9 +159,7 @@ export default function BillingForm({
                   }`}
                 />
                 <span className="text-sm font-medium flex-1">{method.name}</span>
-                <span className="text-sm font-semibold text-primary">
-                  ৳{method.cost.toLocaleString()}
-                </span>
+                <span className="text-sm font-semibold text-primary">৳{method.cost.toLocaleString()}</span>
               </label>
             ))}
           </div>
@@ -197,9 +184,7 @@ export default function BillingForm({
               value="cod"
               className="sr-only"
               checked={selectedPayment === "cod"}
-              onChange={() =>
-                setValue("paymentMethod", "cod", { shouldValidate: true })
-              }
+              onChange={() => setValue("paymentMethod", "cod", { shouldValidate: true })}
             />
             <span
               className={`size-4 rounded-full border-2 shrink-0 mt-0.5 transition ${
@@ -210,9 +195,7 @@ export default function BillingForm({
             />
             <div>
               <p className="font-medium text-sm">Cash on delivery</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Pay with cash upon delivery.
-              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">Pay with cash upon delivery.</p>
             </div>
           </label>
 
@@ -227,9 +210,7 @@ export default function BillingForm({
               value="online"
               className="sr-only"
               checked={selectedPayment === "online"}
-              onChange={() =>
-                setValue("paymentMethod", "online", { shouldValidate: true })
-              }
+              onChange={() => setValue("paymentMethod", "online", { shouldValidate: true })}
             />
             <span
               className={`size-4 rounded-full border-2 shrink-0 mt-0.5 transition ${
@@ -241,8 +222,7 @@ export default function BillingForm({
             <div>
               <p className="font-medium text-sm">Pay Online</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Credit / Debit Card, Mobile Banking, Netbanking, bKash &amp;
-                more.
+                Credit / Debit Card, Mobile Banking, Netbanking, bKash &amp; more.
               </p>
             </div>
           </label>

@@ -15,7 +15,7 @@ import { useUpdateOrderStatusStore } from "../../store/updateOrderStatusStore";
 import { useUpdateOrderStatusMutation } from "../../hooks/useOrders";
 import { OrderStatus } from "../../types";
 
-const STATUS_OPTIONS: OrderStatus[] = [
+export const ORDER_STATUS_OPTIONS: OrderStatus[] = [
   "PENDING",
   "CONFIRMED",
   "PROCESSING",
@@ -59,13 +59,11 @@ const UpdateOrderStatusModal = () => {
           )}
 
           <div className="flex flex-col gap-2 mt-2">
-            {STATUS_OPTIONS.map((status) => (
+            {ORDER_STATUS_OPTIONS.map((status) => (
               <label
                 key={status}
                 className={`flex items-center gap-3 px-4 py-3 border cursor-pointer transition-colors select-none ${
-                  selected === status
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:bg-muted/40"
+                  selected === status ? "border-primary bg-primary/5" : "border-border hover:bg-muted/40"
                 }`}
               >
                 <input
@@ -87,11 +85,7 @@ const UpdateOrderStatusModal = () => {
           </div>
 
           <DialogFooter>
-            <DashboardButton
-              className="w-full!"
-              isLoading={isPending}
-              onClick={handleSubmit}
-            >
+            <DashboardButton className="w-full!" isLoading={isPending} onClick={handleSubmit}>
               Update Status
             </DashboardButton>
           </DialogFooter>

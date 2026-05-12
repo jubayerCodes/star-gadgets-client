@@ -17,7 +17,13 @@ interface TagInputProps {
  * Each tag can be removed individually via its × button.
  * The value is stored as a string[].
  */
-export function TagInput({ value, onChange, placeholder = "Type and press Enter…", className, disabled }: TagInputProps) {
+export function TagInput({
+  value,
+  onChange,
+  placeholder = "Type and press Enter…",
+  className,
+  disabled,
+}: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 

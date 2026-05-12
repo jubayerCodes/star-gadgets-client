@@ -117,11 +117,19 @@ export const getSearchFiltersApi = async (query: string): Promise<ApiResponse<IS
   return res.data;
 };
 
-export const getPublicProductsApi = async (
-  params: PublicProductsParams,
-): Promise<ApiResponse<IPublicProductsData>> => {
-  const { page = 1, limit = 20, search, minPrice, maxPrice, availability, brand, category, subCategory, sortBy } =
-    params;
+export const getPublicProductsApi = async (params: PublicProductsParams): Promise<ApiResponse<IPublicProductsData>> => {
+  const {
+    page = 1,
+    limit = 20,
+    search,
+    minPrice,
+    maxPrice,
+    availability,
+    brand,
+    category,
+    subCategory,
+    sortBy,
+  } = params;
   const queryParams: Record<string, string | number | undefined> = { page, limit };
   if (search) queryParams.search = search;
   if (minPrice !== undefined) queryParams.minPrice = minPrice;
@@ -143,8 +151,18 @@ export const getListingFiltersApi = async (): Promise<ApiResponse<IListingFilter
 export const getCategoryProductsApi = async (
   params: CategoryProductsParams,
 ): Promise<ApiResponse<ICategoryProductsData>> => {
-  const { categorySlug, page = 1, limit = 20, search, minPrice, maxPrice, availability, brand, subCategory, sortBy } =
-    params;
+  const {
+    categorySlug,
+    page = 1,
+    limit = 20,
+    search,
+    minPrice,
+    maxPrice,
+    availability,
+    brand,
+    subCategory,
+    sortBy,
+  } = params;
   const queryParams: Record<string, string | number | undefined> = { page, limit };
   if (search) queryParams.search = search;
   if (minPrice !== undefined) queryParams.minPrice = minPrice;
@@ -177,7 +195,9 @@ export const getSubCategoryProductsApi = async (
   return res.data;
 };
 
-export const getSubCategoryFiltersApi = async (subCategorySlug: string): Promise<ApiResponse<ISubCategoryFiltersData>> => {
+export const getSubCategoryFiltersApi = async (
+  subCategorySlug: string,
+): Promise<ApiResponse<ISubCategoryFiltersData>> => {
   const res = await axiosInstance.get(`/sub-categories/${subCategorySlug}/filters`);
   return res.data;
 };

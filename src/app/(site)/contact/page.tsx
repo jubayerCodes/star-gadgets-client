@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: "Contact Us | Star Gadgets",
-  description:
-    "Get in touch with Star Gadgets. We're here to help with product inquiries, orders, and support.",
+  description: "Get in touch with Star Gadgets. We're here to help with product inquiries, orders, and support.",
 };
 
 const contactDetails = [
@@ -48,8 +47,7 @@ export default function ContactPage() {
           </div>
           <h1 className="text-3xl md:text-4xl font-bold">Contact Us</h1>
           <p className="text-white/60 mt-3 max-w-xl">
-            Have a question or need help? Reach out to our team and we&apos;ll get back to you as soon as
-            possible.
+            Have a question or need help? Reach out to our team and we&apos;ll get back to you as soon as possible.
           </p>
         </div>
       </div>
@@ -63,8 +61,8 @@ export default function ContactPage() {
               <div>
                 <h2 className="text-xl font-bold mb-2">Get In Touch</h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  We mainly import goods from overseas. If anything crosses your mind feel free to knock
-                  us — we&apos;d love to make you happy by serving your desired product.
+                  We mainly import goods from overseas. If anything crosses your mind feel free to knock us — we&apos;d
+                  love to make you happy by serving your desired product.
                 </p>
               </div>
 

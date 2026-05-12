@@ -46,13 +46,21 @@ export const checkoutSchema = z
 
     // When ship-to-different-address is checked, validate all shipping fields
     if (!data.shipping_firstName || data.shipping_firstName.length < 2) {
-      ctx.addIssue({ code: "custom", path: ["shipping_firstName"], message: "First name must be at least 2 characters" });
+      ctx.addIssue({
+        code: "custom",
+        path: ["shipping_firstName"],
+        message: "First name must be at least 2 characters",
+      });
     }
     if (!data.shipping_lastName || data.shipping_lastName.length < 2) {
       ctx.addIssue({ code: "custom", path: ["shipping_lastName"], message: "Last name must be at least 2 characters" });
     }
     if (!data.shipping_streetAddress || data.shipping_streetAddress.length < 5) {
-      ctx.addIssue({ code: "custom", path: ["shipping_streetAddress"], message: "Street address must be at least 5 characters" });
+      ctx.addIssue({
+        code: "custom",
+        path: ["shipping_streetAddress"],
+        message: "Street address must be at least 5 characters",
+      });
     }
     if (!data.shipping_city || data.shipping_city.length < 2) {
       ctx.addIssue({ code: "custom", path: ["shipping_city"], message: "City is required" });

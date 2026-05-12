@@ -49,7 +49,10 @@ export default function CheckoutContent() {
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       firstName: user?.billingAddress?.fullName?.split(" ")[0] ?? user?.name?.split(" ")[0] ?? "",
-      lastName: user?.billingAddress?.fullName?.split(" ").slice(1).join(" ") ?? user?.name?.split(" ").slice(1).join(" ") ?? "",
+      lastName:
+        user?.billingAddress?.fullName?.split(" ").slice(1).join(" ") ??
+        user?.name?.split(" ").slice(1).join(" ") ??
+        "",
       streetAddress: user?.billingAddress?.addressLine ?? "",
       city: user?.billingAddress?.city ?? "",
       district: user?.billingAddress?.district ?? "",

@@ -7,9 +7,9 @@ const InvoicesPage = () => {
   return (
     <div>
       <DashboardHeader title="Invoices" description="Download and manage customer invoices" />
-        <Suspense fallback={<Loading />}>
-          <InvoicesContent />
-        </Suspense>
+      <Suspense fallback={<Loading />}>
+        <InvoicesContent />
+      </Suspense>
     </div>
   );
 };

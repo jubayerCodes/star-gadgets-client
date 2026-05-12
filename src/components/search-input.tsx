@@ -9,12 +9,7 @@ interface SearchInputProps {
   className?: string;
 }
 
-const SearchInput = ({
-  value,
-  onChange,
-  placeholder = "Search…",
-  className,
-}: SearchInputProps) => {
+const SearchInput = ({ value, onChange, placeholder = "Search…", className }: SearchInputProps) => {
   return (
     <div className={cn("relative", className)}>
       <IconSearch

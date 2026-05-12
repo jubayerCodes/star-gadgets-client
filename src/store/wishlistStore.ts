@@ -36,8 +36,7 @@ export const useWishlistStore = create<IWishlistStore>()(
         }
       },
 
-      removeItem: (productId) =>
-        set((s) => ({ items: s.items.filter((i) => i.productId !== productId) })),
+      removeItem: (productId) => set((s) => ({ items: s.items.filter((i) => i.productId !== productId) })),
 
       toggleItem: (incoming) => {
         const already = get().items.some((i) => i.productId === incoming.productId);

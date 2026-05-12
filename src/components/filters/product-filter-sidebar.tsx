@@ -3,13 +3,7 @@
 import { SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerClose,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
 
 // ─── Filter section config types ─────────────────────────────────────────────
 
@@ -43,10 +37,7 @@ export interface PriceRangeFilterConfig {
   onApply: (min: string, max: string) => void;
 }
 
-export type FilterSectionConfig =
-  | RadioFilterConfig
-  | CheckboxFilterConfig
-  | PriceRangeFilterConfig;
+export type FilterSectionConfig = RadioFilterConfig | CheckboxFilterConfig | PriceRangeFilterConfig;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -78,9 +69,7 @@ function RadioSection({ section }: { section: RadioFilterConfig }) {
               onChange={() => section.onChange(opt.value)}
               className="accent-foreground"
             />
-            <span className="text-sm text-foreground group-hover:text-tartiary transition-colors">
-              {opt.label}
-            </span>
+            <span className="text-sm text-foreground group-hover:text-tartiary transition-colors">{opt.label}</span>
           </label>
         ))}
       </div>
@@ -106,13 +95,7 @@ function CheckboxSection({ section }: { section: CheckboxFilterConfig }) {
   return (
     <div className="border border-border p-4 flex flex-col gap-3">
       <p className="text-xs font-semibold text-foreground uppercase tracking-wide">{section.label}</p>
-      <div
-        className={
-          section.scrollable
-            ? "flex flex-col gap-2 max-h-52 overflow-y-auto pr-1"
-            : "flex flex-col gap-2"
-        }
-      >
+      <div className={section.scrollable ? "flex flex-col gap-2 max-h-52 overflow-y-auto pr-1" : "flex flex-col gap-2"}>
         {section.options.map((opt) => (
           <label key={opt.value} className="flex items-center gap-2 cursor-pointer group">
             <input
@@ -135,14 +118,16 @@ function PriceRangeSection({ section }: { section: PriceRangeFilterConfig }) {
   const [localMin, setLocalMin] = useState(section.min);
   const [localMax, setLocalMax] = useState(section.max);
 
-  useEffect(() => { setLocalMin(section.min); }, [section.min]);
-  useEffect(() => { setLocalMax(section.max); }, [section.max]);
+  useEffect(() => {
+    setLocalMin(section.min);
+  }, [section.min]);
+  useEffect(() => {
+    setLocalMax(section.max);
+  }, [section.max]);
 
   return (
     <div className="border border-border p-4 flex flex-col gap-3">
-      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">
-        {section.label ?? "Price Range"}
-      </p>
+      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">{section.label ?? "Price Range"}</p>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -160,12 +145,7 @@ function PriceRangeSection({ section }: { section: PriceRangeFilterConfig }) {
           className="w-full h-9 px-2 text-sm border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         />
       </div>
-      <Button
-        size="sm"
-        variant="outline"
-        className="w-full"
-        onClick={() => section.onApply(localMin, localMax)}
-      >
+      <Button size="sm" variant="outline" className="w-full" onClick={() => section.onApply(localMin, localMax)}>
         Apply
       </Button>
     </div>
@@ -218,13 +198,7 @@ function SidebarContent({
 
 // ─── Mobile filter toggle button (exported for parent pages) ──────────────────
 
-export function FilterToggleButton({
-  onClick,
-  hasActiveFilters,
-}: {
-  onClick: () => void;
-  hasActiveFilters: boolean;
-}) {
+export function FilterToggleButton({ onClick, hasActiveFilters }: { onClick: () => void; hasActiveFilters: boolean }) {
   return (
     <div className="flex lg:hidden w-full">
       <button
@@ -252,14 +226,17 @@ export default function ProductFilterSidebar({
   mobileOpen,
   onMobileClose,
 }: ProductFilterSidebarProps) {
-
   return (
     <>
       {/* ── Mobile drawer (shadcn/vaul, direction=left) ────────────────── */}
-      <Drawer open={mobileOpen} onOpenChange={(open) => { if (!open) onMobileClose(); }} direction="left">
-        <DrawerContent
-          className="lg:hidden w-80 max-w-[85vw] h-full flex flex-col overflow-y-auto"
-        >
+      <Drawer
+        open={mobileOpen}
+        onOpenChange={(open) => {
+          if (!open) onMobileClose();
+        }}
+        direction="left"
+      >
+        <DrawerContent className="lg:hidden w-80 max-w-[85vw] h-full flex flex-col overflow-y-auto">
           <DrawerHeader className="flex flex-row items-center justify-between border-b border-border pb-3">
             <DrawerTitle className="text-base">Filters</DrawerTitle>
             <DrawerClose asChild>
@@ -273,22 +250,14 @@ export default function ProductFilterSidebar({
           </DrawerHeader>
 
           <div className="flex-1 overflow-y-auto p-4">
-            <SidebarContent
-              sections={sections}
-              hasActiveFilters={hasActiveFilters}
-              onClearAll={onClearAll}
-            />
+            <SidebarContent sections={sections} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} />
           </div>
         </DrawerContent>
       </Drawer>
 
       {/* ── Desktop aside ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block w-64 shrink-0">
-        <SidebarContent
-          sections={sections}
-          hasActiveFilters={hasActiveFilters}
-          onClearAll={onClearAll}
-        />
+        <SidebarContent sections={sections} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} />
       </aside>
     </>
   );

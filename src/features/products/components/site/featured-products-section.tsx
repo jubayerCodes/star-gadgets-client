@@ -34,7 +34,6 @@ export default function FeaturedProductsSection() {
   return (
     <section className="py-10">
       <div className="container">
-
         {/* ── Section header ── */}
         <div className="flex flex-col items-center gap-3 mb-8">
           {/* Title row with flanking lines */}
@@ -47,8 +46,8 @@ export default function FeaturedProductsSection() {
           </div>
           {/* Description */}
           <p className="text-sm text-center text-muted-foreground max-w-2xl leading-relaxed">
-            Star Gadgets offers a wide variety of quality keyboards, mice, headphones, gamepads,
-            and all types of tech accessories — bringing you comfort, value, and performance.
+            Star Gadgets offers a wide variety of quality keyboards, mice, headphones, gamepads, and all types of tech
+            accessories — bringing you comfort, value, and performance.
           </p>
         </div>
 

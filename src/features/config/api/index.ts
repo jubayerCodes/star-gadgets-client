@@ -32,4 +32,3 @@ export const updateShippingConfigApi = async (
   const res = await axiosInstance.patch(`/config/shipping/${id}`, data);
   return res.data;
 };
-

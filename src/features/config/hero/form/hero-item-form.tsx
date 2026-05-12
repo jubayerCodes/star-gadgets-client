@@ -32,7 +32,11 @@ export function HeroItemFields({
   onConfirm,
   onCancel,
 }: HeroItemFieldsProps) {
-  const { register, control, formState: { errors } } = form;
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = form;
 
   // Safely navigate to nested errors
   const itemErrors = errors.hero?.[arrayName]?.[index];
@@ -46,8 +50,7 @@ export function HeroItemFields({
       {/* Header */}
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold capitalize">
-          {mode === "add" ? "New" : "Edit"} Item{" "}
-          <span className="text-muted-foreground font-normal">({heroType})</span>
+          {mode === "add" ? "New" : "Edit"} Item <span className="text-muted-foreground font-normal">({heroType})</span>
         </h4>
         <button
           type="button"
@@ -68,14 +71,8 @@ export function HeroItemFields({
             name={`hero.${arrayName}.${index}.image` as const}
             render={({ field, fieldState }) => (
               <>
-                <GalleryImagePicker
-                  value={field.value}
-                  onChange={field.onChange}
-                  className="min-h-44"
-                />
-                {fieldState.error && (
-                  <p className={errorClass}>{fieldState.error.message}</p>
-                )}
+                <GalleryImagePicker value={field.value} onChange={field.onChange} className="min-h-44" />
+                {fieldState.error && <p className={errorClass}>{fieldState.error.message}</p>}
               </>
             )}
           />
@@ -107,7 +104,7 @@ export function HeroItemFields({
               placeholder="e.g. /category/phones"
               {...register(`hero.${arrayName}.${index}.link` as const)}
             />
-            {itemErrors && 'link' in itemErrors && itemErrors.link && (
+            {itemErrors && "link" in itemErrors && itemErrors.link && (
               <p className={errorClass}>{itemErrors.link.message}</p>
             )}
           </div>
@@ -126,7 +123,7 @@ export function HeroItemFields({
                 placeholder="e.g. Shop Now"
                 {...register(`hero.${arrayName}.${index}.button` as const)}
               />
-              {itemErrors && 'button' in itemErrors && itemErrors.button && (
+              {itemErrors && "button" in itemErrors && itemErrors.button && (
                 <p className={errorClass}>{itemErrors.button.message}</p>
               )}
             </div>
@@ -140,7 +137,7 @@ export function HeroItemFields({
                 placeholder="e.g. /products?sale=true"
                 {...register(`hero.${arrayName}.${index}.buttonLink` as const)}
               />
-              {itemErrors && 'buttonLink' in itemErrors && itemErrors.buttonLink && (
+              {itemErrors && "buttonLink" in itemErrors && itemErrors.buttonLink && (
                 <p className={errorClass}>{itemErrors.buttonLink.message}</p>
               )}
             </div>

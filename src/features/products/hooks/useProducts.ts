@@ -108,7 +108,18 @@ export const useGetProductBySlugQuery = (slug: string) => {
 export const useSearchProductsQuery = (params: SearchParams) => {
   const { query, page = 1, limit = 20, minPrice, maxPrice, availability, brand, subCategory, sortBy } = params;
   return useQuery({
-    queryKey: [QUERY_KEYS.PRODUCT_SEARCH, query, page, limit, minPrice, maxPrice, availability, brand, subCategory, sortBy],
+    queryKey: [
+      QUERY_KEYS.PRODUCT_SEARCH,
+      query,
+      page,
+      limit,
+      minPrice,
+      maxPrice,
+      availability,
+      brand,
+      subCategory,
+      sortBy,
+    ],
     queryFn: () => searchProductsApi(params),
     enabled: query.trim().length >= 2,
     staleTime: 30 * 1000,
