@@ -8,8 +8,7 @@ import { extractErrorMessage } from "@/lib/extract-error-message";
 export const useUpdateHeroConfig = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateHeroConfigPayload }) =>
-      updateHeroConfigApi(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateHeroConfigPayload }) => updateHeroConfigApi(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CONFIG] });
       toast.success(data.message);

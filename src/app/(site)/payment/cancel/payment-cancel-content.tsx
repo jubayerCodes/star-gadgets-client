@@ -24,8 +24,8 @@ export default function PaymentCancelContent() {
         <div className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-bold">Payment Cancelled</h1>
           <p className="text-sm text-muted-foreground">
-            You cancelled the payment. Your order is still saved — you can complete the payment
-            anytime from your order details page.
+            You cancelled the payment. Your order is still saved — you can complete the payment anytime from your order
+            details page.
           </p>
         </div>
 

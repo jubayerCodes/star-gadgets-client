@@ -54,7 +54,13 @@ const Login = () => {
                 <span className="font-medium text-foreground">Password:</span>
                 <span>Admin#1112</span>
               </div>
-              <Button type="button" variant="outline" size="sm" className="w-fit text-xs" onClick={fillAdminCredentials}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-fit text-xs"
+                onClick={fillAdminCredentials}
+              >
                 Auto Fill
               </Button>
             </div>

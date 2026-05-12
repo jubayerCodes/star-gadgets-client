@@ -53,13 +53,9 @@ function CartItemRow({
         )}
         {/* Unit price */}
         <div className="flex items-baseline gap-1.5 mt-0.5">
-          <span className="text-sm font-semibold text-foreground">
-            ৳{item.price.toLocaleString()}
-          </span>
+          <span className="text-sm font-semibold text-foreground">৳{item.price.toLocaleString()}</span>
           {hasDiscount && (
-            <span className="text-xs text-muted-foreground line-through">
-              ৳{item.regularPrice.toLocaleString()}
-            </span>
+            <span className="text-xs text-muted-foreground line-through">৳{item.regularPrice.toLocaleString()}</span>
           )}
         </div>
 
@@ -74,9 +70,7 @@ function CartItemRow({
             >
               <Minus className="size-3" />
             </button>
-            <span className="px-3 text-sm font-semibold min-w-8 text-center select-none">
-              {item.quantity}
-            </span>
+            <span className="px-3 text-sm font-semibold min-w-8 text-center select-none">{item.quantity}</span>
             <button
               onClick={() => onUpdateQty(item.quantity + 1)}
               className="px-2.5 py-1.5 hover:bg-muted transition-colors"
@@ -109,9 +103,7 @@ function CartItemRow({
         >
           <Minus className="size-3" />
         </button>
-        <span className="px-3 text-sm font-semibold min-w-8 text-center select-none">
-          {item.quantity}
-        </span>
+        <span className="px-3 text-sm font-semibold min-w-8 text-center select-none">{item.quantity}</span>
         <button
           onClick={() => onUpdateQty(item.quantity + 1)}
           className="px-2.5 py-1.5 hover:bg-muted transition-colors"
@@ -165,9 +157,7 @@ function EmptyCart() {
 function CartSummary({ subtotal }: { subtotal: number }) {
   return (
     <div className="bg-card border border-border overflow-hidden shadow-sm flex flex-col sticky top-24">
-      <h2 className="text-xl font-bold text-primary-foreground px-6 py-4 bg-primary tracking-tight">
-        Cart Totals
-      </h2>
+      <h2 className="text-xl font-bold text-primary-foreground px-6 py-4 bg-primary tracking-tight">Cart Totals</h2>
 
       <div className="flex flex-col gap-3 px-6 py-5">
         <div className="flex items-center justify-between text-sm">
@@ -177,9 +167,7 @@ function CartSummary({ subtotal }: { subtotal: number }) {
 
         <div className="flex items-start justify-between text-sm">
           <span className="text-muted-foreground">Shipping</span>
-          <span className="text-xs text-muted-foreground text-right max-w-[160px]">
-            Calculated at checkout
-          </span>
+          <span className="text-xs text-muted-foreground text-right max-w-[160px]">Calculated at checkout</span>
         </div>
 
         <div className="border-t border-border pt-3 flex items-center justify-between text-base font-bold text-foreground">

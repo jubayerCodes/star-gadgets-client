@@ -35,9 +35,7 @@ const ChangePassword = () => {
         </div>
         <div>
           <h2 className="text-base font-semibold">Change Password</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Update your password to keep your account secure.
-          </p>
+          <p className="text-sm text-muted-foreground mt-0.5">Update your password to keep your account secure.</p>
         </div>
       </div>
 
@@ -54,9 +52,19 @@ const ChangePassword = () => {
 
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
         <FieldGroup className="gap-4">
-          <PasswordField form={form} name="oldPassword" label="Current Password" placeholder="Enter your current password" />
+          <PasswordField
+            form={form}
+            name="oldPassword"
+            label="Current Password"
+            placeholder="Enter your current password"
+          />
           <PasswordField form={form} name="newPassword" label="New Password" placeholder="Enter your new password" />
-          <PasswordField form={form} name="confirmPassword" label="Confirm New Password" placeholder="Confirm your new password" />
+          <PasswordField
+            form={form}
+            name="confirmPassword"
+            label="Confirm New Password"
+            placeholder="Confirm your new password"
+          />
         </FieldGroup>
 
         <Button type="submit" disabled={isPending} className="w-full sm:w-auto">

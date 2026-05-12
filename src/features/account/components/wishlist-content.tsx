@@ -80,8 +80,8 @@ function WishlistEmpty() {
       <div>
         <p className="text-lg font-semibold text-foreground mb-1">No saved products yet</p>
         <p className="text-sm text-muted-foreground max-w-xs">
-          Browse products and click{" "}
-          <span className="font-medium text-tartiary">Add to Wishlist</span> to save them here.
+          Browse products and click <span className="font-medium text-tartiary">Add to Wishlist</span> to save them
+          here.
         </p>
       </div>
       <Button asChild className="mt-2 rounded-none">
@@ -123,13 +123,7 @@ function WishlistRow({ item, onRemove }: WishlistRowProps) {
       {/* Image */}
       <Link href={`/products/${slug}`} className="shrink-0">
         <div className="relative w-20 h-20 sm:w-24 sm:h-24 border border-border bg-white overflow-hidden">
-          <Image
-            src={image || "/placeholder.png"}
-            alt={title}
-            fill
-            sizes="96px"
-            className="object-contain p-1.5"
-          />
+          <Image src={image || "/placeholder.png"} alt={title} fill sizes="96px" className="object-contain p-1.5" />
         </div>
       </Link>
 
@@ -144,16 +138,12 @@ function WishlistRow({ item, onRemove }: WishlistRowProps) {
 
         {/* Meta: category · brand */}
         {(category || brand) && (
-          <p className="text-xs text-muted-foreground mt-1">
-            {[category, brand].filter(Boolean).join(" · ")}
-          </p>
+          <p className="text-xs text-muted-foreground mt-1">{[category, brand].filter(Boolean).join(" · ")}</p>
         )}
 
         {/* Price */}
         <div className="flex items-baseline gap-2 mt-2 flex-wrap">
-          <span className="text-base font-bold text-foreground">
-            ৳{price.toLocaleString("en-BD")}
-          </span>
+          <span className="text-base font-bold text-foreground">৳{price.toLocaleString("en-BD")}</span>
           {hasDiscount && (
             <>
               <span className="text-sm text-muted-foreground line-through">
@@ -167,29 +157,18 @@ function WishlistRow({ item, onRemove }: WishlistRowProps) {
         </div>
 
         {/* Added time */}
-        <p className="text-[11px] text-muted-foreground mt-1.5">
-          Added {formatRelativeTime(new Date(addedAt))}
-        </p>
+        <p className="text-[11px] text-muted-foreground mt-1.5">Added {formatRelativeTime(new Date(addedAt))}</p>
       </div>
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
-        <Button
-          size="sm"
-          className="rounded-none gap-1.5 h-9 text-xs whitespace-nowrap"
-          onClick={handleAddToCart}
-        >
+        <Button size="sm" className="rounded-none gap-1.5 h-9 text-xs whitespace-nowrap" onClick={handleAddToCart}>
           <ShoppingCart size={13} />
           <span className="hidden sm:inline">Add to Cart</span>
           <span className="sm:hidden">Cart</span>
         </Button>
 
-        <Button
-          size="sm"
-          variant="outline"
-          asChild
-          className="rounded-none gap-1.5 h-9 text-xs border-border"
-        >
+        <Button size="sm" variant="outline" asChild className="rounded-none gap-1.5 h-9 text-xs border-border">
           <Link href={`/products/${slug}`}>
             <ExternalLink size={13} />
             <span className="hidden sm:inline">View</span>

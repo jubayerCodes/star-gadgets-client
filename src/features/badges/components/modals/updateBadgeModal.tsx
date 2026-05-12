@@ -66,13 +66,7 @@ const UpdateBadgeModal = () => {
           <div>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FieldGroup className="gap-2">
-                <DashboardInputField
-                  form={form}
-                  name="title"
-                  label="Title"
-                  placeholder="Enter badge title"
-                  required
-                />
+                <DashboardInputField form={form} name="title" label="Title" placeholder="Enter badge title" required />
                 <CheckboxField form={form} name="editable" label="Editable" />
               </FieldGroup>
               <DialogFooter>

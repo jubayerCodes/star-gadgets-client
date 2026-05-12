@@ -57,9 +57,7 @@ function CartItem({
             >
               <Minus className="size-3" />
             </button>
-            <span className="px-3 text-sm font-semibold min-w-8 text-center">
-              {item.quantity}
-            </span>
+            <span className="px-3 text-sm font-semibold min-w-8 text-center">{item.quantity}</span>
             <button
               onClick={() => onUpdateQty(item.quantity + 1)}
               className="px-2 py-1.5 hover:bg-muted transition-colors"
@@ -70,9 +68,7 @@ function CartItem({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold">
-              ৳{(item.price * item.quantity).toLocaleString()}
-            </span>
+            <span className="text-sm font-bold">৳{(item.price * item.quantity).toLocaleString()}</span>
             <button
               onClick={onRemove}
               className="text-muted-foreground hover:text-destructive transition-colors"
@@ -131,9 +127,7 @@ export default function CartDrawer() {
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center py-16">
               <ShoppingBag className="size-16 text-muted-foreground/20" />
               <p className="font-semibold text-foreground">Your cart is empty</p>
-              <p className="text-sm text-muted-foreground">
-                Add some products and they&apos;ll show up here.
-              </p>
+              <p className="text-sm text-muted-foreground">Add some products and they&apos;ll show up here.</p>
               <Button variant="outline" size="sm" onClick={closeCart} asChild>
                 <Link href="/products">Browse Products</Link>
               </Button>
@@ -159,14 +153,15 @@ export default function CartDrawer() {
               <span className="text-sm text-muted-foreground font-medium">Subtotal</span>
               <span className="text-xl font-bold">৳{subtotal.toLocaleString()}</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Shipping and taxes calculated at checkout.
-            </p>
+            <p className="text-xs text-muted-foreground">Shipping and taxes calculated at checkout.</p>
             <Separator />
             <Button
               variant="outline"
               className="w-full h-10"
-              onClick={() => { closeCart(); router.push("/cart"); }}
+              onClick={() => {
+                closeCart();
+                router.push("/cart");
+              }}
             >
               View Cart
             </Button>

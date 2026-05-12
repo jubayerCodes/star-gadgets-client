@@ -14,7 +14,6 @@ const HeroCarousel = dynamic(() => import("./hero-carousel"), {
   loading: () => <HeroCarouselSkeleton />,
 });
 
-
 const HeroSection = () => {
   const { config, isLoading } = useConfigStore();
 

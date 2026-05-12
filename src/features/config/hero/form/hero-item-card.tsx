@@ -26,7 +26,7 @@ export function HeroItemCard({ form, index, arrayName, field: initialField, hero
     control: form.control,
     name: `hero.${arrayName}.${index}` as const,
   });
-  
+
   const field = (liveField || initialField) as HeroItemFormData & { id: string };
 
   const [editing, setEditing] = useState(false);
@@ -78,9 +78,7 @@ export function HeroItemCard({ form, index, arrayName, field: initialField, hero
         {field.image ? (
           <Image src={field.image} alt={field.id || "Hero item"} fill className="object-cover" />
         ) : (
-          <div className="flex h-full items-center justify-center text-muted-foreground text-xs">
-            No image
-          </div>
+          <div className="flex h-full items-center justify-center text-muted-foreground text-xs">No image</div>
         )}
       </div>
 

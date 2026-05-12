@@ -360,14 +360,7 @@ export default function SubCategoryProductsContent({ subCategorySlug }: { subCat
   return (
     <div className="container py-8 min-h-[60vh] overflow-x-hidden">
       {/* ── Breadcrumb ── */}
-      <SiteBreadcrumb
-        className="mb-5"
-        items={[
-          ...(subCategoryMeta
-            ? [{ label: subCategoryMeta.title }]
-            : []),
-        ]}
-      />
+      <SiteBreadcrumb className="mb-5" items={[...(subCategoryMeta ? [{ label: subCategoryMeta.title }] : [])]} />
 
       {/* ── Page header + Search bar ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
@@ -448,7 +441,10 @@ export default function SubCategoryProductsContent({ subCategorySlug }: { subCat
           ))}
           {(minPriceParam || maxPriceParam) && (
             <span className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-border bg-muted text-foreground">
-              Price: <strong>৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}</strong>
+              Price:{" "}
+              <strong>
+                ৳{minPriceParam || "0"} – ৳{maxPriceParam || "∞"}
+              </strong>
               <button
                 onClick={() => updateParams({ minPrice: undefined, maxPrice: undefined })}
                 aria-label="Remove price filter"

@@ -13,15 +13,7 @@ interface TextareaFieldProps {
   hint?: string;
 }
 
-const TextareaField = ({
-  form,
-  name,
-  label,
-  placeholder,
-  required,
-  rows,
-  hint,
-}: TextareaFieldProps) => {
+const TextareaField = ({ form, name, label, placeholder, required, rows, hint }: TextareaFieldProps) => {
   return (
     <Controller
       control={form.control}

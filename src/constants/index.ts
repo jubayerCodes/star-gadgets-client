@@ -44,4 +44,3 @@ export const PRODUCT_LISTING = {
   DEFAULT_LIMIT: 20,
   LIMIT_OPTIONS: [12, 20, 40],
 };
-

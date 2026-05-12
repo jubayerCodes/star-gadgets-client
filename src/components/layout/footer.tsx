@@ -101,7 +101,9 @@ const Footer = () => {
             <div className="flex flex-col gap-4 text-[13px] text-white/70">
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="shrink-0 mt-0.5 text-white/50" />
-                <span className="leading-snug">Shop No-2, Level-7, Eastern Star Tech Park, Durgapur, Savar, Dhaka-1340</span>
+                <span className="leading-snug">
+                  Shop No-2, Level-7, Eastern Star Tech Park, Durgapur, Savar, Dhaka-1340
+                </span>
               </div>
               <div className="flex items-start gap-3">
                 <Smartphone size={18} className="shrink-0 mt-0 text-white/50" />
@@ -123,7 +125,12 @@ const Footer = () => {
         <div className="container mt-8 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-white/60">
           <p className="uppercase tracking-wide text-center md:text-left">
             ALL RIGHTS RESERVED. <span className="font-bold text-white">STAR GADGETS</span> © 2025 CREATED BY{" "}
-            <Link href="https://jubayer-codes-portfolio.vercel.app" target="_blank" rel="noopener noreferrer" className="font-bold text-white">
+            <Link
+              href="https://jubayer-codes-portfolio.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-white"
+            >
               Jubayer Hossain
             </Link>
           </p>

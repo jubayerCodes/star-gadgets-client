@@ -21,24 +21,26 @@ export const heroCarouselItemSchema = z.object({
 // ─── Form-level schema ────────────────────────────────────────────────────────
 
 export const updateHeroConfigValidation = z.object({
-  hero: z.object({
-    heroType: z.enum(["fixed", "carousel"]),
-    fixedContent: z.array(heroFixedItemSchema),
-    carouselContent: z.array(heroCarouselItemSchema),
-  }).superRefine((data, ctx) => {
-    if (data.heroType === "fixed" && data.fixedContent.length !== 3) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Fixed layout must have exactly 3 items",
-        path: ["fixedContent"],
-      });
-    }
-    if (data.heroType === "carousel" && data.carouselContent.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Carousel layout must have at least 1 item",
-        path: ["carouselContent"],
-      });
-    }
-  }),
+  hero: z
+    .object({
+      heroType: z.enum(["fixed", "carousel"]),
+      fixedContent: z.array(heroFixedItemSchema),
+      carouselContent: z.array(heroCarouselItemSchema),
+    })
+    .superRefine((data, ctx) => {
+      if (data.heroType === "fixed" && data.fixedContent.length !== 3) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Fixed layout must have exactly 3 items",
+          path: ["fixedContent"],
+        });
+      }
+      if (data.heroType === "carousel" && data.carouselContent.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Carousel layout must have at least 1 item",
+          path: ["carouselContent"],
+        });
+      }
+    }),
 });

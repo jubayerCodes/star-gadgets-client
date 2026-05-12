@@ -60,7 +60,9 @@ export default function OrderSummary({
                   ))}
                 </div>
               </div>
-              <span className="text-sm font-semibold text-foreground shrink-0">৳{(item.price * item.quantity).toLocaleString()}</span>
+              <span className="text-sm font-semibold text-foreground shrink-0">
+                ৳{(item.price * item.quantity).toLocaleString()}
+              </span>
             </div>
           ))
         )}

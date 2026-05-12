@@ -32,9 +32,7 @@ const BadgesTable = () => {
         align: "center",
         headerAlign: "center",
       },
-      cell: ({ row }) => (
-        <span>{row.original.editable ? <IconCircleCheckFilled className="text-accent" /> : ""}</span>
-      ),
+      cell: ({ row }) => <span>{row.original.editable ? <IconCircleCheckFilled className="text-accent" /> : ""}</span>,
     },
     {
       accessorKey: "actions",

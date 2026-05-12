@@ -33,9 +33,7 @@ export const variantZodSchema = z.object({
     error: "Invalid product status",
   }),
   sku: z.string({ error: "SKU is required" }).min(1, "SKU is required"),
-  images: z
-    .array(z.string({ error: "Image must be a string" }))
-    .min(1, "At least one image is required"),
+  images: z.array(z.string({ error: "Image must be a string" })).min(1, "At least one image is required"),
   featuredImage: z.string({ error: "Featured image is required" }).min(1, "Featured image is required"),
   featured: z.boolean().optional(),
   isActive: z.boolean().optional(),

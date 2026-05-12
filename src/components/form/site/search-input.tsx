@@ -198,11 +198,7 @@ const SearchInput = ({ className }: { className?: string }) => {
             className="text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Search"
           >
-            {isFetching && !isSearchPage ? (
-              <Loader2 className="size-5 animate-spin" />
-            ) : (
-              <Search className="size-5" />
-            )}
+            {isFetching && !isSearchPage ? <Loader2 className="size-5 animate-spin" /> : <Search className="size-5" />}
           </button>
         </div>
       </div>
@@ -245,12 +241,8 @@ const SearchInput = ({ className }: { className?: string }) => {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate leading-snug">
-                      {product.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5">
-                      {product.subCategoryId?.title}
-                    </p>
+                    <p className="text-sm font-medium text-foreground truncate leading-snug">{product.title}</p>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{product.subCategoryId?.title}</p>
                   </div>
 
                   {/* Price */}

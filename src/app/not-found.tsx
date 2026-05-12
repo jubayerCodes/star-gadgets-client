@@ -34,12 +34,9 @@ export default function NotFound() {
         <div className="w-12 h-1 bg-tartiary mb-6" />
 
         {/* Text */}
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
-          Page Not Found
-        </h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">Page Not Found</h1>
         <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-8 max-w-sm">
-          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved. Let&apos;s get
-          you back on track.
+          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved. Let&apos;s get you back on track.
         </p>
 
         {/* Actions */}
