@@ -1,20 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
-// components/GoogleLoginButton.tsx
+
 "use client";
+
+import { Button } from "@/components/ui/button";
+import { FaGoogle } from "react-icons/fa";
 
 export default function GoogleLoginButton() {
   const handleGoogleLogin = () => {
     // Simply redirect to your backend — Passport handles the rest
-    window.location.href = "http://localhost:5000/api/v1/auth/google";
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/google`;
   };
 
   return (
-    <button
-      onClick={handleGoogleLogin}
-      className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 transition"
-    >
-      <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+    <Button onClick={handleGoogleLogin}>
+      <FaGoogle />
       Continue with Google
-    </button>
+    </Button>
   );
 }

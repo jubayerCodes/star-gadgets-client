@@ -77,7 +77,132 @@
 
 ## 🚀 Getting Started
 
-### Prerequisites
+Choose the setup method that works best for you — **Docker** (recommended, zero config) or **Manual**.
+
+---
+
+### 🐳 Docker Setup (Recommended)
+
+Run the entire Star Gadgets stack with a single command. No need to install Node.js, pnpm, or any other dependency manually.
+
+#### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed
+
+#### Steps
+
+**1. Create a parent folder and clone both repositories inside it**
+
+```bash
+mkdir star-gadgets && cd star-gadgets
+git clone https://github.com/jubayerCodes/star-gadgets-client.git
+git clone https://github.com/jubayerCodes/star-gadgets-server.git
+```
+
+**2. Set up server environment variables**
+
+```bash
+cd star-gadgets-server
+cp .env.example .env
+# Open .env and fill in all values
+cd ..
+```
+
+**3. Create `docker-compose.yml` in the parent `star-gadgets/` folder**
+
+Create a new file named `docker-compose.yml` and paste the following:
+
+```yaml
+services:
+
+  server:
+    build:
+      context: ./star-gadgets-server
+      dockerfile: Dockerfile
+    container_name: star-gadgets-server
+    restart: unless-stopped
+    env_file:
+      - ./star-gadgets-server/.env
+    environment:
+      NODE_ENV: PRODUCTION
+    ports:
+      - "5000:5000"
+    networks:
+      - star-gadgets-net
+
+  client:
+    build:
+      context: ./star-gadgets-client
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BASE_URL: http://localhost:5000/api/v1
+    container_name: star-gadgets-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "8000:8000"
+    networks:
+      - star-gadgets-net
+
+networks:
+  star-gadgets-net:
+    driver: bridge
+```
+
+**4. Confirm your folder structure looks like this**
+
+```
+star-gadgets/
+├── docker-compose.yml        ← created in step 3
+├── star-gadgets-client/      ← cloned in step 1
+└── star-gadgets-server/      ← cloned in step 1
+```
+
+**5. Build and start everything**
+
+```bash
+docker compose up --build
+```
+
+The app will be available at:
+- **Frontend** → http://localhost:8000
+- **Backend API** → http://localhost:5000/api/v1
+
+#### ⚠️ Important Notes
+
+- **MongoDB**: This project uses MongoDB Atlas. Make sure your Atlas cluster allows connections from your IP under **Network Access → Add IP Address**.
+- **`NEXT_PUBLIC_BASE_URL`**: This is baked into the Next.js bundle at build time. If your API runs on a different URL, update the `args.NEXT_PUBLIC_BASE_URL` value in `docker-compose.yml` before building.
+- **`.env` file**: Never commit your `.env` file. It is gitignored by default. Anyone cloning the repo must create their own `.env` from `.env.example`.
+
+#### Useful Docker Commands
+
+```bash
+# Start in background (after first build)
+docker compose up -d
+
+# Stop all containers
+docker compose down
+
+# Rebuild after code changes
+docker compose up --build
+
+# View live logs
+docker compose logs -f
+
+# View logs for a specific service
+docker compose logs -f server
+docker compose logs -f client
+
+# Open a shell inside a running container
+docker compose exec server sh
+docker compose exec client sh
+```
+
+---
+
+### Manual Setup
+
+#### Prerequisites
 - Node.js >= 18
 - pnpm
 - MongoDB instance (local or Atlas)
@@ -150,6 +275,11 @@ JWT_REFRESH_EXPIRES_IN=
 # Bcrypt
 BCRYPT_SALT_ROUNDS=
 
+# Google OAuth
+GOOGLE_CLIENT_ID=              # Google OAuth client ID
+GOOGLE_CLIENT_SECRET=          # Google OAuth client secret
+GOOGLE_CALLBACK_URL=           # e.g. http://localhost:5000/api/v1/auth/google/callback
+
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
@@ -171,6 +301,11 @@ SSL_CANCEL_BACKEND_URL=
 SSL_SUCCESS_FRONTEND_URL=
 SSL_FAIL_FRONTEND_URL=
 SSL_CANCEL_FRONTEND_URL=
+
+# Google Cloud
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=
 ```
 
 ### 🔑 Environment Variables (Client)

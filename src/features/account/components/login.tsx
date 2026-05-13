@@ -77,7 +77,7 @@ const Login = () => {
               </Button>
             </form>
           </div>
-          <div className="divider">or</div>
+          <SeparatorText text="Or" />
           <GoogleLoginButton />
           <SeparatorText text="Don't have an account?" />
           <Button type="submit" disabled={form.formState.isSubmitting} className="w-full" variant="outline" asChild>
