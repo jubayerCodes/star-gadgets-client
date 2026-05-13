@@ -26,10 +26,10 @@ function SubCategoryComboboxField<T extends FieldValues, TPath extends FieldPath
   required?: boolean;
   label: string;
   categoryId?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   infinityFunction: (
     search: string,
     categoryId?: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => UseInfiniteQueryResult<InfiniteData<ApiResponse<any>>, unknown>;
 }) {
   const id = useId();

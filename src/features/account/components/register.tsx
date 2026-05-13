@@ -10,6 +10,7 @@ import PasswordField from "@/components/form/site/password-field";
 import { Button } from "@/components/ui/button";
 import SeparatorText from "@/components/shared/separator-text";
 import Link from "next/link";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Register = () => {
   const router = useRouter();
@@ -57,7 +58,9 @@ const Register = () => {
                 REGISTER
               </Button>
             </form>
-          </div>
+          </div>{" "}
+          <SeparatorText text="Or" />
+          <GoogleLoginButton />
           <SeparatorText text="Already have an account?" />
           <div>
             <p>
